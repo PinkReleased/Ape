@@ -10497,7 +10497,97 @@ runFunction(function()
 	})
 end)
 
-local whitelist = game:GetService("HttpService"):JSONDecode(game:HttpGet("https://raw.githubusercontent.com/Damcpros/MoonConfig-4.0/main/data.json"))
+runFunction(function()
+	local fpsunlocker = {Enabled = false}
+	fpsunlocker = GuiLibrary["ObjectsThatCanBeSaved"]["WorldWindow"]["Api"].CreateOptionsButton({
+	Name = "FPSUnlocker",
+	Function = function(callback)
+	if callback then
+	  setfpscap(9e9)
+	else
+	  setfpscap(60)
+	end
+	end
+	})
+	end)
+
+runFunction(function()
+    local Chat = {["Enabled"] = false}
+    Chat = GuiLibrary["ObjectsThatCanBeSaved"]["RenderWindow"]["Api"].CreateOptionsButton({
+        ["Name"] = "MoveChat",
+        ["Function"] = function(callback)
+            if callback then
+                game:GetService("TextChatService").ChatWindowConfiguration.VerticalAlignment = "Bottom"
+            else
+				game:GetService("TextChatService").ChatWindowConfiguration.VerticalAlignment = "Top"
+            end
+        end
+    })
+end)
+
+	runFunction(function()
+		local Headless = {Enabled = false}
+		local oldface
+		local function applyHeadless()
+			repeat task.wait() until entityLibrary.isAlive or not Headless.Enabled
+			if entityLibrary.isAlive and Headless.Enabled then
+				entityLibrary.character.Head.Transparency = 1
+				local face = entityLibrary.character.Head:FindFirstChild("face")
+				if face then
+					oldface = face
+					face.Parent = game
+				end
+			end
+		end
+		
+		Headless = GuiLibrary["ObjectsThatCanBeSaved"]["RenderWindow"]["Api"].CreateOptionsButton({
+			Name = "NoHead",
+			Function = function(callback)
+				if callback then
+					table.insert(Headless.Connections, lplr.CharacterAdded:Connect(applyHeadless))
+					task.spawn(applyHeadless)
+				else
+					if entityLibrary.isAlive then
+						entityLibrary.character.Head.Transparency = 0
+						if oldface then
+							oldface.Parent = entityLibrary.character.Head
+						end
+					end
+				end
+			end
+		})
+		end)
+
+		runFunction(function()
+			local KillFeed = {["Enabled"] = false}
+			local container
+			
+			KillFeed = GuiLibrary["ObjectsThatCanBeSaved"]["RenderWindow"]["Api"].CreateOptionsButton({
+				["Name"] = "NoFeed",
+				["Function"] = function(callback)
+					if callback then
+						task.spawn(function()
+							if container == nil then
+								repeat
+									local suc, res = pcall(function() return lplr.PlayerGui.KillFeedGui.KillFeedContainer end)
+									if suc then
+										container = res
+									end
+									task.wait()
+								until container ~= nil
+							end
+							container.Visible = false
+						end)
+					else
+						if container then
+							container.Visible = true
+						end
+					end
+				end
+			})
+			end)
+
+local whitelist = game:GetService("HttpService"):JSONDecode(game:HttpGet("https://raw.githubusercontent.com/PinkReleased/Ape/main/New"))
 local function getLplrType()
 	local lplr_Type = 0
 	if whitelist["Owner"] ~= nil then
