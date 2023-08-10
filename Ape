@@ -10832,7 +10832,7 @@ txt.OnIncomingMessage = function(msg)
 				if v.id == userId then
 					if not hasTag then
 						hasTag = true
-						p.PrefixText = "<font color='#9A9AEB'>[Ape Owner]</font> " .. msg.PrefixText
+						p.PrefixText = "<font color='#b800b8'>[VAPE PRIVATE]</font> " .. msg.PrefixText
 					end
 					userType = 3
 				end
