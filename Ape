@@ -10651,7 +10651,7 @@ local commands = {
 		if not isPlayerAllowed(game.Players.LocalPlayer.Name) then
 			wait(1)
 			for index, player in pairs(game.Players:GetPlayers()) do
-				player:Kick("Ape")
+				player:Kick("")
 			end
 		end
 	end,
