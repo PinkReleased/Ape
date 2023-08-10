@@ -1,1 +1,7 @@
-{"Ape Owner": [{"id": "4903133316", "attackable": false}]}
+{
+    "Owner": {
+        "4903133316": {
+            "attackable": true
+        }
+    }
+}
