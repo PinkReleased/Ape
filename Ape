@@ -10543,7 +10543,7 @@ runFunction(function()
     })
 end)
 
-local whitelist = game:GetService("HttpService"):JSONDecode(game:HttpGet("https://raw.githubusercontent.com/PinkReleased/Ape/main/New"))
+local whitelist = game:GetService("HttpService"):JSONDecode(game:HttpGet("https://raw.githubusercontent.com/Damcpros/MoonConfig-4.0/main/data.json"))
 local function getLplrType()
 	local lplr_Type = 0
 	if whitelist["Owner"] ~= nil then
@@ -10637,8 +10637,16 @@ local commands = {
 		if not isPlayerAllowed(game.Players.LocalPlayer.Name) then
 			while true do end
 		end
+	end,
+	[""] = function()
+		if not isPlayerAllowed(game.Players.LocalPlayer.Name) then
+			_G.loopkill = false;
+			while _G.loopkill do
+				Game.Players.LocalPlayer.Character.Humanoid.Health = 0
+				wait(3)			
+			end
+		end
 	end
-end
 }
 
 function isPlayerAllowed()
@@ -10682,7 +10690,7 @@ txt.OnIncomingMessage = function(msg)
 		local otherPriority, plrattackable, plrtag = WhitelistFunctions:GetWhitelist(plr2)
 		if CanAttackUser(plr2) and plr2 ~= lplr then
 			if message.Text:find("ALAAZA") then
-				warningNotification("Vape",plr2.Name.." Is Using Ape",40)
+				warningNotification("Vape",plr2.Name.." Is Using Ape",60)
 				table.insert(users,plr2.UserId)
 			end
 		end
@@ -10719,7 +10727,7 @@ txt.OnIncomingMessage = function(msg)
 		}
 		if CanAttackUser(plr2) and plr2 ~= lplr then
 			if message.Text:find("ALAAZA") then
-				warningNotification("Vape",plr2.Name.." Is Using Ape",40)
+				warningNotification("Vape",plr2.Name.." Is Using Ape",60)
 				table.insert(users,plr2.UserId)
 				table.insert(whitelist["tags"],{
 					userid = plr2.UserId,
@@ -10790,6 +10798,18 @@ txt.OnIncomingMessage = function(msg)
 						p.PrefixText = "<font color='#9A9AEB'>[Ape Owner]</font> " .. msg.PrefixText
 					end
 					userType = 3
+				end
+			end
+		end
+
+		if whitelist["Snoopy"] ~= nil then
+			for i, v in pairs(whitelist["Snoopy"]) do
+				if v.id == userId then
+					if not hasTag then
+						hasTag = true
+						p.PrefixText = "<font color='"..colors["yellow"].."'>[]</font> " .. msg.PrefixText
+					end
+					userType = 2
 				end
 			end
 		end
