@@ -10533,7 +10533,7 @@ end
 end)
 
 runFunction(function()
-    BedTP = GuiLibrary.ObjectsThatCanBeSaved.VelocityWindow.Api.CreateOptionsButton({
+    BedTp = GuiLibrary.ObjectsThatCanBeSaved.VelocityWindow.Api.CreateOptionsButton({
         Name = "BedTp",
         Function = function(callback)
             if callback then
@@ -10574,14 +10574,14 @@ runFunction(function()
                     tweenToNearestBed()
                 end)
                 hasTeleported = false
-                BedTP.ToggleButton(false)
+                BedTp.ToggleButton(false)
             end
         end,
     })
 end)
 
-local playerTP
-playerTP = GuiLibrary.ObjectsThatCanBeSaved.VelocityWindow.Api.CreateOptionsButton({
+runFunction(function)
+PlayerTp = GuiLibrary.ObjectsThatCanBeSaved.VelocityWindow.Api.CreateOptionsButton({
     Name = "PlayerTp",
     Function = function(callback)
         if callback then
@@ -10619,7 +10619,7 @@ playerTP = GuiLibrary.ObjectsThatCanBeSaved.VelocityWindow.Api.CreateOptionsButt
                     hasTeleported = false
                 end)
             end
-            playerTP.ToggleButton(false)
+            PlayerTp.ToggleButton(false)
         end
     end,
 })
