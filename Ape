@@ -3597,6 +3597,9 @@ runFunction(function()
 	local originalNeckC0
 	local originalRootC0
 	local anims = {
+		Block = {
+			{CFrame = CFrame.new(0, 0, 0) * CFrame.Angles(math.rad(-30), math.rad(50), math.rad(-90)), Time = 0.00001}
+		},
 		Normal = {
 			{CFrame = CFrame.new(0.69, -0.7, 0.6) * CFrame.Angles(math.rad(295), math.rad(55), math.rad(290)), Time = 0.05},
 			{CFrame = CFrame.new(0.69, -0.71, 0.6) * CFrame.Angles(math.rad(200), math.rad(60), math.rad(1)), Time = 0.05}
@@ -3618,11 +3621,6 @@ runFunction(function()
 			{CFrame = CFrame.new(0, 0, 0) * CFrame.Angles(math.rad(180), math.rad(3), math.rad(13)), Time = 0.1},
 			{CFrame = CFrame.new(0, 0, 0) * CFrame.Angles(math.rad(90), math.rad(-5), math.rad(8)), Time = 0.1},
 			{CFrame = CFrame.new(0, 0, 0) * CFrame.Angles(math.rad(0), math.rad(-0), math.rad(-0)), Time = 0.1}
-		},
-		Newest = {
-			{CFrame = CFrame.new(0.39, 1, 0.2) * CFrame.Angles(math.rad(-30), math.rad(50), math.rad(-90)), Time = 0.03},
-			{CFrame = CFrame.new(0.7, 0.1, 0.59) * CFrame.Angles(math.rad(-84), math.rad(50), math.rad(-38)), Time = 0.05},
-			{CFrame = CFrame.new(0.39, 0.1, 1.37) * CFrame.Angles(math.rad(-84), math.rad(50), math.rad(-38)), Time = 0.13},
 		},
 		Exhibition = {
 			{CFrame = CFrame.new(0.69, -0.7, 0.6) * CFrame.Angles(math.rad(-30), math.rad(50), math.rad(-90)), Time = 0.1},
@@ -10445,45 +10443,41 @@ end
 end)
 
 runFunction(function()
-    disabler = GuiLibrary.ObjectsThatCanBeSaved.BlatantWindow.Api.CreateOptionsButton({
+    local ScytheDisabler = {Enabled = false}
+    ScytheDisabler = GuiLibrary.ObjectsThatCanBeSaved.UtilityWindow.Api.CreateOptionsButton({
         Name = "ScytheDisabler",
         Function = function(callback)
-            if callback then
-                local ReplicatedStorage = game:GetService("ReplicatedStorage")
-                local Players = game:GetService("Players")
-                local RunService = game:GetService("RunService")
-                local ScytheDash = ReplicatedStorage:WaitForChild("rbxts_include"):WaitForChild("node_modules")["@rbxts"].net.out._NetManaged.ScytheDash
-                local function onRenderStepped()
-                    local localPlayer = Players.LocalPlayer
-                    if not localPlayer then
-                        return
-                    end
-                    local character = localPlayer.Character
-                    if not character then
-                        return
-                    end
-                    local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
-                    if humanoidRootPart then
-                        local lookVector = humanoidRootPart.CFrame.LookVector * 10000
-                        ScytheDash:FireServer({
-                            direction = lookVector
-                        })
-                    end
-                end
-                local lastHeartbeat = tick()
-                local function onHeartbeat()
-                    local currentTime = tick()
-                    local elapsedSeconds = currentTime - lastHeartbeat
-                    if elapsedSeconds > 999 then
-                        lastHeartbeat = currentTime
-                    end
-                end
-                RunService.RenderStepped:Connect(onRenderStepped)
-                RunService.Heartbeat:Connect(onHeartbeat)
+            if callback then 
+				task.spawn(function()
+					repeat
+						task.wait()
+						local item = getItemNear("scythe")
+						if item and lplr.Character.HandInvItem.Value == item.tool and bedwars.CombatController then 
+							bedwars.ClientHandler:Get("ScytheDash"):SendToServer({direction = Vector3.new(9e9, 9e9, 9e9)})
+							if entityLibrary.isAlive and entityLibrary.character.Head.Transparency ~= 0 then
+								bedwarsStore.scythe = tick() + 1
+							end
+						end
+					until (not ScytheDisabler.Enabled)
+				end)
             end
-        end
+        end,
     })
 end)
+
+runFunction(function()
+	local night = {Enabled = false}
+	night = GuiLibrary["ObjectsThatCanBeSaved"]["RenderWindow"]["Api"].CreateOptionsButton({
+	Name = "NightSky",
+	Function = function(callback)
+	if callback then
+	game.Lighting.TimeOfDay = "00:00:00"
+	else
+	game.Lighting.TimeOfDay = "13:00:00"
+	end
+	end
+	})
+	end)
 
 runFunction(function()
 local Headless = {Enabled = false}
