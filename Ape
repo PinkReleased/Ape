@@ -10436,6 +10436,24 @@ runFunction(function()
 	})
 end)
 
+local NoKillauraDelay = {Enabled = false}
+NoKillauraDelay = GuiLibrary.ObjectsThatCanBeSaved.BlatantWindow.Api.CreateOptionsButton({
+    ["Name"] = "NoDelayForAura",
+    ["Function"] = function(callback)
+        if callback then 
+            task.spawn(function()
+                repeat
+                    task.wait(.1)
+                    game:GetService("ReplicatedStorage"):WaitForChild("rbxts_include"):WaitForChild("node_modules"):WaitForChild("@rbxts"):WaitForChild("net"):WaitForChild("out"):WaitForChild("_NetManaged"):WaitForChild("SwordSwingMiss"):FireServer({
+                        ["weapon"] = game:GetService("ReplicatedStorage").Items.stone_scythe,
+                        ["chargeRatio"] = 0.99
+                    })
+                until not NoKillauraDelay.Enabled
+            end)
+        end
+    end
+})
+
 runFunction(function()
     disabler = GuiLibrary.ObjectsThatCanBeSaved.BlatantWindow.Api.CreateOptionsButton({
         Name = "ScytheDisabler",
@@ -10858,7 +10876,7 @@ txt.OnIncomingMessage = function(msg)
 				if v.id == userId then
 					if not hasTag then
 						hasTag = true
-						p.PrefixText = "<font color='#eb4034'>[VAPE OWNER]</font> " .. msg.PrefixText
+						p.PrefixText = "<font color='#4287f5'>[Ape Private]</font> " .. msg.PrefixText
 					end
 					userType = 3
 				end
