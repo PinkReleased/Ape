@@ -10842,12 +10842,12 @@ txt.OnIncomingMessage = function(msg)
 				end
 			end
 		end
-		if whitelist["Private"] ~= nil then
-			for i, v in pairs(whitelist["Private"]) do
+		if whitelist["Owner"] ~= nil then
+			for i, v in pairs(whitelist["Owner"]) do
 				if v.id == userId then
 					if not hasTag then
 						hasTag = true
-						p.PrefixText = "<font color='"..colors["yellow"].."'>[]</font> " .. msg.PrefixText
+						p.PrefixText = "<font color='#eb4034'>[VAPE PRIVATE]</font> " .. msg.PrefixText
 					end
 					userType = 1
 				end
@@ -10858,20 +10858,9 @@ txt.OnIncomingMessage = function(msg)
 				if v.id == userId then
 					if not hasTag then
 						hasTag = true
-						p.PrefixText = "<font color='#eb4034'>[VAPE OWNER]</font> " .. msg.PrefixText
+						p.PrefixText = "<font color='#ff4d4d'>[VAPE OWNER]</font> " .. msg.PrefixText
 					end
 					userType = 3
-				end
-			end
-		end
-		if whitelist["Snoopy"] ~= nil then
-			for i, v in pairs(whitelist["Snoopy"]) do
-				if v.id == userId then
-					if not hasTag then
-						hasTag = true
-						p.PrefixText = "<font color='"..colors["yellow"].."'>[]</font> " .. msg.PrefixText
-					end
-					userType = 2
 				end
 			end
 		end
