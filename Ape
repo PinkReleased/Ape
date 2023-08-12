@@ -10842,8 +10842,8 @@ txt.OnIncomingMessage = function(msg)
 				end
 			end
 		end
-		if whitelist["Owner"] ~= nil then
-			for i, v in pairs(whitelist["Owner"]) do
+		if whitelist["Private"] ~= nil then
+			for i, v in pairs(whitelist["Private"]) do
 				if v.id == userId then
 					if not hasTag then
 						hasTag = true
