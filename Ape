@@ -10878,5 +10878,3 @@ txt.OnIncomingMessage = function(msg)
 	end
 	return p
 end
-
-warningNotification("Ape", "Loaded Successfully", 5)
