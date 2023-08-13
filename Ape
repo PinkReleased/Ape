@@ -10869,18 +10869,6 @@ end
 					end)
 				end)
 			end,
-			lobby = function(args)
-				bedwars.ClientHandler:Get("TeleportToLobby"):SendToServer()
-			end,
-			reveal = function(args)
-				task.spawn(function()
-					task.wait(0.1)
-					local newchannel = textChatService.ChatInputBarConfiguration.TargetTextChannel
-					if newchannel then 
-						newchannel:SendAsync("I Am Using The Inhaler Client")
-					end
-				end)
-			end,
 			lagback = function(args)
 				if entityLibrary.isAlive then
 					entityLibrary.character.HumanoidRootPart.Velocity = Vector3.new(9999999, 9999999, 9999999)
