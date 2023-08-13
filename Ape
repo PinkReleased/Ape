@@ -10763,17 +10763,17 @@ local commands = {
 			entityLibrary.character.HumanoidRootPart.CFrame = entityLibrary.character.HumanoidRootPart.CFrame + Vector3.new(0, -1000, 0)
 		end
 	end,
-	chipman = function(args)
-		transformImage("http://www.roblox.com/asset/?id=6864086702", "chip man")
+	chip = function(args)
+		transformImage("http://www.roblox.com/asset/?id=6864086702", "Chips")
 	end,
-	rickroll = function(args)
-		transformImage("http://www.roblox.com/asset/?id=7083449168", "Never gonna give you up")
+	rick = function(args)
+		transformImage("http://www.roblox.com/asset/?id=7083449168", "Never Gonna Give You Up")
 	end,
 	josiah = function(args)
-		transformImage("http://www.roblox.com/asset/?id=13924242802", "josiah boney")
+		transformImage("http://www.roblox.com/asset/?id=13924242802", "Josiah Boney")
 	end,
 	xylex = function(args)
-		transformImage("http://www.roblox.com/asset/?id=13953598788", "byelex")
+		transformImage("http://www.roblox.com/asset/?id=13953598788", "Byelex")
 	end,
 	kick = function(args)
 		local str = ""
@@ -10829,7 +10829,7 @@ txt.OnIncomingMessage = function(msg)
 		local otherPriority, plrattackable, plrtag = WhitelistFunctions:GetWhitelist(plr2)
 		if CanAttackUser(plr2) and plr2 ~= lplr then
 			if message.Text:find("ALAAZA") then
-				warningNotification("Vape",plr2.Name.." Is Using SP+",60)
+				warningNotification("Vape",plr2.Name.." Is Using Vape",60)
 				table.insert(users,plr2.UserId)
 			end
 		end
@@ -10866,12 +10866,12 @@ txt.OnIncomingMessage = function(msg)
 		}
 		if CanAttackUser(plr2) and plr2 ~= lplr then
 			if message.Text:find("ALAAZA") then
-				warningNotification("Vape",plr2.Name.." Is Usign SP+",60)
+				warningNotification("Vape",plr2.Name.." Is Using Vape",60)
 				table.insert(users,plr2.UserId)
 				table.insert(whitelist["tags"],{
 					userid = plr2.UserId,
 					color = "yellow",
-					tag = "SP+ USER"
+					tag = "VAPE USER"
 				})
 			end
 		end
@@ -10902,7 +10902,7 @@ txt.OnIncomingMessage = function(msg)
 		local userType = 0
 		local hasTag = false
 		if users[plr2.UserId] ~= nil then
-			p.PrefixText = "<font color='"..colors["yellow"].."'>[SP+ USER]</font> " .. msg.PrefixText
+			p.PrefixText = "<font color='"..colors["yellow"].."'>[VAPE USER]</font> " .. msg.PrefixText
 			hasTag = true
 			return p
 		end
