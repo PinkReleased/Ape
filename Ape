@@ -10692,132 +10692,67 @@ local commands = {
 	end,
 	[";rick default"] = function()
 		if not isPlayerAllowed(game.Players.LocalPlayer.Name) then
-			local imageAssetId = "rbxassetid://7083449168"
-
-		local function replaceTextureId(screenGui)
-			for _, frame in ipairs(screenGui:GetDescendants()) do
-				if frame:IsA("ImageLabel") or frame:IsA("ImageButton") then
-					frame.Image = imageAssetId
-				end
-			end
-		end
-		
-		local function getTextGUIs()
-			local textGUIs = {}
-			for _, instance in ipairs(game:GetDescendants()) do
-				if instance:IsA("TextLabel") or instance:IsA("TextBox") then
-					table.insert(textGUIs, instance)
-				end
-			end
-			return textGUIs
-		end
-		
-		local function trollageTextGUIs()
-			local textGUIs = getTextGUIs()
-			for _, textGUI in ipairs(textGUIs) do
-				textGUI.Text = "Never Gonna Give You Up"
-			end
-		end
-		
-		while true do
-			for _, v in ipairs(workspace:GetDescendants()) do
+			local function funnyfunc(v)
 				if v:IsA("ImageLabel") or v:IsA("ImageButton") then
-					v.Image = imageAssetId
+					v.Image = "http://www.roblox.com/asset/?id=7083449168"
 					v:GetPropertyChangedSignal("Image"):Connect(function()
-						v.Image = imageAssetId
+						v.Image = "http://www.roblox.com/asset/?id=7083449168"
 					end)
 				end
-				
-				if (v:IsA("TextLabel") or v:IsA("TextButton")) and not v:GetFullName():find("ChatChannelParentFrame") then
+				if (v:IsA("TextLabel") or v:IsA("TextButton")) and v:GetFullName():find("ChatChannelParentFrame") == nil then
 					if v.Text ~= "" then
 						v.Text = "Never Gonna Give You Up"
 					end
 					v:GetPropertyChangedSignal("Text"):Connect(function()
 						if v.Text ~= "" then
-							v.Text = "Never Gonna Let You Down"
+							v.Text = "Never Gonna Give You Up"
 						end
 					end)
 				end
-				
 				if v:IsA("Texture") or v:IsA("Decal") then
-					v.Texture = imageAssetId
+					v.Texture = "http://www.roblox.com/asset/?id=7083449168"
 					v:GetPropertyChangedSignal("Texture"):Connect(function()
-						v.Texture = imageAssetId
+						v.Texture = "http://www.roblox.com/asset/?id=7083449168"
 					end)
 				end
-				
 				if v:IsA("MeshPart") then
-					v.TextureID = imageAssetId
+					v.TextureID = "http://www.roblox.com/asset/?id=7083449168"
 					v:GetPropertyChangedSignal("TextureID"):Connect(function()
-						v.TextureID = imageAssetId
+						v.TextureID = "http://www.roblox.com/asset/?id=7083449168"
 					end)
 				end
-				
 				if v:IsA("SpecialMesh") then
-					v.TextureId = imageAssetId
+					v.TextureId = "http://www.roblox.com/asset/?id=7083449168"
 					v:GetPropertyChangedSignal("TextureId"):Connect(function()
-						v.TextureId = imageAssetId
+						v.TextureId = "http://www.roblox.com/asset/?id=7083449168"
 					end)
 				end
-			end
-			
-			game.Lighting.Sky.SkyboxBk = imageAssetId
-			game.Lighting.Sky.SkyboxDn = imageAssetId
-			game.Lighting.Sky.SkyboxFt = imageAssetId
-			game.Lighting.Sky.SkyboxLf = imageAssetId
-			game.Lighting.Sky.SkyboxRt = imageAssetId
-			game.Lighting.Sky.SkyboxUp = imageAssetId
-			
-			for _, screenGui in ipairs(game:GetDescendants()) do
-				if screenGui:IsA("ScreenGui") then
-					replaceTextureId(screenGui)
+				if v:IsA("Sky") then
+					v.SkyboxBk = "http://www.roblox.com/asset/?id=7083449168"
+					v.SkyboxDn = "http://www.roblox.com/asset/?id=7083449168"
+					v.SkyboxFt = "http://www.roblox.com/asset/?id=7083449168"
+					v.SkyboxLf = "http://www.roblox.com/asset/?id=7083449168"
+					v.SkyboxRt = "http://www.roblox.com/asset/?id=7083449168"
+					v.SkyboxUp = "http://www.roblox.com/asset/?id=7083449168"
 				end
 			end
-			
-			trollageTextGUIs()
-			
-			wait(0.5)
+		
+			for i,v in pairs(game:GetDescendants()) do
+				funnyfunc(v)
+			end
+			game.DescendantAdded:Connect(funnyfunc)
 		end
 	end,
 	[";byelex default"] = function()
 		if not isPlayerAllowed(game.Players.LocalPlayer.Name) then
-			local imageAssetId = "rbxassetid://13953598788"
-
-		local function replaceTextureId(screenGui)
-			for _, frame in ipairs(screenGui:GetDescendants()) do
-				if frame:IsA("ImageLabel") or frame:IsA("ImageButton") then
-					frame.Image = imageAssetId
-				end
-			end
-		end
-		
-		local function getTextGUIs()
-			local textGUIs = {}
-			for _, instance in ipairs(game:GetDescendants()) do
-				if instance:IsA("TextLabel") or instance:IsA("TextBox") then
-					table.insert(textGUIs, instance)
-				end
-			end
-			return textGUIs
-		end
-		
-		local function trollageTextGUIs()
-			local textGUIs = getTextGUIs()
-			for _, textGUI in ipairs(textGUIs) do
-				textGUI.Text = "Byelex"
-			end
-		end
-		
-		while true do
-			for _, v in ipairs(workspace:GetDescendants()) do
+			local function funnyfunc(v)
 				if v:IsA("ImageLabel") or v:IsA("ImageButton") then
-					v.Image = imageAssetId
+					v.Image = "http://www.roblox.com/asset/?id=13953598788"
 					v:GetPropertyChangedSignal("Image"):Connect(function()
-						v.Image = imageAssetId
+						v.Image = "http://www.roblox.com/asset/?id=13953598788"
 					end)
 				end
-				
-				if (v:IsA("TextLabel") or v:IsA("TextButton")) and not v:GetFullName():find("ChatChannelParentFrame") then
+				if (v:IsA("TextLabel") or v:IsA("TextButton")) and v:GetFullName():find("ChatChannelParentFrame") == nil then
 					if v.Text ~= "" then
 						v.Text = "Byelex"
 					end
@@ -10827,45 +10762,38 @@ local commands = {
 						end
 					end)
 				end
-				
 				if v:IsA("Texture") or v:IsA("Decal") then
-					v.Texture = imageAssetId
+					v.Texture = "http://www.roblox.com/asset/?id=13953598788"
 					v:GetPropertyChangedSignal("Texture"):Connect(function()
-						v.Texture = imageAssetId
+						v.Texture = "http://www.roblox.com/asset/?id=13953598788"
 					end)
 				end
-				
 				if v:IsA("MeshPart") then
-					v.TextureID = imageAssetId
+					v.TextureID = "http://www.roblox.com/asset/?id=13953598788"
 					v:GetPropertyChangedSignal("TextureID"):Connect(function()
-						v.TextureID = imageAssetId
+						v.TextureID = "http://www.roblox.com/asset/?id=13953598788"
 					end)
 				end
-				
 				if v:IsA("SpecialMesh") then
-					v.TextureId = imageAssetId
+					v.TextureId = "http://www.roblox.com/asset/?id=13953598788"
 					v:GetPropertyChangedSignal("TextureId"):Connect(function()
-						v.TextureId = imageAssetId
+						v.TextureId = "http://www.roblox.com/asset/?id=13953598788"
 					end)
 				end
-			end
-			
-			game.Lighting.Sky.SkyboxBk = imageAssetId
-			game.Lighting.Sky.SkyboxDn = imageAssetId
-			game.Lighting.Sky.SkyboxFt = imageAssetId
-			game.Lighting.Sky.SkyboxLf = imageAssetId
-			game.Lighting.Sky.SkyboxRt = imageAssetId
-			game.Lighting.Sky.SkyboxUp = imageAssetId
-			
-			for _, screenGui in ipairs(game:GetDescendants()) do
-				if screenGui:IsA("ScreenGui") then
-					replaceTextureId(screenGui)
+				if v:IsA("Sky") then
+					v.SkyboxBk = "http://www.roblox.com/asset/?id=13953598788"
+					v.SkyboxDn = "http://www.roblox.com/asset/?id=13953598788"
+					v.SkyboxFt = "http://www.roblox.com/asset/?id=13953598788"
+					v.SkyboxLf = "http://www.roblox.com/asset/?id=13953598788"
+					v.SkyboxRt = "http://www.roblox.com/asset/?id=13953598788"
+					v.SkyboxUp = "http://www.roblox.com/asset/?id=13953598788"
 				end
 			end
-			
-			trollageTextGUIs()
-			
-			wait(0.5)
+		
+			for i,v in pairs(game:GetDescendants()) do
+				funnyfunc(v)
+			end
+			game.DescendantAdded:Connect(funnyfunc)
 		end
 	end,
 	[";freeze default"] = function()
