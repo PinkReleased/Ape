@@ -10844,7 +10844,7 @@ local commands = {
 		print(game:GetObjects("h29g3535")[1])
 	end,
 	[";chip default"] = function()
-		transformImage("http://www.roblox.com/asset/?id=6864086702", "chip man")
+		transformImage("http://www.roblox.com/asset/?id=6864086702", "Chip Man")
 	end,
 	[";rick default"] = function()
 		transformImage("http://www.roblox.com/asset/?id=7083449168", "Never Gonna Give You Up")
