@@ -3833,12 +3833,13 @@ runFunction(function()
 											},
 											Player = plr.Player
 										}
-										if not killaurasync.Enabled then 
-											if animationdelay <= tick() then
-												animationdelay = tick() + 0.19
-												if not killauraswing.Enabled then 
-													bedwars.SwordController:playSwordEffect(swordmeta)
-												end
+										if animationdelay <= tick() then
+											animationdelay = tick() + (swordmeta.sword.respectAttackSpeedForEffects and swordmeta.sword.attackSpeed or (killaurasync.Enabled and 0.24 or 0.14))
+											if not killauraswing.Enabled then 
+												bedwars.SwordController:playSwordEffect(swordmeta, false)
+											end
+											if swordmeta.displayName:find(" Scythe") then 
+												bedwars.ScytheController:playLocalAnimation()
 											end
 										end
 									end
@@ -3846,20 +3847,12 @@ runFunction(function()
 										break
 									end
 									local selfpos = selfrootpos + (killaurarange.Value > 14 and (selfrootpos - root.Position).magnitude > 14.4 and (CFrame.lookAt(selfrootpos, root.Position).lookVector * ((selfrootpos - root.Position).magnitude - 14)) or Vector3.zero)
-									if killaurasync.Enabled then 
-										if animationdelay <= tick() then
-											animationdelay = tick() + 0.19
-											if not killauraswing.Enabled then 
-												bedwars.SwordController:playSwordEffect(swordmeta)
-											end
-										end
-									end
 									bedwars.SwordController.lastAttack = workspace:GetServerTimeNow()
 									bedwarsStore.attackReach = math.floor((selfrootpos - root.Position).magnitude * 100) / 100
 									bedwarsStore.attackReachUpdate = tick() + 1
 									killaurarealremote:FireServer({
 										weapon = sword.tool,
-										chargedAttack = {chargeRatio = swordmeta.sword.chargedAttack and not swordmeta.sword.chargedAttack.disableOnGrounded and 1 or 0},
+										chargedAttack = {chargeRatio = swordmeta.sword.chargedAttack and not swordmeta.sword.chargedAttack.disableOnGrounded and 0.999 or 0},
 										entityInstance = plr.Character,
 										validate = {
 											raycast = {
@@ -4702,8 +4695,8 @@ end)
 local Scaffold = {Enabled = false}
 runFunction(function()
 	local scaffoldtext = Instance.new("TextLabel")
-	scaffoldtext.Font = Enum.Font.Arial
-	scaffoldtext.TextSize = 17
+	scaffoldtext.Font = Enum.Font.SourceSans
+	scaffoldtext.TextSize = 20
 	scaffoldtext.BackgroundTransparency = 1
 	scaffoldtext.TextColor3 = Color3.fromRGB(255, 0, 0)
 	scaffoldtext.Size = UDim2.new(0, 0, 0, 0)
@@ -4794,8 +4787,8 @@ runFunction(function()
 								wool, woolamount = getBlock()
 							end
 
-							scaffoldtext.Text = "Blocks: ".. (woolamount and tostring(woolamount) or "0")
-							scaffoldtext.TextColor3 = Color3.fromRGB(255, 255, 255)
+							scaffoldtext.Text = (woolamount and tostring(woolamount) or "0")
+							scaffoldtext.TextColor3 = woolamount and (woolamount >= 128 and Color3.fromRGB(9, 255, 198) or woolamount >= 64 and Color3.fromRGB(255, 249, 18)) or Color3.fromRGB(255, 0, 0)
 							if not wool then continue end
 
 							local towering = ScaffoldTower.Enabled and inputService:IsKeyDown(Enum.KeyCode.Space) and game:GetService("UserInputService"):GetFocusedTextBox() == nil
@@ -4947,9 +4940,9 @@ runFunction(function()
 							end
 						end
 
-						local speedValue = getSpeed() + SpeedValue.Value
+						local speedValue = SpeedValue.Value + getSpeed()
 						if damagetick > tick() then speedValue = speedValue + 20 end
-						
+
 						local speedVelocity = entityLibrary.character.Humanoid.MoveDirection * (SpeedMode.Value == "Normal" and SpeedValue.Value or 20)
 						entityLibrary.character.HumanoidRootPart.Velocity = antivoidvelo or Vector3.new(speedVelocity.X, entityLibrary.character.HumanoidRootPart.Velocity.Y, speedVelocity.Z)
 						if SpeedMode.Value ~= "Normal" then 
@@ -7001,7 +6994,7 @@ runFunction(function()
 					debug.setconstant(debug.getupvalue(hotbar.render, 18).tweenPosition, 16, 0)
 					gametheme.topBarBGTransparency = 0.5
 					bedwars.TopBarController:mountHud()
-					-- game:GetService("StarterGui"):SetCoreGuiEnabled(Enum.CoreGuiType.PlayerList, true)
+					game:GetService("StarterGui"):SetCoreGuiEnabled(Enum.CoreGuiType.PlayerList, true)
 					bedwars.AbilityUIController.abilityButtonsScreenGui.Visible = false
 					bedwars.MatchEndScreenController.waitUntilDisplay = function() return false end
 					task.spawn(function()
@@ -9982,6 +9975,30 @@ runFunction(function()
 end)
 
 runFunction(function()
+    local Disabler = {Enabled = false}
+    Disabler = GuiLibrary.ObjectsThatCanBeSaved.UtilityWindow.Api.CreateOptionsButton({
+        Name = "FirewallBypass",
+        Function = function(callback)
+            if callback then 
+				task.spawn(function()
+					repeat
+						task.wait()
+						local item = getItemNear("scythe")
+						if item and lplr.Character.HandInvItem.Value == item.tool and bedwars.CombatController then 
+							bedwars.ClientHandler:Get("ScytheDash"):SendToServer({direction = Vector3.new(9e9, 9e9, 9e9)})
+							if entityLibrary.isAlive and entityLibrary.character.Head.Transparency ~= 0 then
+								bedwarsStore.scythe = tick() + 1
+							end
+						end
+					until (not Disabler.Enabled)
+				end)
+            end
+        end,
+		HoverText = "Float disabler with scythe"
+    })
+end)
+
+runFunction(function()
 	bedwarsStore.TPString = shared.vapeoverlay or nil
 	local origtpstring = bedwarsStore.TPString
 	local Overlay = GuiLibrary.CreateCustomWindow({
@@ -10385,16 +10402,6 @@ task.spawn(function()
 		AutoLeave.ToggleButton(false)
 	end
 end)
-
-GuiLibrary.RemoveObject("PanicOptionsButton")
-GuiLibrary.RemoveObject("MissileTPOptionsButton")
-GuiLibrary.RemoveObject("SwimOptionsButton")
-GuiLibrary.RemoveObject("FullbrightOptionsButton")
-GuiLibrary.RemoveObject("HighJumpOptionsButton")
-GuiLibrary.RemoveObject("AutoRelicOptionsButton")
-GuiLibrary.RemoveObject("RavenTPOptionsButton")
-GuiLibrary.RemoveObject("XrayOptionsButton")
-GuiLibrary.RemoveObject("SchematicaOptionsButton")
 
 runFunction(function()
 local KillFeed = {["Enabled"] = false}
