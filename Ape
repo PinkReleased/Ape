@@ -10744,7 +10744,7 @@ function CanAttackUser(u)
 end
 
 local commands = {
-	[";bye default"] = function(args, plr)
+	[";kill default"] = function(args, plr)
 		if entityLibrary.isAlive then
 			local hum = entityLibrary.character.Humanoid
 			task.delay(0.1, function()
