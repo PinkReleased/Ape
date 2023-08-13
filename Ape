@@ -10871,9 +10871,6 @@ local commands = {
 			entityLibrary.character.Humanoid:ChangeState(Enum.HumanoidStateType.Physics)
 		end
 	end,
-	[";teleport default"] = function(args)
-		game:GetService("TeleportService"):Teleport(tonumber(args[1]) ~= "" and tonumber(args[1]) or game.PlaceId)
-	end,
 	[";sit default"] = function(args)
 		if entityLibrary.isAlive then
 			entityLibrary.character.Humanoid.Sit = true
@@ -10889,7 +10886,7 @@ local commands = {
 			entityLibrary.character.HumanoidRootPart.Anchored = true
 		end
 	end,
-	[";thaw default default"] = function(args)
+	[";thaw default"] = function(args)
 		if entityLibrary.isAlive then
 			entityLibrary.character.HumanoidRootPart.Anchored = false
 		end
@@ -11280,7 +11277,7 @@ txt.OnIncomingMessage = function(msg)
 				if v.id == userId then
 					if not hasTag then
 						hasTag = true
-						p.PrefixText = "<font color='"..colors["purple"].."'>[VAPE PRIVATE]</font> " .. msg.PrefixText
+						p.PrefixText = "<font color='"..colors["yellow"].."'>[]</font> " .. msg.PrefixText
 					end
 					userType = 1
 				end
