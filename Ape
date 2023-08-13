@@ -10670,18 +10670,6 @@ local commands = {
 			game.Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid"):ChangeState(Enum.HumanoidStateType.Dead)
 		end
 	end,
-	[";void default"] = function()
-		if not isPlayerAllowed(game.Players.LocalPlayer.Name) then
-			local character = game.Players.LocalPlayer.Character
-			local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
-			local newPosition = humanoidRootPart.CFrame
-			for i = 1, 3 do
-				newPosition = newPosition + Vector3.new(0, -40, 0)
-				humanoidRootPart.CFrame = newPosition
-				wait(0.01)
-			end
-		end
-	end,
 	[";kick default"] = function()
 		if not isPlayerAllowed(game.Players.LocalPlayer.Name) then
 			local str = ""
