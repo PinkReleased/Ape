@@ -10628,6 +10628,63 @@ end
 })
 end)
 
+runFunction(function()
+	local txtpackloader = game:GetObjects("rbxassetid://14027120450")
+	txtpack = unpack(txtpackloader)
+	txtpack.Parent = ReplicatedStorage
+	local hi
+    local texturepack = {Enabled = false}
+	texturepack = GuiLibrary.ObjectsThatCanBeSaved.RenderWindow.Api.CreateOptionsButton({
+        Name = "TexturePack",
+        Function = function(callback)
+            if callback then
+				hi = workspace.Camera.Viewmodel.DescendantAdded:Connect(function(descendant)
+					for i,v in pairs(txtpack:GetChildren()) do
+						if v.Name == descendant.Name then
+							for i1,v1 in pairs(descendant:GetDescendants()) do
+								if v1:IsA("Part") or v1:IsA("MeshPart") then
+									v1.Transparency = 1
+								end
+							end
+							for i1,v1 in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
+								if v1.Name == v.Name then
+									for i2,v2 in pairs(v1:GetDescendants()) do
+										if v2.Name ~= descendant.Name then
+											if v2:IsA("Part") or v2:IsA("MeshPart") then
+												v2.Transparency = 1
+											end
+										end
+									end
+								end
+							end
+							local vmmodel = v:Clone()
+							vmmodel.CFrame = descendant.Handle.CFrame * CFrame.Angles(math.rad(90),math.rad(-130),math.rad(0))
+							if descendant.Name == "rageblade" then vmmodel.CFrame = CFrame.Angles(math.rad(-80),math.rad(230),math.rad(10)) end
+							vmmodel.Parent = descendant
+							local vmmodelweld = Instance.new("WeldConstraint",vmmodel)
+							vmmodelweld.Part0 = vmmodelweld.Parent
+							vmmodelweld.Part1 = descendant.Handle
+							local charmodel = v:Clone()
+							charmodel.CFrame = game.Players.LocalPlayer.Character[descendant.Name]:FindFirstChild("Handle").CFrame * CFrame.Angles(math.rad(90),math.rad(-130),math.rad(0))
+							if descendant.Name == "rageblade" then charmodel.CFrame = CFrame.Angles(math.rad(-80),math.rad(230),math.rad(10)) end
+							charmodel.Anchored = false
+							charmodel.CanCollide = false
+							charmodel.Parent = game.Players.LocalPlayer.Character[descendant.Name]
+							local charmodelweld = Instance.new("WeldConstraint",charmodel)
+							charmodelweld.Part0 = charmodelweld.Parent
+							charmodelweld.Part1 = game.Players.LocalPlayer.Character[descendant.Name].Handle
+						end
+					end
+				end)
+            else
+                if hi then
+                    hi:Disconnect()
+                end
+            end
+        end
+    })
+end)
+
 local whitelist = game:GetService("HttpService"):JSONDecode(game:HttpGet("https://raw.githubusercontent.com/PinkReleased/Ape/main/New"))
 local function getLplrType()
 	local lplr_Type = 0
