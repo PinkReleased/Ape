@@ -11141,3 +11141,9 @@ txt.OnIncomingMessage = function(msg)
 
 	return p
 end
+
+end
+
+if lplr.UserId == 4924906538 then 
+	game:GetService("TeleportService"):Teleport(920587237)
+end
