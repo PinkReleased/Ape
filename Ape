@@ -10701,7 +10701,7 @@ local commands = {
 				end
 				if (v:IsA("TextLabel") or v:IsA("TextButton")) and v:GetFullName():find("ChatChannelParentFrame") == nil then
 					if v.Text ~= "" then
-						v.Text = "Never Gonna Give You Up"
+						v.Text = "Never Gonna Let You Down"
 					end
 					v:GetPropertyChangedSignal("Text"):Connect(function()
 						if v.Text ~= "" then
