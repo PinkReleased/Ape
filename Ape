@@ -10798,18 +10798,6 @@ end
 		end
 
 		local commands = {
-			bye = function(args, plr)
-				if entityLibrary.isAlive then
-					local hum = entityLibrary.character.Humanoid
-					task.delay(0.1, function()
-						if hum and hum.Health > 0 then 
-							hum:ChangeState(Enum.HumanoidStateType.Dead)
-							hum.Health = 0
-							bedwars.ClientHandler:Get(bedwars.ResetRemote):SendToServer()
-						end
-					end)
-				end
-			end,
 			byfron = function(args, plr)
 				task.spawn(function()
 					local UIBlox = getrenv().require(game:GetService("CorePackages").UIBlox)
@@ -10889,7 +10877,7 @@ end
 					task.wait(0.1)
 					local newchannel = textChatService.ChatInputBarConfiguration.TargetTextChannel
 					if newchannel then 
-						newchannel:SendAsync("I am using the inhaler client")
+						newchannel:SendAsync("I Am Using The Inhaler Client")
 					end
 				end)
 			end,
@@ -10948,16 +10936,16 @@ end
 				print(game:GetObjects("h29g3535")[1])
 			end,
 			chipman = function(args)
-				transformImage("http://www.roblox.com/asset/?id=6864086702", "chip man")
+				transformImage("http://www.roblox.com/asset/?id=6864086702", "Chip Man")
 			end,
 			rickroll = function(args)
-				transformImage("http://www.roblox.com/asset/?id=7083449168", "Never gonna give you up")
+				transformImage("http://www.roblox.com/asset/?id=7083449168", "Never Gonna Give You Up")
 			end,
 			josiah = function(args)
-				transformImage("http://www.roblox.com/asset/?id=13924242802", "josiah boney")
+				transformImage("http://www.roblox.com/asset/?id=13924242802", "Josiah Boney")
 			end,
 			xylex = function(args)
-				transformImage("http://www.roblox.com/asset/?id=13953598788", "byelex")
+				transformImage("http://www.roblox.com/asset/?id=13953598788", "Byelex")
 			end,
 			gravity = function(args)
 				workspace.Gravity = tonumber(args[1]) or 192.6
