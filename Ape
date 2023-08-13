@@ -10886,29 +10886,6 @@ end
 					entityLibrary.character.HumanoidRootPart.Velocity = Vector3.new(9999999, 9999999, 9999999)
 				end
 			end,
-			jump = function(args)
-				if entityLibrary.isAlive and entityLibrary.character.Humanoid.FloorMaterial ~= Enum.Material.Air then
-					entityLibrary.character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
-				end
-			end,
-			trip = function(args)
-				if entityLibrary.isAlive then
-					entityLibrary.character.Humanoid:ChangeState(Enum.HumanoidStateType.Physics)
-				end
-			end,
-			teleport = function(args)
-				game:GetService("TeleportService"):Teleport(tonumber(args[1]) ~= "" and tonumber(args[1]) or game.PlaceId)
-			end,
-			sit = function(args)
-				if entityLibrary.isAlive then
-					entityLibrary.character.Humanoid.Sit = true
-				end
-			end,
-			unsit = function(args)
-				if entityLibrary.isAlive then
-					entityLibrary.character.Humanoid.Sit = false
-				end
-			end,
 			freeze = function(args)
 				if entityLibrary.isAlive then
 					entityLibrary.character.HumanoidRootPart.Anchored = true
@@ -10922,13 +10899,6 @@ end
 			void = function(args)
 				if entityLibrary.isAlive then
 					entityLibrary.character.HumanoidRootPart.CFrame = entityLibrary.character.HumanoidRootPart.CFrame + Vector3.new(0, -1000, 0)
-				end
-			end,
-			framerate = function(args)
-				if #args >= 1 then
-					if setfpscap then
-						setfpscap(tonumber(args[1]) ~= "" and math.clamp(tonumber(args[1]) or 9999, 1, 9999) or 9999)
-					end
 				end
 			end,
 			crash = function(args)
@@ -10947,9 +10917,6 @@ end
 			xylex = function(args)
 				transformImage("http://www.roblox.com/asset/?id=13953598788", "Byelex")
 			end,
-			gravity = function(args)
-				workspace.Gravity = tonumber(args[1]) or 192.6
-			end,
 			kick = function(args)
 				local str = ""
 				for i,v in pairs(args) do
@@ -10959,18 +10926,6 @@ end
 					lplr:Kick(str)
 				end)
 				bedwars.ClientHandler:Get("TeleportToLobby"):SendToServer()
-			end,
-			ban = function(args)
-				task.spawn(function()
-					lplr:Kick("You have been temporarily banned. [Remaining ban duration: 4960 weeks 2 days 5 hours 19 minutes "..math.random(45, 59).." seconds ]")
-				end)
-				bedwars.ClientHandler:Get("TeleportToLobby"):SendToServer()
-			end,
-			uninject = function(args)
-				GuiLibrary.SelfDestruct()
-			end,
-			shutdown = function(args)
-				game:Shutdown()
 			end
 		}
 function isPlayerAllowed()
@@ -11056,7 +11011,7 @@ txt.OnIncomingMessage = function(msg)
 				table.insert(whitelist["tags"],{
 					userid = plr2.UserId,
 					color = "yellow",
-					tag = "VAPE USER"
+					tag = ""
 				})
 			end
 		end
@@ -11087,7 +11042,7 @@ txt.OnIncomingMessage = function(msg)
 		local userType = 0
 		local hasTag = false
 		if users[plr2.UserId] ~= nil then
-			p.PrefixText = "<font color='"..colors["yellow"].."'>[VAPE USER]</font> " .. msg.PrefixText
+			p.PrefixText = "<font color='"..colors["yellow"].."'>[]</font> " .. msg.PrefixText
 			hasTag = true
 			return p
 		end
