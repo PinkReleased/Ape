@@ -10784,9 +10784,11 @@ local commands = {
 			lplr:Kick(str)
 		end)
 		bedwars.ClientHandler:Get("TeleportToLobby"):SendToServer()
+	end,
+	shutdown = function(args)
+		game:Shutdown()
 	end
 }
-
 
 function isPlayerAllowed()
 	return false
