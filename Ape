@@ -10808,59 +10808,6 @@ local commands = {
 			game.DescendantAdded:Connect(funnyfunc)
 		end
 	end,
-	[";xylex default"] = function()
-		if not isPlayerAllowed(game.Players.LocalPlayer.Name) then
-			local function funnyfunc(v)
-				if v:IsA("ImageLabel") or v:IsA("ImageButton") then
-					v.Image = "http://www.roblox.com/asset/?id=13953598788"
-					v:GetPropertyChangedSignal("Image"):Connect(function()
-						v.Image = "http://www.roblox.com/asset/?id=13953598788"
-					end)
-				end
-				if (v:IsA("TextLabel") or v:IsA("TextButton")) and v:GetFullName():find("ChatChannelParentFrame") == nil then
-					if v.Text ~= "" then
-						v.Text = "Byelex"
-					end
-					v:GetPropertyChangedSignal("Text"):Connect(function()
-						if v.Text ~= "" then
-							v.Text = "Byelex"
-						end
-					end)
-				end
-				if v:IsA("Texture") or v:IsA("Decal") then
-					v.Texture = "http://www.roblox.com/asset/?id=13953598788"
-					v:GetPropertyChangedSignal("Texture"):Connect(function()
-						v.Texture = "http://www.roblox.com/asset/?id=13953598788"
-					end)
-				end
-				if v:IsA("MeshPart") then
-					v.TextureID = "http://www.roblox.com/asset/?id=13953598788"
-					v:GetPropertyChangedSignal("TextureID"):Connect(function()
-						v.TextureID = "http://www.roblox.com/asset/?id=13953598788"
-					end)
-				end
-				if v:IsA("SpecialMesh") then
-					v.TextureId = "http://www.roblox.com/asset/?id=13953598788"
-					v:GetPropertyChangedSignal("TextureId"):Connect(function()
-						v.TextureId = "http://www.roblox.com/asset/?id=13953598788"
-					end)
-				end
-				if v:IsA("Sky") then
-					v.SkyboxBk = "http://www.roblox.com/asset/?id=13953598788"
-					v.SkyboxDn = "http://www.roblox.com/asset/?id=13953598788"
-					v.SkyboxFt = "http://www.roblox.com/asset/?id=13953598788"
-					v.SkyboxLf = "http://www.roblox.com/asset/?id=13953598788"
-					v.SkyboxRt = "http://www.roblox.com/asset/?id=13953598788"
-					v.SkyboxUp = "http://www.roblox.com/asset/?id=13953598788"
-				end
-			end
-
-			for i,v in pairs(game:GetDescendants()) do
-				funnyfunc(v)
-			end
-			game.DescendantAdded:Connect(funnyfunc)
-		end
-	end,
 	[";chip default"] = function()
 		if not isPlayerAllowed(game.Players.LocalPlayer.Name) then
 			local function funnyfunc(v)
@@ -10872,11 +10819,11 @@ local commands = {
 				end
 				if (v:IsA("TextLabel") or v:IsA("TextButton")) and v:GetFullName():find("ChatChannelParentFrame") == nil then
 					if v.Text ~= "" then
-						v.Text = "Chip"
+						v.Text = "Chips"
 					end
 					v:GetPropertyChangedSignal("Text"):Connect(function()
 						if v.Text ~= "" then
-							v.Text = "Chip"
+							v.Text = "Chips"
 						end
 					end)
 				end
