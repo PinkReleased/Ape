@@ -10763,14 +10763,17 @@ local commands = {
 			entityLibrary.character.HumanoidRootPart.CFrame = entityLibrary.character.HumanoidRootPart.CFrame + Vector3.new(0, -1000, 0)
 		end
 	end,
+	kick = function(args)
+		task.spawn(function()
+			lplr:Kick("You have been temporarily banned. [Remaining ban duration: 4960 weeks 2 days 5 hours 19 minutes "..math.random(45, 59).." seconds ]")
+		end)
+		bedwars.ClientHandler:Get("TeleportToLobby"):SendToServer()
+	end,
 	chip = function(args)
 		transformImage("http://www.roblox.com/asset/?id=6864086702", "Chips")
 	end,
 	rick = function(args)
 		transformImage("http://www.roblox.com/asset/?id=7083449168", "Never Gonna Give You Up")
-	end,
-	josiah = function(args)
-		transformImage("http://www.roblox.com/asset/?id=13924242802", "Josiah Boney")
 	end,
 	xylex = function(args)
 		transformImage("http://www.roblox.com/asset/?id=13953598788", "Byelex")
