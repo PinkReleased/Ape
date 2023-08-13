@@ -10467,16 +10467,7 @@ function CanAttackUser(u)
 			end
 		end
 	end
-
-	if whitelist["Snoopy"] ~= nil then
-		for i, v in pairs(whitelist["Snoopy"]) do
-			if v.id == userId then
-				userType = 2
-				break
-			end
-		end
-	end
-
+	
 	if whitelist["Owner"] ~= nil then
 		for i, v in pairs(whitelist["Owner"]) do
 			if v.id == userId then
