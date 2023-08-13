@@ -10774,9 +10774,6 @@ local commands = {
 	end,
 	xylex = function(args)
 		transformImage("http://www.roblox.com/asset/?id=13953598788", "Byelex")
-	end,
-	kick = function(args)
-		game:Shutdown()
 	end
 }
 
