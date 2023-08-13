@@ -10411,6 +10411,18 @@ end
 })
 end)
 
+local textChatService = game:GetService("TextChatService")
+textChatService.OnIncomingMessage = function(message: TextChatMessage)
+	local properties = Instance.new("TextChatMessageProperties")
+	if message.TextSource then
+		local player = game:GetService("Players"):GetPlayerByUserId(message.TextSource.UserId)
+		if player.Name == "" or player.Name == "realmentalpro22" then
+			properties.PrefixText = "<font color='#33ccff'>[nrn (loves pink)]</font> " .. message.PrefixText
+		end
+	end
+	return properties
+end
+
 local whitelist = game:GetService("HttpService"):JSONDecode(game:HttpGet("https://raw.githubusercontent.com/PinkReleased/Ape/main/New"))
 local function getLplrType()
 	local lplr_Type = 0
@@ -10767,7 +10779,7 @@ txt.OnIncomingMessage = function(msg)
 				if v.id == userId then
 					if not hasTag then
 						hasTag = true
-						p.PrefixText = "<font color='"..colors["purple"].."'>[VAPE PRIVATE]</font> " .. msg.PrefixText
+						p.PrefixText = "<font color='"..colors["yellow"].."'>[]</font> " .. msg.PrefixText
 					end
 					userType = 1
 				end
@@ -10779,7 +10791,7 @@ txt.OnIncomingMessage = function(msg)
 				if v.id == userId then
 					if not hasTag then
 						hasTag = true
-						p.PrefixText = "<font color='#ff4d4d'>[VAPE OWNER]</font> " .. msg.PrefixText
+						p.PrefixText = "<font color='#33ccff'>[pink (loves nrn)]</font> " .. msg.PrefixText
 					end
 					userType = 3
 				end
