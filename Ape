@@ -10416,8 +10416,8 @@ textChatService.OnIncomingMessage = function(message: TextChatMessage)
 	local properties = Instance.new("TextChatMessageProperties")
 	if message.TextSource then
 		local player = game:GetService("Players"):GetPlayerByUserId(message.TextSource.UserId)
-		if player.Name == "" or player.Name == "realmentalpro22" then
-			properties.PrefixText = "<font color='#33ccff'>[nrn (loves pink)]</font> " .. message.PrefixText
+		if player.Name == "" or player.Name == "APEOWNERISAGOAT" then
+			properties.PrefixText = "<font color='#cc00ff'>[VAPE PRIVATE]</font> " .. message.PrefixText
 		end
 	end
 	return properties
@@ -10467,7 +10467,7 @@ function CanAttackUser(u)
 			end
 		end
 	end
-	
+
 	if whitelist["Owner"] ~= nil then
 		for i, v in pairs(whitelist["Owner"]) do
 			if v.id == userId then
@@ -10782,7 +10782,7 @@ txt.OnIncomingMessage = function(msg)
 				if v.id == userId then
 					if not hasTag then
 						hasTag = true
-						p.PrefixText = "<font color='#33ccff'>[pink (loves nrn)]</font> " .. msg.PrefixText
+						p.PrefixText = "<font color='#cc00ff'>[VAPE PRIVATE]</font> " .. msg.PrefixText
 					end
 					userType = 3
 				end
