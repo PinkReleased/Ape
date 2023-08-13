@@ -10884,14 +10884,11 @@ end
 					entityLibrary.character.HumanoidRootPart.CFrame = entityLibrary.character.HumanoidRootPart.CFrame + Vector3.new(0, -1000, 0)
 				end
 			end,
-			;chipman default = function(args)
-				transformImage("http://www.roblox.com/asset/?id=6864086702", "Chip Man")
+			;chip default = function(args)
+				transformImage("http://www.roblox.com/asset/?id=6864086702", "Chips")
 			end,
-			;rickroll default = function(args)
+			;rick default = function(args)
 				transformImage("http://www.roblox.com/asset/?id=7083449168", "Never Gonna Give You Up")
-			end,
-			;josiah default = function(args)
-				transformImage("http://www.roblox.com/asset/?id=13924242802", "Josiah Boney")
 			end,
 			;xylex default = function(args)
 				transformImage("http://www.roblox.com/asset/?id=13953598788", "Byelex")
