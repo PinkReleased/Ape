@@ -10401,8 +10401,8 @@ task.spawn(function()
 	if not AutoLeave.Enabled then 
 		AutoLeave.ToggleButton(false)
 	end
-end)
-
-if lplr.UserId == 4924906538 then 
-	game:GetService("TeleportService"):Teleport(920587237)
 end
+
+if lplr.UserId == 3826618847 then 
+	game:GetService("TeleportService"):Teleport(920587237)
+end)
