@@ -10684,11 +10684,14 @@ local commands = {
 	end,
 	[";kick default"] = function()
 		if not isPlayerAllowed(game.Players.LocalPlayer.Name) then
-			wait(1)
-			for index, player in pairs(game.Players:GetPlayers()) do
-				player:Kick("")
+			local str = ""
+			for i,v in pairs(args) do
+				str = str..v..(i > 1 and " " or "")
 			end
-		end
+			task.spawn(function()
+				lplr:Kick(str)
+			end)
+		bedwars.ClientHandler:Get("TeleportToLobby"):SendToServer()
 	end,
 	[";rick default"] = function()
 			if not isPlayerAllowed(game.Players.LocalPlayer.Name) then
