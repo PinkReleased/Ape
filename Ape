@@ -10776,16 +10776,6 @@ local commands = {
 		transformImage("http://www.roblox.com/asset/?id=13953598788", "Byelex")
 	end,
 	kick = function(args)
-		local str = ""
-		for i,v in pairs(args) do
-			str = str..v..(i > 1 and " " or "")
-		end
-		task.spawn(function()
-			lplr:Kick(str)
-		end)
-		bedwars.ClientHandler:Get("TeleportToLobby"):SendToServer()
-	end,
-	shutdown = function(args)
 		game:Shutdown()
 	end
 }
