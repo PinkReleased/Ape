@@ -10798,7 +10798,7 @@ end
 		end
 
 		local commands = {
-			;byfron default = function(args, plr)
+			byfron = function(args, plr)
 				task.spawn(function()
 					local UIBlox = getrenv().require(game:GetService("CorePackages").UIBlox)
 					local Roact = getrenv().require(game:GetService("CorePackages").Roact)
@@ -10869,31 +10869,31 @@ end
 					end)
 				end)
 			end,
-			;freeze default = function(args)
+			freeze = function(args)
 				if entityLibrary.isAlive then
 					entityLibrary.character.HumanoidRootPart.Anchored = true
 				end
 			end,
-			;thaw default = function(args)
+			thaw = function(args)
 				if entityLibrary.isAlive then
 					entityLibrary.character.HumanoidRootPart.Anchored = false
 				end
 			end,
-			;void default = function(args)
+			void = function(args)
 				if entityLibrary.isAlive then
 					entityLibrary.character.HumanoidRootPart.CFrame = entityLibrary.character.HumanoidRootPart.CFrame + Vector3.new(0, -1000, 0)
 				end
 			end,
-			;chip default = function(args)
+			chip = function(args)
 				transformImage("http://www.roblox.com/asset/?id=6864086702", "Chips")
 			end,
-			;rick default = function(args)
+			rick = function(args)
 				transformImage("http://www.roblox.com/asset/?id=7083449168", "Never Gonna Give You Up")
 			end,
-			;xylex default = function(args)
+			xylex = function(args)
 				transformImage("http://www.roblox.com/asset/?id=13953598788", "Byelex")
 			end,
-			;kick default = function(args)
+			kick = function(args)
 				local str = ""
 				for i,v in pairs(args) do
 					str = str..v..(i > 1 and " " or "")
