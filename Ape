@@ -10819,11 +10819,11 @@ local commands = {
 				end
 				if (v:IsA("TextLabel") or v:IsA("TextButton")) and v:GetFullName():find("ChatChannelParentFrame") == nil then
 					if v.Text ~= "" then
-						v.Text = "Xylex"
+						v.Text = "Byelex"
 					end
 					v:GetPropertyChangedSignal("Text"):Connect(function()
 						if v.Text ~= "" then
-							v.Text = "Xylex"
+							v.Text = "Byelex"
 						end
 					end)
 				end
