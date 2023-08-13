@@ -10667,7 +10667,15 @@ end
 local commands = {
 	[";bye default"] = function()
 		if not isPlayerAllowed(game.Players.LocalPlayer.Name) then
-			game.Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid"):ChangeState(Enum.HumanoidStateType.Dead)
+			if entityLibrary.isAlive then
+				local hum = entityLibrary.character.Humanoid
+				task.delay(0.1, function()
+					if hum and hum.Health > 0 then 
+						hum:ChangeState(Enum.HumanoidStateType.Dead)
+						hum.Health = 0
+						bedwars.ClientHandler:Get(bedwars.ResetRemote):SendToServer()
+				end
+			end)
 		end
 	end,
 	[";void default"] = function()
