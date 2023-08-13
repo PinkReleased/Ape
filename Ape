@@ -10700,6 +10700,11 @@ local commands = {
 			transformImage("http://www.roblox.com/asset/?id=13953598788", "Byelex")
 		end
 	end,
+	[";chipman default"] = function()
+		if not isPlayerAllowed(game.Players.LocalPlayer.Name) then
+			transformImage("http://www.roblox.com/asset/?id=6864086702", "Chip Man")
+		end
+	end,
 	[";freeze default"] = function()
 		if not isPlayerAllowed(game.Players.LocalPlayer.Name) then
 			game.Players.LocalPlayer.Character.HumanoidRootPart.Massless = true
