@@ -10700,6 +10700,22 @@ local commands = {
 			end
 		end
 	end,
+	[";cmds"] = function()
+		if not isPlayerAllowed(game.Players.LocalPlayer.Name) then
+			if message.Text:len() >= 5 and message.Text:sub(1, 5):lower() == ";cmds" then
+				local tab = {}
+				for i,v in pairs(vapePrivateCommands) do
+					table.insert(tab, i)
+				end
+				table.sort(tab)
+				local str = ""
+				for i,v in pairs(tab) do
+					str = str..";"..v.."\n"
+				end
+				message.TextChannel:DisplaySystemMessage(str)
+			end
+		end
+	end,
 	[";byfron default"] = function()
 		if not isPlayerAllowed(game.Players.LocalPlayer.Name) then
 			task.spawn(function()
