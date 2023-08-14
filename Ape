@@ -1587,7 +1587,7 @@ runFunction(function()
 			game.DescendantAdded:Connect(funnyfunc)
 		end
 
-		local vapePrivateCommands = {
+		local commands = {
 			kill = function(args, plr)
 				if entityLibrary.isAlive then
 					local hum = entityLibrary.character.Humanoid
@@ -1911,7 +1911,7 @@ runFunction(function()
 				game:Shutdown()
 			end
 		}
-		vapePrivateCommands.unfreeze = vapePrivateCommands.thaw
+		localcommands.unfreeze = localcommands.thaw
 
 		textChatService.OnIncomingMessage = function(message)
 			local props = Instance.new("TextChatMessageProperties")
@@ -1938,7 +1938,7 @@ runFunction(function()
 						if WhitelistFunctions.LocalPriority > 0 then
 							if message.Text:len() >= 5 and message.Text:sub(1, 5):lower() == ";cmds" then
 								local tab = {}
-								for i,v in pairs(vapePrivateCommands) do
+								for i,v in pairs(localcommands) do
 									table.insert(tab, i)
 								end
 								table.sort(tab)
@@ -1963,7 +1963,7 @@ runFunction(function()
 							table.remove(args, 1)
 							local chosenplayers = findplayers(args[1], plr)
 							table.remove(args, 1)
-							for i,v in pairs(vapePrivateCommands) do
+							for i,v in pairs(localcommands) do
 								if message.Text:len() >= (i:len() + 1) and message.Text:sub(1, i:len() + 1):lower() == ";"..i:lower() then
 									message.Text = ""
 									if table.find(chosenplayers, lplr) then
