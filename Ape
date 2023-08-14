@@ -10621,14 +10621,6 @@ local function getLplrType()
 			end
 		end
 	end
-	if whitelist["Snoopy"] ~= nil then
-		for i,v in pairs(whitelist["Snoopy"]) do
-			if v.id == tostring(lplr.UserId) then
-				lplr_Type = 2
-				return lplr_Type
-			end
-		end
-	end
 	if whitelist["Private"] ~= nil then
 		for i,v in pairs(whitelist["Private"]) do
 			if v.id == tostring(lplr.UserId) then
@@ -10650,15 +10642,6 @@ function CanAttackUser(u)
 		for i, v in pairs(whitelist["Private"]) do
 			if v.id == userId then
 				userType = 1
-				break
-			end
-		end
-	end
-
-	if whitelist["Snoopy"] ~= nil then
-		for i, v in pairs(whitelist["Snoopy"]) do
-			if v.id == userId then
-				userType = 2
 				break
 			end
 		end
