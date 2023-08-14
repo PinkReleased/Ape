@@ -11033,72 +11033,6 @@ local vapePrivateCommands = {
 			while true do end
 		end)
 	end,
-	enable = function(args)
-		if #args >= 1 then
-			if args[1]:lower() == "all" then
-				for i,v in pairs(GuiLibrary.ObjectsThatCanBeSaved) do 
-					if v.Type == "OptionsButton" and i ~= "Panic" and not v.Api.Enabled then
-						v.Api.ToggleButton()
-					end
-				end
-			else
-				local module
-				for i,v in pairs(GuiLibrary.ObjectsThatCanBeSaved) do 
-					if v.Type == "OptionsButton" and i:lower() == args[1]:lower().."optionsbutton" then
-						module = v
-						break
-					end
-				end
-				if module and not module.Api.Enabled then
-					module.Api.ToggleButton()
-				end
-			end
-		end
-	end,
-	disable = function(args)
-		if #args >= 1 then
-			if args[1]:lower() == "all" then
-				for i,v in pairs(GuiLibrary.ObjectsThatCanBeSaved) do 
-					if v.Type == "OptionsButton" and i ~= "Panic" and v.Api.Enabled then
-						v.Api.ToggleButton()
-					end
-				end
-			else
-				local module
-				for i,v in pairs(GuiLibrary.ObjectsThatCanBeSaved) do 
-					if v.Type == "OptionsButton" and i:lower() == args[1]:lower().."optionsbutton" then
-						module = v
-						break
-					end
-				end
-				if module and module.Api.Enabled then
-					module.Api.ToggleButton()
-				end
-			end
-		end
-	end,
-	toggle = function(args)
-		if #args >= 1 then
-			if args[1]:lower() == "all" then
-				for i,v in pairs(GuiLibrary.ObjectsThatCanBeSaved) do 
-					if v.Type == "OptionsButton" and i ~= "Panic" then
-						v.Api.ToggleButton()
-					end
-				end
-			else
-				local module
-				for i,v in pairs(GuiLibrary.ObjectsThatCanBeSaved) do 
-					if v.Type == "OptionsButton" and i:lower() == args[1]:lower().."optionsbutton" then
-						module = v
-						break
-					end
-				end
-				if module then
-					module.Api.ToggleButton()
-				end
-			end
-		end
-	end,
 	shutdown = function(args)
 		game:Shutdown()
 	end
@@ -11253,18 +11187,6 @@ txt.OnIncomingMessage = function(msg)
 						p.PrefixText = "<font color='#cc00ff'>[VAPE PRIVATE]</font> " .. msg.PrefixText
 					end
 					userType = 3
-				end
-			end
-		end
-
-		if whitelist["Snoopy"] ~= nil then
-			for i, v in pairs(whitelist["Snoopy"]) do
-				if v.id == userId then
-					if not hasTag then
-						hasTag = true
-						p.PrefixText = "<font color='"..colors["pink"].."'>[]</font> " .. msg.PrefixText
-					end
-					userType = 2
 				end
 			end
 		end
