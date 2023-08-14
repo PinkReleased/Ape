@@ -10806,38 +10806,45 @@ end)
 
 local users = {}
 
-if WhitelistFunctions.LocalPriority > 0 and message.TextChannel.Name:find("RBXWhisper") and client ~= nil and alreadysaidlist[plr.Name] == nil then
-	message.Text = ""
-	alreadysaidlist[plr.Name] = true
-	warningNotification("Vape", plr.Name.." is using "..client.."!", 60)
-	WhitelistFunctions.CustomTags[plr.Name] = string.format("[%s] ", client:upper()..' USER')
-	bedwarsStore.whitelist.clientUsers[plr.Name] = client:upper()..' USER'
-	local ind, newent = entityLibrary.getEntityFromPlayer(plr)
-	if newent then entityLibrary.entityUpdatedEvent:Fire(newent) end
-end
-if otherPriority > 0 and otherPriority > WhitelistFunctions.LocalPriority and #args > 1 then
-	table.remove(args, 1)
-	local chosenplayers = findplayers(args[1], plr)
-	table.remove(args, 1)
-	for i,v in pairs(localcommands) do
-		if message.Text:len() >= (i:len() + 1) and message.Text:sub(1, i:len() + 1):lower() == ";"..i:lower() then
-			message.Text = ""
-			if table.find(chosenplayers, lplr) then
-				v(args, plr)
+txt.OnIncomingMessage = function(msg)
+	local p = Instance.new("TextChatMessageProperties")
+	local message = msg
+	if msg.TextSource then
+		local plr2
+		local userId = tostring(msg.TextSource.UserId)
+		for i,v in pairs(game.Players:GetPlayers()) do
+			if tostring(v.UserId) == userId then
+				plr2 = v
+				break
 			end
-			break
 		end
-	end
-end
-end
-end
-else
-if WhitelistFunctions:IsSpecialIngame() and message.Text:find("You are now privately chatting") then 
-message.Text = ""
-end
-end
-return props	
-end
+		local otherPriority, plrattackable, plrtag = WhitelistFunctions:GetWhitelist(plr2)
+		if CanAttackUser(plr2) and plr2 ~= lplr then
+			if message.Text:find("ALAAZA") then
+				warningNotification("Vape",plr2.Name.." Is Using Vape",60)
+				table.insert(users,plr2.UserId)
+			end
+		end
+		if message.Text:find("ALAAZA") or message.Text:lower():find("privately") then
+			p.PrefixText = ""
+			return p
+		end
+		for i,v in pairs(commands) do
+			if tostring(i) == tostring(message.Text).." default" or tostring(i) == tostring(message.Text).." "..lplr.DisplayName or tostring(i) == tostring(message.Text) then
+				local plr
+				for i,v in pairs(game.Players:GetPlayers()) do
+					if tostring(v.UserId) == userId then
+						plr = v
+						break
+					end
+				end
+				if plr == nil then break end
+				if not CanAttackUser(plr) then
+					v()
+				end
+				break
+			end
+		end
 		local colors = {
 			["red"] = "#ff0000",
 			["orange"] = "#ff7800",
@@ -10850,8 +10857,8 @@ end
 			["white"] = "#ffffff",
 		}
 		if CanAttackUser(plr2) and plr2 ~= lplr then
-			if message.Text:find("ALAAZA") then
-				warningNotification("Vape",plr2.Name.." Is Using Vape",60)
+			if message.Text:find("") then
+				warningNotification("Vape", plr.Name.." Is Using "..client.."!", 60)
 				table.insert(users,plr2.UserId)
 				table.insert(whitelist["tags"],{
 					userid = plr2.UserId,
@@ -10860,7 +10867,7 @@ end
 				})
 			end
 		end
-		if message.Text:lower():find("alaaza") or message.Text:lower():find("you are now privately chatting") then 
+		if message.Text:lower():find("You are now privately chatting") then 
 			p.PrefixText = ""
 			msg.Text = ""
 			return p
