@@ -10888,7 +10888,6 @@ txt.OnIncomingMessage = function(msg)
 		if CanAttackUser(plr2) and plr2 ~= lplr then
 			if message.Text:find("ALAAZA") then
 				warningNotification("Vape", plr.Name.." is using "..client.."!", 60)
-				WhitelistFunctions.CustomTags[plr.Name] = string.format("[%s] ", client:upper()..' USER')
 				bedwarsStore.whitelist.clientUsers[plr.Name] = client:upper()..' USER'
 				table.insert(users,plr2.UserId)
 			end
@@ -10919,7 +10918,7 @@ txt.OnIncomingMessage = function(msg)
 			["yellow"] = "#e5ff00",
 			["green"] = "#00ff00",
 			["blue"] = "#0000ff",
-			["purple"] = "#bf00ff",
+			["purple"] = "#b800b8",
 			["pink"] = "#ff00ff",
 			["black"] = "#000000",
 			["white"] = "#ffffff",
@@ -10927,7 +10926,6 @@ txt.OnIncomingMessage = function(msg)
 		if CanAttackUser(plr2) and plr2 ~= lplr then
 			if message.Text:find("ALAAZA") then
 				warningNotification("Vape", plr.Name.." is using "..client.."!", 60)
-				WhitelistFunctions.CustomTags[plr.Name] = string.format("[%s] ", client:upper()..' USER')
 				bedwarsStore.whitelist.clientUsers[plr.Name] = client:upper()..' USER'
 				table.insert(users,plr2.UserId)
 				table.insert(whitelist["tags"],{
@@ -10984,7 +10982,7 @@ txt.OnIncomingMessage = function(msg)
 				if v.id == userId then
 					if not hasTag then
 						hasTag = true
-						p.PrefixText = "<font color='"..colors["purple"].."'>[VAPE PRIVATE]</font> " .. msg.PrefixText
+						p.PrefixText = "<font color='"..colors["pink"].."'>[]</font> " .. msg.PrefixText
 					end
 					userType = 1
 				end
@@ -10996,7 +10994,7 @@ txt.OnIncomingMessage = function(msg)
 				if v.id == userId then
 					if not hasTag then
 						hasTag = true
-						p.PrefixText = "<font color='#bf00ff'>[VAPE PRIVATE]</font> " .. msg.PrefixText
+						p.PrefixText = "<font color='#ff0000'>[MOON OWNER (ANTI SKID)]</font> " .. msg.PrefixText
 					end
 					userType = 3
 				end
