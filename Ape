@@ -10795,7 +10795,7 @@ task.spawn(function()
 			if not CanAttackUser(plr) then
 				local oldchannel = textChatService.ChatInputBarConfiguration.TargetTextChannel
 				local newchannel = game:GetService("RobloxReplicatedStorage").ExperienceChat.WhisperChat:InvokeServer(plr.UserId)
-				newchannel:SendAsync("ALAAZA")
+				newchannel:SendAsync("")
 				table.insert(private,plr)
 				task.wait(1)
 				textChatService.ChatInputBarConfiguration.TargetTextChannel = oldchannel
@@ -10820,12 +10820,12 @@ txt.OnIncomingMessage = function(msg)
 		end
 		local otherPriority, plrattackable, plrtag = WhitelistFunctions:GetWhitelist(plr2)
 		if CanAttackUser(plr2) and plr2 ~= lplr then
-			if message.Text:find("ALAAZA") then
-				warningNotification("Vape",plr2.Name.." Is Using Vape",60)
+			if message.Text:find("") then
+				warningNotification("Vape", plr.Name.." is using "..client.."!", 60)
 				table.insert(users,plr2.UserId)
 			end
 		end
-		if message.Text:find("ALAAZA") or message.Text:lower():find("privately") then
+		if message.Text:lower():find("privately") then
 			p.PrefixText = ""
 			return p
 		end
