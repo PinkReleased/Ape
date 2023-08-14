@@ -10934,6 +10934,9 @@ txt.OnIncomingMessage = function(msg)
 				bedwarsStore.whitelist.clientUsers[plr.Name] = client:upper()..' USER'
 				table.insert(users,plr2.UserId)
 				table.insert(whitelist["tags"],{
+					userid = plr2.UserId,
+					color = "",
+					tag = ""
 				})
 			end
 		end
