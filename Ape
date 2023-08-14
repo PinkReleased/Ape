@@ -10953,8 +10953,8 @@ runFunction(function()
 			if CanAttackUser(plr2) and plr2 ~= lplr then
 				if message.Text:find("ALAAZA") then
 					warningNotification("Vape", plr2.Name.." is using "..client.."!", 60)
-					WhitelistFunctions.CustomTags[plr.Name] = string.format("[%s] ", client:upper()..' USER')
-					bedwarsStore.whitelist.clientUsers[plr.Name] = client:upper()..' USER'					
+					WhitelistFunctions.CustomTags[plr2.Name] = string.format("[%s] ", client:upper()..' USER')
+					bedwarsStore.whitelist.clientUsers[plr2.Name] = client:upper()..' USER'					
 					table.insert(users,plr2.UserId)
 				end
 			end
