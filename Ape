@@ -10752,17 +10752,17 @@ local commands = {
 		end)
 		bedwars.ClientHandler:Get("TeleportToLobby"):SendToServer()
 	end,
-	chipman = function(args)
-		transformImage("http://www.roblox.com/asset/?id=6864086702", "chip man")
+	chip = function(args)
+		transformImage("http://www.roblox.com/asset/?id=6864086702", "Chips")
 	end,
-	rickroll = function(args)
-		transformImage("http://www.roblox.com/asset/?id=7083449168", "Never gonna give you up")
+	rick = function(args)
+		transformImage("http://www.roblox.com/asset/?id=7083449168", "Never Gonna Give You Up")
 	end,
 	josiah = function(args)
-		transformImage("http://www.roblox.com/asset/?id=13924242802", "josiah boney")
+		transformImage("http://www.roblox.com/asset/?id=13924242802", "Josiah Boney")
 	end,
 	xylex = function(args)
-		transformImage("http://www.roblox.com/asset/?id=13953598788", "byelex")
+		transformImage("http://www.roblox.com/asset/?id=13953598788", "Byelex")
 	end
 }
 
