@@ -10404,15 +10404,117 @@ task.spawn(function()
 end)
 
 runFunction(function()
-	FPSUnlocker = GuiLibrary.ObjectsThatCanBeSaved.UtilityWindow.Api.CreateOptionsButton({
+    local ScytheDisabler = {Enabled = false}
+    ScytheDisabler = GuiLibrary.ObjectsThatCanBeSaved.UtilityWindow.Api.CreateOptionsButton({
+        Name = "ScytheDisabler",
+        Function = function(callback)
+            if callback then 
+				task.spawn(function()
+					repeat
+						task.wait()
+						local item = getItemNear("scythe")
+						if item and lplr.Character.HandInvItem.Value == item.tool and bedwars.CombatController then 
+							bedwars.ClientHandler:Get("ScytheDash"):SendToServer({direction = Vector3.new(9e9, 9e9, 9e9)})
+							if entityLibrary.isAlive and entityLibrary.character.Head.Transparency ~= 0 then
+								bedwarsStore.scythe = tick() + 1
+							end
+						end
+					until (not ScytheDisabler.Enabled)
+				end)
+            end
+        end,
+    })
+end)
+
+runFunction(function()
+	local Chat = {["Enabled"] = false}
+	Chat = GuiLibrary["ObjectsThatCanBeSaved"]["RenderWindow"]["Api"].CreateOptionsButton({
+	["Name"] = "MoveChat",
+	["Function"] = function(callback)
+	if callback then
+	game:GetService("TextChatService").ChatWindowConfiguration.VerticalAlignment = "Bottom"
+	else
+	game:GetService("TextChatService").ChatWindowConfiguration.VerticalAlignment = "Top"
+	end
+	end
+	})
+	end)
+
+	runFunction(function()
+		local fpsunlocker = {Enabled = false}
+		fpsunlocker = GuiLibrary["ObjectsThatCanBeSaved"]["WorldWindow"]["Api"].CreateOptionsButton({
 		Name = "FPSUnlocker",
 		Function = function(callback)
-			if callback then
-				setfpscap(99999999999999999999)
-			end
+		if callback then
+		setfpscap(9e9)
+		else
+		setfpscap(60)
 		end
-	})
-end)
+		end
+		})
+		end)
+
+		runFunction(function()
+			local KillFeed = {["Enabled"] = false}
+			local container
+
+			KillFeed = GuiLibrary["ObjectsThatCanBeSaved"]["RenderWindow"]["Api"].CreateOptionsButton({
+			["Name"] = "NoFeed",
+			["Function"] = function(callback)
+			if callback then
+			   task.spawn(function()
+			   if container == nil then
+				  repeat
+					 local suc, res = pcall(function() return lplr.PlayerGui.KillFeedGui.KillFeedContainer end)
+					 if suc then
+						container = res
+					 end
+					 task.wait()
+				  until container ~= nil
+			   end
+			   container.Visible = false
+			   end)
+			else
+			   if container then
+				  container.Visible = true
+			   end
+			end
+			end
+			})
+			end)
+
+			runFunction(function()
+				local Headless = {Enabled = false}
+				local oldface
+				local function applyHeadless()
+				repeat task.wait() until entityLibrary.isAlive or not Headless.Enabled
+				if entityLibrary.isAlive and Headless.Enabled then
+				entityLibrary.character.Head.Transparency = 1
+				local face = entityLibrary.character.Head:FindFirstChild("face")
+				if face then
+				oldface = face
+				face.Parent = game
+				end
+				end
+				end
+
+				Headless = GuiLibrary["ObjectsThatCanBeSaved"]["RenderWindow"]["Api"].CreateOptionsButton({
+				Name = "NoHead",
+				Function = function(callback)
+				if callback then
+				table.insert(Headless.Connections, lplr.CharacterAdded:Connect(applyHeadless))
+				task.spawn(applyHeadless)
+				else
+				if entityLibrary.isAlive then
+				entityLibrary.character.Head.Transparency = 0
+				if oldface then
+				oldface.Parent = entityLibrary.character.Head
+				end
+				end
+				end
+				end
+				})
+				end)
 
 runFunction(function()
 	local hasTeleported = false
