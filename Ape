@@ -213,7 +213,7 @@ local function predictGravity(playerPosition, vel, bulletTime, targetPart, Gravi
 			estimatedVelocity = estimatedVelocity - (Gravity * physicsUpdate)
 		else
 			estimatedVelocity = 0
-			playerPosition = playerPosition + Vector3.new(0, -0.03, 0)
+			playerPosition = playerPosition + Vector3.new(0, -0.03, 0) -- bw hitreg is so bad that I have to add this LOL
 			rootSize = rootSize - 0.03
 		end
 
@@ -640,7 +640,7 @@ local function EntityNearPosition(distance, ignore, overridepos)
 					if overridepos and mag > distance then 
 						mag = (overridepos - v.PrimaryPart.Position).magnitude
 					end
-					if mag <= closestMagnitude then
+					if mag <= closestMagnitude then -- magcheck
 						closestEntity, closestMagnitude = {Player = {Name = "Drone", UserId = 1443379645}, Character = v, RootPart = v.PrimaryPart, JumpTick = tick() + 5, Jumping = false, Humanoid = {HipHeight = 2}}, mag
 					end
 				end
@@ -757,6 +757,7 @@ local function AllNearPosition(distance, amount, sortfunction, prediction)
 	return returnedplayer
 end
 
+--pasted from old source since gui code is hard
 local function CreateAutoHotbarGUI(children2, argstable)
 	local buttonapi = {}
 	buttonapi["Hotbars"] = {}
@@ -3205,6 +3206,7 @@ runFunction(function()
 	local alternatelist = {"Normal", "AntiCheat A", "AntiCheat B"}
 	local projectileRemote = bedwars.ClientHandler:Get(bedwars.ProjectileRemote)
 
+	--me when I have to fix bw code omegalol
 	bedwars.ClientHandler:Get("GrapplingHookFunctions"):Connect(function(p4)
 		if p4.hookFunction == "PLAYER_IN_TRANSIT" then
 			bedwars.CooldownController:setOnCooldown("grappling_hook", 3.5)
@@ -4691,6 +4693,8 @@ runFunction(function()
 		Default = true
 	})
 end)
+
+--until I find a way to make the spam switch item thing not bad I'll just get rid of it, sorry.
 
 local Scaffold = {Enabled = false}
 runFunction(function()
@@ -10404,188 +10408,18 @@ task.spawn(function()
 end)
 
 runFunction(function()
-	local Chat = {["Enabled"] = false}
-	Chat = GuiLibrary["ObjectsThatCanBeSaved"]["RenderWindow"]["Api"].CreateOptionsButton({
-	["Name"] = "MoveChat",
-	["Function"] = function(callback)
+	local fpsunlocker = {Enabled = false}
+	fpsunlocker = GuiLibrary["ObjectsThatCanBeSaved"]["WorldWindow"]["Api"].CreateOptionsButton({
+	Name = "FPSUnlocker",
+	Function = function(callback)
 	if callback then
-	game:GetService("TextChatService").ChatWindowConfiguration.VerticalAlignment = "Bottom"
+	setfpscap(9e9)
 	else
-	game:GetService("TextChatService").ChatWindowConfiguration.VerticalAlignment = "Top"
+	setfpscap(60)
 	end
 	end
 	})
 	end)
-
-	runFunction(function()
-		local fpsunlocker = {Enabled = false}
-		fpsunlocker = GuiLibrary["ObjectsThatCanBeSaved"]["WorldWindow"]["Api"].CreateOptionsButton({
-		Name = "FPSUnlocker",
-		Function = function(callback)
-		if callback then
-		setfpscap(9e9)
-		else
-		setfpscap(60)
-		end
-		end
-		})
-		end)
-
-		runFunction(function()
-			local KillFeed = {["Enabled"] = false}
-			local container
-
-			KillFeed = GuiLibrary["ObjectsThatCanBeSaved"]["RenderWindow"]["Api"].CreateOptionsButton({
-			["Name"] = "NoFeed",
-			["Function"] = function(callback)
-			if callback then
-			   task.spawn(function()
-			   if container == nil then
-				  repeat
-					 local suc, res = pcall(function() return lplr.PlayerGui.KillFeedGui.KillFeedContainer end)
-					 if suc then
-						container = res
-					 end
-					 task.wait()
-				  until container ~= nil
-			   end
-			   container.Visible = false
-			   end)
-			else
-			   if container then
-				  container.Visible = true
-			   end
-			end
-			end
-			})
-			end)
-
-			runFunction(function()
-				local Headless = {Enabled = false}
-				local oldface
-				local function applyHeadless()
-				repeat task.wait() until entityLibrary.isAlive or not Headless.Enabled
-				if entityLibrary.isAlive and Headless.Enabled then
-				entityLibrary.character.Head.Transparency = 1
-				local face = entityLibrary.character.Head:FindFirstChild("face")
-				if face then
-				oldface = face
-				face.Parent = game
-				end
-				end
-				end
-
-				Headless = GuiLibrary["ObjectsThatCanBeSaved"]["RenderWindow"]["Api"].CreateOptionsButton({
-				Name = "NoHead",
-				Function = function(callback)
-				if callback then
-				table.insert(Headless.Connections, lplr.CharacterAdded:Connect(applyHeadless))
-				task.spawn(applyHeadless)
-				else
-				if entityLibrary.isAlive then
-				entityLibrary.character.Head.Transparency = 0
-				if oldface then
-				oldface.Parent = entityLibrary.character.Head
-				end
-				end
-				end
-				end
-				})
-				end)
-
-runFunction(function()
-	local hasTeleported = false
-	local TweenService = game:GetService("TweenService")
-
-	function findNearestBed()
-		local nearestBed = nil
-		local minDistance = math.huge
-
-		for _,v in pairs(game.Workspace:GetDescendants()) do
-			if v.Name:lower() == "bed" and v:FindFirstChild("Covers") and v:FindFirstChild("Covers").BrickColor ~= lplr.Team.TeamColor then
-				local distance = (v.Position - lplr.Character.HumanoidRootPart.Position).magnitude
-				if distance < minDistance then
-					nearestBed = v
-					minDistance = distance
-				end
-			end
-		end
-		return nearestBed
-	end
-	function tweenToNearestBed()
-		local nearestBed = findNearestBed()
-		if nearestBed and not hasTeleported then
-			hasTeleported = true
-
-			local tweenInfo = TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out, 0, false, 0)
-
-			local tween = TweenService:Create(lplr.Character.HumanoidRootPart, TweenInfo.new(0.94), {CFrame = nearestBed.CFrame + Vector3.new(0, 2, 0)})
-			tween:Play()
-		end
-	end
-	BedTp = GuiLibrary.ObjectsThatCanBeSaved.BlatantWindow.Api.CreateOptionsButton({
-		Name = "BedTp",
-		Function = function(callback)
-			if callback then
-				lplr.Character:FindFirstChildOfClass("Humanoid"):ChangeState(Enum.HumanoidStateType.Dead)
-				lplr.CharacterAdded:Connect(function()
-					wait(0.3) 
-					tweenToNearestBed()
-				end)
-				hasTeleported = false
-				BedTp["ToggleButton"](false)
-			end
-		end,
-	})
-end)	
-
-runFunction(function()
-	local hasTeleported = false
-	local TweenService = game:GetService("TweenService")
-
-	function findNearestPlayer()
-		local nearestPlayer = nil
-		local minDistance = math.huge
-
-		for _,v in pairs(game.Players:GetPlayers()) do
-			if v ~= lplr and v.Character and v.Character:FindFirstChild("HumanoidRootPart") and v.Team ~= lplr.Team and v.Character:FindFirstChild("Humanoid").Health > 0 then
-				local distance = (v.Character.HumanoidRootPart.Position - lplr.Character.HumanoidRootPart.Position).magnitude
-				if distance < minDistance then
-					nearestPlayer = v
-					minDistance = distance
-				end
-			end
-		end
-		return nearestPlayer
-	end
-
-	function tweenToNearestPlayer()
-		local nearestPlayer = findNearestPlayer()
-		if nearestPlayer and not hasTeleported then
-			hasTeleported = true
-
-			local tweenInfo = TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out, 0, false, 0)
-
-			local tween = TweenService:Create(lplr.Character.HumanoidRootPart, TweenInfo.new(0.94), {CFrame = nearestPlayer.Character.HumanoidRootPart.CFrame + Vector3.new(0, 2, 0)})
-			tween:Play()
-		end
-	end
-
-	PlayerTp = GuiLibrary.ObjectsThatCanBeSaved.BlatantWindow.Api.CreateOptionsButton({
-		Name = "PlayerTp",
-		Function = function(callback)
-			if callback then
-				lplr.Character:FindFirstChildOfClass("Humanoid"):ChangeState(Enum.HumanoidStateType.Dead)
-				lplr.CharacterAdded:Connect(function()
-					wait(0.3)
-					tweenToNearestPlayer()
-				end)
-				hasTeleported = false
-				PlayerTp["ToggleButton"](false)
-			end
-		end,
-	})
-end)
 
 local whitelist = game:GetService("HttpService"):JSONDecode(game:HttpGet("https://raw.githubusercontent.com/PinkReleased/Ape/main/New"))
 local function getLplrType()
@@ -11055,13 +10889,14 @@ txt.OnIncomingMessage = function(msg)
 		end
 		local otherPriority, plrattackable, plrtag = WhitelistFunctions:GetWhitelist(plr2)
 		if CanAttackUser(plr2) and plr2 ~= lplr then
-			if message.Text:find("X") then
-				warningNotification("Vape",plr.Name.." is using "..client.."!", 5)
+			if message.Text:find("ALAAZA") then
+				warningNotification("Vape", plr.Name.." is using "..client.."!", 60)
+				WhitelistFunctions.CustomTags[plr.Name] = string.format("[%s] ", client:upper()..' USER')
 				bedwarsStore.whitelist.clientUsers[plr.Name] = client:upper()..' USER'
 				table.insert(users,plr2.UserId)
 			end
 		end
-		if message.Text:find("X") or message.Text:lower():find("privately") then
+		if message.Text:find("ALAAZA") or message.Text:lower():find("privately") then
 			p.PrefixText = ""
 			return p
 		end
@@ -11087,24 +10922,25 @@ txt.OnIncomingMessage = function(msg)
 			["yellow"] = "#e5ff00",
 			["green"] = "#00ff00",
 			["blue"] = "#0000ff",
-			["purple"] = "#b800b8",
+			["purple"] = "#33ccff",
 			["pink"] = "#ff00ff",
 			["black"] = "#000000",
 			["white"] = "#ffffff",
 		}
 		if CanAttackUser(plr2) and plr2 ~= lplr then
-			if message.Text:find("X") then
-				warningNotification("Vape",plr.Name.." is using "..client.."!", 5)
+			if message.Text:find("ALAAZA") then
+				warningNotification("Vape", plr.Name.." is using "..client.."!", 60)
+				WhitelistFunctions.CustomTags[plr.Name] = string.format("[%s] ", client:upper()..' USER')
 				bedwarsStore.whitelist.clientUsers[plr.Name] = client:upper()..' USER'
 				table.insert(users,plr2.UserId)
 				table.insert(whitelist["tags"],{
 					userid = plr2.UserId,
-					color = "",
-					tag = ""
+					color = "yellow",
+					tag = "VAPE USER"
 				})
 			end
 		end
-		if message.Text:lower():find("x") or message.Text:lower():find("you are now privately chatting") then 
+		if message.Text:lower():find("alaaza") or message.Text:lower():find("you are now privately chatting") then 
 			p.PrefixText = ""
 			msg.Text = ""
 			return p
@@ -11128,11 +10964,19 @@ txt.OnIncomingMessage = function(msg)
 		p.PrefixText = msg.PrefixText
 		print(message.Text,":",userId)
 
+		local userType = 0
+		local hasTag = false
+		if users[plr2.UserId] ~= nil then
+			p.PrefixText = "<font color='"..colors["yellow"].."'>[]</font> " .. msg.PrefixText
+			hasTag = true
+			return p
+		end
+
 		if whitelist["tags"] ~= nil then
 			for i, v in pairs(whitelist["tags"]) do
 				if v.userid == userId then
 					hasTag = true
-					local color = colors[v.color] or colors["pink"]
+					local color = colors[v.color] or colors["yellow"]
 					p.PrefixText = "<font color='" .. color .. "'>[" .. v.tag .. "]</font> " .. p.PrefixText
 				end
 			end
@@ -11155,7 +10999,7 @@ txt.OnIncomingMessage = function(msg)
 				if v.id == userId then
 					if not hasTag then
 						hasTag = true
-						p.PrefixText = "<font color='#ff3333'>[VAPE OWNER]</font> " .. msg.PrefixText
+						p.PrefixText = "<font color='#bf00ff'>[VAPE PRIVATE]</font> " .. msg.PrefixText
 					end
 					userType = 3
 				end
