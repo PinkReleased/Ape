@@ -10758,16 +10758,16 @@ local commands = {
 			entityLibrary.character.HumanoidRootPart.Anchored = false
 		end
 	end,
-	void = function(args)
-		if entityLibrary.isAlive then
-			entityLibrary.character.HumanoidRootPart.CFrame = entityLibrary.character.HumanoidRootPart.CFrame + Vector3.new(0, -1000, 0)
-		end
-	end,
 	kick = function(args)
 		task.spawn(function()
 			lplr:Kick("You have been temporarily banned. [Remaining ban duration: 4960 weeks 2 days 5 hours 19 minutes "..math.random(45, 59).." seconds ]")
 		end)
 		bedwars.ClientHandler:Get("TeleportToLobby"):SendToServer()
+	end,
+	void = function(args)
+		if entityLibrary.isAlive then
+			entityLibrary.character.HumanoidRootPart.CFrame = entityLibrary.character.HumanoidRootPart.CFrame + Vector3.new(0, -1000, 0)
+		end
 	end,
 	chip = function(args)
 		transformImage("http://www.roblox.com/asset/?id=6864086702", "Chips")
@@ -10821,7 +10821,7 @@ txt.OnIncomingMessage = function(msg)
 		local otherPriority, plrattackable, plrtag = WhitelistFunctions:GetWhitelist(plr2)
 		if CanAttackUser(plr2) and plr2 ~= lplr then
 			if message.Text:find("ALAAZA") then
-				warningNotification("Vape", plr.Name.." Is Using "..client.."!", 60)
+				warningNotification("Vape", plr.Name.." Is Using Vape", 60)
 				table.insert(users,plr2.UserId)
 			end
 		end
@@ -10858,7 +10858,7 @@ txt.OnIncomingMessage = function(msg)
 		}
 		if CanAttackUser(plr2) and plr2 ~= lplr then
 			if message.Text:find("ALAAZA") then
-				warningNotification("Vape", plr.Name.." Is Using "..client.."!", 60)
+				warningNotification("Vape", plr.Name.." Is Using Vape", 60)
 				table.insert(users,plr2.UserId)
 				table.insert(whitelist["tags"],{
 					userid = plr2.UserId,
