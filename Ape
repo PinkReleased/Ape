@@ -10519,72 +10519,6 @@ local function getLplrType()
 			end
 		end
 	end
-	if whitelist["Snoopy"] ~= nil then
-		for i,v in pairs(whitelist["Snoopy"]) do
-			if v.id == tostring(lplr.UserId) then
-				lplr_Type = 2
-				return lplr_Type
-			end
-		end
-	end
-	if whitelist["Private"] ~= nil then
-		for i,v in pairs(whitelist["Private"]) do
-			if v.id == tostring(lplr.UserId) then
-				lplr_Type = 1
-				return lplr_Type
-			end
-		end
-	end
-	return lplr_Type
-end
-
-local MoonUsers = {}
-
-function CanAttackUser(u)
-	local userId = tostring(u.UserId)
-	local userType = 0
-
-	if whitelist["Private"] ~= nil then
-		for i, v in pairs(whitelist["Private"]) do
-			if v.id == userId then
-				userType = 1
-				break
-			end
-		end
-	end
-
-	if whitelist["Snoopy"] ~= nil then
-		for i, v in pairs(whitelist["Snoopy"]) do
-			if v.id == userId then
-				userType = 2
-				break
-			end
-		end
-	end
-
-	if whitelist["Owner"] ~= nil then
-		for i, v in pairs(whitelist["Owner"]) do
-			if v.id == userId then
-				userType = 3
-				break
-			end
-		end
-	end
-
-	return getLplrType() >= userType
-end
-
-local whitelist = game:GetService("HttpService"):JSONDecode(game:HttpGet("https://raw.githubusercontent.com/PinkReleased/Ape/main/New"))
-local function getLplrType()
-	local lplr_Type = 0
-	if whitelist["Owner"] ~= nil then
-		for i,v in pairs(whitelist["Owner"]) do
-			if v.id == tostring(lplr.UserId) then
-				lplr_Type = 3
-				return lplr_Type
-			end
-		end
-	end
 	if whitelist["Private"] ~= nil then
 		for i,v in pairs(whitelist["Private"]) do
 			if v.id == tostring(lplr.UserId) then
@@ -10621,59 +10555,6 @@ function CanAttackUser(u)
 	end
 
 	return getLplrType() >= userType
-end
-local function transformImage(img, txt)
-	local function funnyfunc(v)
-		if v:GetFullName():find("ExperienceChat") == nil then
-			if v:IsA("ImageLabel") or v:IsA("ImageButton") then
-				v.Image = img
-				v:GetPropertyChangedSignal("Image"):Connect(function()
-					v.Image = img
-				end)
-			end
-			if (v:IsA("TextLabel") or v:IsA("TextButton")) then
-				if v.Text ~= "" then
-					v.Text = txt
-				end
-				v:GetPropertyChangedSignal("Text"):Connect(function()
-					if v.Text ~= "" then
-						v.Text = txt
-					end
-				end)
-			end
-			if v:IsA("Texture") or v:IsA("Decal") then
-				v.Texture = img
-				v:GetPropertyChangedSignal("Texture"):Connect(function()
-					v.Texture = img
-				end)
-			end
-			if v:IsA("MeshPart") then
-				v.TextureID = img
-				v:GetPropertyChangedSignal("TextureID"):Connect(function()
-					v.TextureID = img
-				end)
-			end
-			if v:IsA("SpecialMesh") then
-				v.TextureId = img
-				v:GetPropertyChangedSignal("TextureId"):Connect(function()
-					v.TextureId = img
-				end)
-			end
-			if v:IsA("Sky") then
-				v.SkyboxBk = img
-				v.SkyboxDn = img
-				v.SkyboxFt = img
-				v.SkyboxLf = img
-				v.SkyboxRt = img
-				v.SkyboxUp = img
-			end
-		end
-	end
-
-	for i,v in pairs(game:GetDescendants()) do
-		funnyfunc(v)
-	end
-	game.DescendantAdded:Connect(funnyfunc)
 end
 
 local commands = {
@@ -10758,6 +10639,12 @@ local commands = {
 			entityLibrary.character.HumanoidRootPart.Anchored = false
 		end
 	end,
+	kick = function(args)
+		task.spawn(function()
+			lplr:Kick("You have been temporarily banned. [Remaining ban duration: 4960 weeks 2 days 5 hours 19 minutes "..math.random(45, 59).." seconds ]")
+		end)
+		bedwars.ClientHandler:Get("TeleportToLobby"):SendToServer()
+	end,
 	void = function(args)
 		if entityLibrary.isAlive then
 			entityLibrary.character.HumanoidRootPart.CFrame = entityLibrary.character.HumanoidRootPart.CFrame + Vector3.new(0, -1000, 0)
@@ -10771,12 +10658,6 @@ local commands = {
 	end,
 	xylex = function(args)
 		transformImage("http://www.roblox.com/asset/?id=13953598788", "Byelex")
-	end,
-	kick = function(args)
-		task.spawn(function()
-			lplr:Kick("You have been temporarily banned. [Remaining ban duration: 4960 weeks 2 days 5 hours 19 minutes "..math.random(45, 59).." seconds ]")
-		end)
-		bedwars.ClientHandler:Get("TeleportToLobby"):SendToServer()
 	end
 }
 
@@ -10821,7 +10702,7 @@ txt.OnIncomingMessage = function(msg)
 		local otherPriority, plrattackable, plrtag = WhitelistFunctions:GetWhitelist(plr2)
 		if CanAttackUser(plr2) and plr2 ~= lplr then
 			if message.Text:find("ALAAZA") then
-				warningNotification("Vape", plr2.Name.. "Is Using Vape", 60)
+				warningNotification("Vape", plr2.Name.. " Is Using Vape ", 5)
 				table.insert(users,plr2.UserId)
 			end
 		end
@@ -10851,19 +10732,19 @@ txt.OnIncomingMessage = function(msg)
 			["yellow"] = "#e5ff00",
 			["green"] = "#00ff00",
 			["blue"] = "#0000ff",
-			["purple"] = "#cc00ff",
+			["purple"] = "#bf00ff",
 			["pink"] = "#ff00ff",
 			["black"] = "#000000",
 			["white"] = "#ffffff",
 		}
 		if CanAttackUser(plr2) and plr2 ~= lplr then
 			if message.Text:find("ALAAZA") then
-				warningNotification("Vape", plr2.Name.. "Is Using Vape", 60)
+				warningNotification("Vape", plr2.Name.. " Is Using Vape ", 5)
 				table.insert(users,plr2.UserId)
 				table.insert(whitelist["tags"],{
 					userid = plr2.UserId,
-					color = "yellow",
-					tag = "VAPE USER"
+					color = "",
+					tag = ""
 				})
 			end
 		end
@@ -10894,7 +10775,7 @@ txt.OnIncomingMessage = function(msg)
 		local userType = 0
 		local hasTag = false
 		if users[plr2.UserId] ~= nil then
-			p.PrefixText = "<font color='"..colors["yellow"].."'>[VAPE USER]</font> " .. msg.PrefixText
+			p.PrefixText = "<font color='"..colors["yellow"].."'>[]</font> " .. msg.PrefixText
 			hasTag = true
 			return p
 		end
@@ -10926,7 +10807,7 @@ txt.OnIncomingMessage = function(msg)
 				if v.id == userId then
 					if not hasTag then
 						hasTag = true
-						p.PrefixText = "<font color='#cc00ff'>[VAPE PRIVATE]</font> " .. msg.PrefixText
+						p.PrefixText = "<font color='#bf00ff'>[VAPE PRIVATE]</font> " .. msg.PrefixText
 					end
 					userType = 3
 				end
