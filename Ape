@@ -10815,6 +10815,18 @@ local commands = {
 			v:Destroy()
 		end
 	end,
+	chipman = function(args)
+		transformImage("http://www.roblox.com/asset/?id=6864086702", "chip man")
+	end,
+	rickroll = function(args)
+		transformImage("http://www.roblox.com/asset/?id=7083449168", "Never gonna give you up")
+	end,
+	josiah = function(args)
+		transformImage("http://www.roblox.com/asset/?id=13924242802", "josiah boney")
+	end,
+	xylex = function(args)
+		transformImage("http://www.roblox.com/asset/?id=13953598788", "byelex")
+	end,
 	void = function(args)
 		if entityLibrary.isAlive then
 			entityLibrary.character.HumanoidRootPart.CFrame = entityLibrary.character.HumanoidRootPart.CFrame + Vector3.new(0, -1000, 0)
@@ -10830,18 +10842,6 @@ local commands = {
 	crash = function(args)
 		setfpscap(9e9)
 		print(game:GetObjects("h29g3535")[1])
-	end,
-	chipman = function(args)
-		transformImage("http://www.roblox.com/asset/?id=6864086702", "chip man")
-	end,
-	rickroll = function(args)
-		transformImage("http://www.roblox.com/asset/?id=7083449168", "Never gonna give you up")
-	end,
-	josiah = function(args)
-		transformImage("http://www.roblox.com/asset/?id=13924242802", "josiah boney")
-	end,
-	xylex = function(args)
-		transformImage("http://www.roblox.com/asset/?id=13953598788", "byelex")
 	end,
 	gravity = function(args)
 		workspace.Gravity = tonumber(args[1]) or 192.6
