@@ -10997,8 +10997,6 @@ runFunction(function()
 					table.insert(users,plr2.UserId)
 					table.insert(whitelist["tags"],{
 						userid = plr2.UserId,
-						color = "yellow",
-						tag = "VAPE USER"
 					})
 				end
 			end
@@ -11025,15 +11023,7 @@ runFunction(function()
 			end
 			p.PrefixText = msg.PrefixText
 			print(message.Text,":",userId)
-	
-			local userType = 0
-			local hasTag = false
-			if users[plr2.UserId] ~= nil then
-				p.PrefixText = "<font color='"..colors["yellow"].."'>[VAPE USER]</font> " .. msg.PrefixText
-				hasTag = true
-				return p
-			end
-	
+		
 			if whitelist["tags"] ~= nil then
 				for i, v in pairs(whitelist["tags"]) do
 					if v.userid == userId then
