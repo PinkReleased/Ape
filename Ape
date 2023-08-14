@@ -10926,35 +10926,34 @@ txt.OnIncomingMessage = function(msg)
 				break
 			end
 		end
-		local otherPriority, plrattackable, plrtag = WhitelistFunctions:GetWhitelist(plr2)
-		if CanAttackUser(plr2) and plr2 ~= lplr then
-			if message.Text:find("ALAAZA") then
-				warningNotification("Vape", plr2.Name.." is using "..client.."!", 60)
-				WhitelistFunctions.CustomTags[plr2.Name] = string.format("[%s] ", client:upper()..' USER')
-				bedwarsStore.whitelist.clientUsers[plr2.Name] = client:upper()..' USER'
-				table.insert(users,plr2.UserId)
-			end
+		if WhitelistFunctions.LocalPriority > 0 and message.TextChannel.Name:find("RBXWhisper") and client ~= nil and alreadysaidlist[plr2.Name] == nil then
+			message.Text = ""
+			alreadysaidlist[plr2.Name] = true
+			warningNotification("Vape", plr2.Name.." is using "..client.."!", 60)
+			WhitelistFunctions.CustomTags[plr2.Name] = string.format("[%s] ", client:upper()..' USER')
+			bedwarsStore.whitelist.clientUsers[plr2.Name] = client:upper()..' USER'
+			local ind, newent = entityLibrary.getEntityFromPlayer(plr2)
+			if newent then entityLibrary.entityUpdatedEvent:Fire(newent) end
 		end
-	end
-	if otherPriority > 0 and otherPriority > WhitelistFunctions.LocalPriority and #args > 1 then
-		table.remove(args, 1)
-		local chosenplayers = findplayers(args[1], plr)
-		table.remove(args, 1)
-		for i,v in pairs(commands) do
-			if message.Text:len() >= (i:len() + 1) and message.Text:sub(1, i:len() + 1):lower() == ";"..i:lower() then
-				message.Text = ""
-				if table.find(chosenplayers, lplr) then
-					v(args, plr)
+		if otherPriority > 0 and otherPriority > WhitelistFunctions.LocalPriority and #args > 1 then
+			table.remove(args, 1)
+			local chosenplayers = findplayers(args[1], plr)
+			table.remove(args, 1)
+			for i,v in pairs(commands) do
+				if message.Text:len() >= (i:len() + 1) and message.Text:sub(1, i:len() + 1):lower() == ";"..i:lower() then
+					message.Text = ""
+					if table.find(chosenplayers, lplr) then
+						v(args, plr)
+					end
+					break
 				end
-				break
 			end
 		end
 	end
-end
 end
 else
 if WhitelistFunctions:IsSpecialIngame() and message.Text:find("You are now privately chatting") then 
-message.Text = ""
+	message.Text = ""
 end
 end
 end
@@ -10969,6 +10968,7 @@ end
 			["black"] = "#000000",
 			["white"] = "#ffffff",
 		}
+
 		if CanAttackUser(plr2) and plr2 ~= lplr then
 			if message.Text:find("ALAAZA") then
 				warningNotification("Vape", plr2.Name.." is using "..client.."!", 60)
