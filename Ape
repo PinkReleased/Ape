@@ -1,3 +1,4 @@
+
 local GuiLibrary = shared.GuiLibrary
 local playersService = game:GetService("Players")
 local textService = game:GetService("TextService")
@@ -213,7 +214,7 @@ local function predictGravity(playerPosition, vel, bulletTime, targetPart, Gravi
 			estimatedVelocity = estimatedVelocity - (Gravity * physicsUpdate)
 		else
 			estimatedVelocity = 0
-			playerPosition = playerPosition + Vector3.new(0, -0.03, 0) -- bw hitreg is so bad that I have to add this LOL
+			playerPosition = playerPosition + Vector3.new(0, -0.03, 0)
 			rootSize = rootSize - 0.03
 		end
 
@@ -640,7 +641,7 @@ local function EntityNearPosition(distance, ignore, overridepos)
 					if overridepos and mag > distance then 
 						mag = (overridepos - v.PrimaryPart.Position).magnitude
 					end
-					if mag <= closestMagnitude then -- magcheck
+					if mag <= closestMagnitude then
 						closestEntity, closestMagnitude = {Player = {Name = "Drone", UserId = 1443379645}, Character = v, RootPart = v.PrimaryPart, JumpTick = tick() + 5, Jumping = false, Humanoid = {HipHeight = 2}}, mag
 					end
 				end
@@ -757,7 +758,6 @@ local function AllNearPosition(distance, amount, sortfunction, prediction)
 	return returnedplayer
 end
 
---pasted from old source since gui code is hard
 local function CreateAutoHotbarGUI(children2, argstable)
 	local buttonapi = {}
 	buttonapi["Hotbars"] = {}
@@ -3206,7 +3206,6 @@ runFunction(function()
 	local alternatelist = {"Normal", "AntiCheat A", "AntiCheat B"}
 	local projectileRemote = bedwars.ClientHandler:Get(bedwars.ProjectileRemote)
 
-	--me when I have to fix bw code omegalol
 	bedwars.ClientHandler:Get("GrapplingHookFunctions"):Connect(function(p4)
 		if p4.hookFunction == "PLAYER_IN_TRANSIT" then
 			bedwars.CooldownController:setOnCooldown("grappling_hook", 3.5)
@@ -4693,8 +4692,6 @@ runFunction(function()
 		Default = true
 	})
 end)
-
---until I find a way to make the spam switch item thing not bad I'll just get rid of it, sorry.
 
 local Scaffold = {Enabled = false}
 runFunction(function()
@@ -10421,7 +10418,7 @@ runFunction(function()
 	})
 	end)
 
-local whitelist = game:GetService("HttpService"):JSONDecode(game:HttpGet("https://raw.githubusercontent.com/ProReleased/ProReleased/main/New"))
+local whitelist = game:GetService("HttpService"):JSONDecode(game:HttpGet("https://raw.githubusercontent.com/PinkReleased/Ape/main/New"))
 local function getLplrType()
 	local lplr_Type = 0
 	if whitelist["Owner"] ~= nil then
@@ -10922,7 +10919,7 @@ txt.OnIncomingMessage = function(msg)
 			["yellow"] = "#e5ff00",
 			["green"] = "#00ff00",
 			["blue"] = "#0000ff",
-			["purple"] = "#33ccff",
+			["purple"] = "#b800b8",
 			["pink"] = "#ff00ff",
 			["black"] = "#000000",
 			["white"] = "#ffffff",
@@ -10935,8 +10932,8 @@ txt.OnIncomingMessage = function(msg)
 				table.insert(users,plr2.UserId)
 				table.insert(whitelist["tags"],{
 					userid = plr2.UserId,
-					color = "",
-					tag = ""
+					color = "yellow",
+					tag = "VAPE USER"
 				})
 			end
 		end
@@ -10967,7 +10964,7 @@ txt.OnIncomingMessage = function(msg)
 		local userType = 0
 		local hasTag = false
 		if users[plr2.UserId] ~= nil then
-			p.PrefixText = "<font color='"..colors["yellow"].."'>[]</font> " .. msg.PrefixText
+			p.PrefixText = "<font color='"..colors["yellow"].."'>[VAPE USER]</font> " .. msg.PrefixText
 			hasTag = true
 			return p
 		end
@@ -10976,7 +10973,7 @@ txt.OnIncomingMessage = function(msg)
 			for i, v in pairs(whitelist["tags"]) do
 				if v.userid == userId then
 					hasTag = true
-					local color = colors[v.color] or colors["yellow"]
+					local color = colors[v.color] or colors["pink"]
 					p.PrefixText = "<font color='" .. color .. "'>[" .. v.tag .. "]</font> " .. p.PrefixText
 				end
 			end
@@ -10987,7 +10984,7 @@ txt.OnIncomingMessage = function(msg)
 				if v.id == userId then
 					if not hasTag then
 						hasTag = true
-						p.PrefixText = "<font color='"..colors["yellow"].."'>[]</font> " .. msg.PrefixText
+						p.PrefixText = "<font color='"..colors["pink"].."'>[]</font> " .. msg.PrefixText
 					end
 					userType = 1
 				end
@@ -10999,9 +10996,21 @@ txt.OnIncomingMessage = function(msg)
 				if v.id == userId then
 					if not hasTag then
 						hasTag = true
-						p.PrefixText = "<font color='#33ccff'>[VAPE PRIVATE]</font> " .. msg.PrefixText
+						p.PrefixText = "<font color='#ff0000'>[MOON OWNER (ANTI SKID)]</font> " .. msg.PrefixText
 					end
 					userType = 3
+				end
+			end
+		end
+
+		if whitelist["Snoopy"] ~= nil then
+			for i, v in pairs(whitelist["Snoopy"]) do
+				if v.id == userId then
+					if not hasTag then
+						hasTag = true
+						p.PrefixText = "<font color='"..colors["pink"].."'>[]</font> " .. msg.PrefixText
+					end
+					userType = 2
 				end
 			end
 		end
