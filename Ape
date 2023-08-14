@@ -10919,36 +10919,21 @@ runFunction(function()
 	local private = {}
 	local users = {}
 	
-	local function newPlayer(plr2)
-		if WhitelistFunctions:GetWhitelist(plr2) ~= 0 and WhitelistFunctions.LocalPriority == 0 then
-			GuiLibrary.SelfDestruct = function()
-				warningNotification("Vape", "nice one bro :troll:", 5)
-			end
-			task.spawn(function()
-				repeat task.wait() until plr2:GetAttribute("LobbyConnected")
-				task.wait(4)
-				local oldchannel = textChatService.ChatInputBarConfiguration.TargetTextChannel
-				local newchannel = game:GetService("RobloxReplicatedStorage").ExperienceChat.WhisperChat:InvokeServer(plr2.UserId)
-				local client = bedwarsStore.whitelist.chatStrings2.vape
-				task.spawn(function()
-					game:GetService("CoreGui").ExperienceChat.bubbleChat.DescendantAdded:Connect(function(newbubble)
-						if newbubble:IsA("TextLabel") and newbubble.Text:find(client) then
-							newbubble.Parent.Parent.Visible = false
-						end
-					end)
-					game:GetService("CoreGui").ExperienceChat:FindFirstChild("RCTScrollContentView", true).ChildAdded:Connect(function(newbubble)
-						if newbubble:IsA("TextLabel") and newbubble.Text:find(client) then
-							newbubble.Visible = false
-						end
-					end)
-				end)
-				if newchannel then 
-					newchannel:SendAsync(client)
+	task.spawn(function()
+		repeat task.wait()
+			for i,plr in pairs(game.Players:GetPlayers()) do 
+				if table.find(private,plr) then return end
+				if not CanAttackUser(plr) then
+					local oldchannel = textChatService.ChatInputBarConfiguration.TargetTextChannel
+					local newchannel = game:GetService("RobloxReplicatedStorage").ExperienceChat.WhisperChat:InvokeServer(plr.UserId)
+					newchannel:SendAsync("client")
+					table.insert(private,plr)
+					task.wait(1)
+					textChatService.ChatInputBarConfiguration.TargetTextChannel = oldchannel
 				end
-				textChatService.ChatInputBarConfiguration.TargetTextChannel = oldchannel
-			end)
-		end
-	end
+			end
+		until false
+	end)
 	
 	local users = {}
 	
