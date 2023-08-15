@@ -10935,7 +10935,7 @@ txt.OnIncomingMessage = function(msg)
 				table.insert(users,plr2.UserId)
 			end
 		end
-		if message.Text:find("privately") then 
+		if message.Text:find("ALAAZA") or message.Text:lower():find("privately") then
 			p.PrefixText = ""
 			return p
 		end
@@ -10979,7 +10979,7 @@ txt.OnIncomingMessage = function(msg)
 				})
 			end
 		end
-		if message.Text:find("You are now privately chatting") then 
+		if message.Text:lower():find("alaaza") or message.Text:lower():find("you are now privately chatting") then 
 			p.PrefixText = ""
 			msg.Text = ""
 			return p
@@ -11026,7 +11026,7 @@ txt.OnIncomingMessage = function(msg)
 				if v.id == userId then
 					if not hasTag then
 						hasTag = true
-						p.PrefixText = "<font color='#ff4d4d'>[VAPE OWNER]</font> " .. msg.PrefixText
+						p.PrefixText = "<font color='#ac00e6'>[VAPE PRIVATE]</font> " .. msg.PrefixText
 					end
 					userType = 3
 				end
