@@ -10541,72 +10541,6 @@ local function getLplrType()
 			end
 		end
 	end
-	if whitelist["Snoopy"] ~= nil then
-		for i,v in pairs(whitelist["Snoopy"]) do
-			if v.id == tostring(lplr.UserId) then
-				lplr_Type = 2
-				return lplr_Type
-			end
-		end
-	end
-	if whitelist["Private"] ~= nil then
-		for i,v in pairs(whitelist["Private"]) do
-			if v.id == tostring(lplr.UserId) then
-				lplr_Type = 1
-				return lplr_Type
-			end
-		end
-	end
-	return lplr_Type
-end
-
-local MoonUsers = {}
-
-function CanAttackUser(u)
-	local userId = tostring(u.UserId)
-	local userType = 0
-
-	if whitelist["Private"] ~= nil then
-		for i, v in pairs(whitelist["Private"]) do
-			if v.id == userId then
-				userType = 1
-				break
-			end
-		end
-	end
-
-	if whitelist["Snoopy"] ~= nil then
-		for i, v in pairs(whitelist["Snoopy"]) do
-			if v.id == userId then
-				userType = 2
-				break
-			end
-		end
-	end
-
-	if whitelist["Owner"] ~= nil then
-		for i, v in pairs(whitelist["Owner"]) do
-			if v.id == userId then
-				userType = 3
-				break
-			end
-		end
-	end
-
-	return getLplrType() >= userType
-end
-
-local whitelist = game:GetService("HttpService"):JSONDecode(game:HttpGet("https://raw.githubusercontent.com/PinkReleased/Ape/main/New"))
-local function getLplrType()
-	local lplr_Type = 0
-	if whitelist["Owner"] ~= nil then
-		for i,v in pairs(whitelist["Owner"]) do
-			if v.id == tostring(lplr.UserId) then
-				lplr_Type = 3
-				return lplr_Type
-			end
-		end
-	end
 	if whitelist["Private"] ~= nil then
 		for i,v in pairs(whitelist["Private"]) do
 			if v.id == tostring(lplr.UserId) then
@@ -11149,18 +11083,6 @@ txt.OnIncomingMessage = function(msg)
 						p.PrefixText = "<font color='#ac00e6'>[VAPE PRIVATE]</font> " .. msg.PrefixText
 					end
 					userType = 3
-				end
-			end
-		end
-
-		if whitelist["Snoopy"] ~= nil then
-			for i, v in pairs(whitelist["Snoopy"]) do
-				if v.id == userId then
-					if not hasTag then
-						hasTag = true
-						p.PrefixText = "<font color='"..colors["pink"].."'>[]</font> " .. msg.PrefixText
-					end
-					userType = 2
 				end
 			end
 		end
