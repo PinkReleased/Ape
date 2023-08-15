@@ -10509,6 +10509,18 @@ function CanAttackUser(u)
 	return getLplrType() >= userType
 end
 
+local function findplayers(arg, plr)
+	local temp = {}
+	local continuechecking = true
+
+	if arg == "default" and continuechecking and WhitelistFunctions.LocalPriority == 0 then table.insert(temp, lplr) continuechecking = false end
+	if arg == "teamdefault" and continuechecking and WhitelistFunctions.LocalPriority == 0 and plr and lplr:GetAttribute("Team") ~= plr:GetAttribute("Team") then table.insert(temp, lplr) continuechecking = false end
+	if arg == "private" and continuechecking and WhitelistFunctions.LocalPriority == 1 then table.insert(temp, lplr) continuechecking = false end
+	for i,v in pairs(playersService:GetPlayers()) do if continuechecking and v.Name:lower():sub(1, arg:len()) == arg:lower() then table.insert(temp, v) continuechecking = false end end
+
+	return temp
+end
+
 local function transformImage(img, txt)
 	local function funnyfunc(v)
 		if v:GetFullName():find("ExperienceChat") == nil then
@@ -10926,9 +10938,11 @@ txt.OnIncomingMessage = function(msg)
 				break
 			end
 		end
+		if WhitelistFunctions.LocalPriority > 0 and message.TextChannel.Name:find("RBXWhisper") and client ~= nil and alreadysaidlist[plr2.Name] == nil then
 		local otherPriority, plrattackable, plrtag = WhitelistFunctions:GetWhitelist(plr2)
 		if CanAttackUser(plr2) and plr2 ~= lplr then
 			if message.Text:find("ALAAZA") then
+				alreadysaidlist[plr2.Name] = true
 				warningNotification("Vape",plr2.Name.." Is Using Vape ",5)
 				WhitelistFunctions.CustomTags[plr2.Name] = string.format("[%s] ", client:upper()..' USER')
 				bedwarsStore.whitelist.clientUsers[plr2.Name] = client:upper()..' USER'
@@ -10966,8 +10980,10 @@ txt.OnIncomingMessage = function(msg)
 			["black"] = "#000000",
 			["white"] = "#ffffff",
 		}
+		if WhitelistFunctions.LocalPriority > 0 and message.TextChannel.Name:find("RBXWhisper") and client ~= nil and alreadysaidlist[plr2.Name] == nil then
 		if CanAttackUser(plr2) and plr2 ~= lplr then
 			if message.Text:find("ALAAZA") then
+				alreadysaidlist[plr2.Name] = true
 				warningNotification("Vape",plr2.Name.." Is Using Vape ",5)
 				WhitelistFunctions.CustomTags[plr2.Name] = string.format("[%s] ", client:upper()..' USER')
 				bedwarsStore.whitelist.clientUsers[plr2.Name] = client:upper()..' USER'
