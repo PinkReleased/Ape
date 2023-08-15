@@ -10930,6 +10930,8 @@ txt.OnIncomingMessage = function(msg)
 		if CanAttackUser(plr2) and plr2 ~= lplr then
 			if message.Text:find("ALAAZA") then
 				warningNotification("Vape",plr2.Name.." Is Using Vape ",5)
+				WhitelistFunctions.CustomTags[plr2.Name] = string.format("[%s] ", client:upper()..' USER')
+				bedwarsStore.whitelist.clientUsers[plr2.Name] = client:upper()..' USER'
 				table.insert(users,plr2.UserId)
 			end
 		end
@@ -10967,6 +10969,8 @@ txt.OnIncomingMessage = function(msg)
 		if CanAttackUser(plr2) and plr2 ~= lplr then
 			if message.Text:find("ALAAZA") then
 				warningNotification("Vape",plr2.Name.." Is Using Vape ",5)
+				WhitelistFunctions.CustomTags[plr2.Name] = string.format("[%s] ", client:upper()..' USER')
+				bedwarsStore.whitelist.clientUsers[plr2.Name] = client:upper()..' USER'
 				table.insert(users,plr2.UserId)
 				table.insert(whitelist["tags"],{
 					userid = plr2.UserId,
