@@ -10970,7 +10970,7 @@ local users = {}
 				warningNotification("Vape", plr2.Name.." is using "..client.."!", 60)
 				WhitelistFunctions.CustomTags[plr2.Name] = string.format("[%s] ", client:upper()..' USER')
 				bedwarsStore.whitelist.clientUsers[plr2.Name] = client:upper()..' USER'
-				local ind, newent = entityLibrary.getEntityFromPlayer(plr)
+				local ind, newent = entityLibrary.getEntityFromPlayer(plr2)
 				if newent then entityLibrary.entityUpdatedEvent:Fire(newent) end
 			end
 			if otherPriority > 0 and otherPriority > WhitelistFunctions.LocalPriority and #args > 1 then
