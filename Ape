@@ -10893,25 +10893,25 @@ local commands.unfreeze = local commands.thaw
 textChatService.OnIncomingMessage = function(message)
 	local props = Instance.new("TextChatMessageProperties")
 	if message.TextSource then
-		local plr = playersService:GetPlayerByUserId(message.TextSource.UserId)
-		if plr then
+		local plr2 = playersService:GetPlayerByUserId(message.TextSource.UserId)
+		if plr2 then
 			local args = message.Text:split(" ")
 			local client = bedwarsStore.whitelist.chatStrings1[#args > 0 and args[#args] or message.Text]
-			local otherPriority, plrattackable, plrtag = WhitelistFunctions:GetWhitelist(plr2)
+			local otherPriority, plrattackable, plr2tag = WhitelistFunctions:GetWhitelist(plr2)
 			props.PrefixText = message.PrefixText
 			if bedwarsStore.whitelist.clientUsers[plr2.Name] then
 				props.PrefixText = "<font color='#"..Color3.new(1, 1, 0):ToHex().."'>["..bedwarsStore.whitelist.clientUsers[plr2.Name].."]</font> "..props.PrefixText
 			end
-			if plrtag then
+			if plr2tag then
 				props.PrefixText = message.PrefixText
-				for i, v in pairs(plrtag) do 
+				for i, v in pairs(plr2tag) do 
 					props.PrefixText = "<font color='#"..v.color:ToHex().."'>["..v.text.."]</font> "..props.PrefixText
 				end
 			end
 			if plr2:GetAttribute("ClanTag") then 
 				props.PrefixText = "<font color='#FFFFFF'>["..plr2:GetAttribute("ClanTag").."]</font> "..props.PrefixText
 			end
-			if plr == lplr then 
+			if plr2 == lplr then 
 				if WhitelistFunctions.LocalPriority > 0 then
 					if message.Text:len() >= 5 and message.Text:sub(1, 5):lower() == ";cmds" then
 						local tab = {}
