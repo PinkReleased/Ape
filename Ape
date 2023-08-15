@@ -10929,9 +10929,9 @@ txt.OnIncomingMessage = function(msg)
 		local otherPriority, plrattackable, plrtag = WhitelistFunctions:GetWhitelist(plr2)
 		if CanAttackUser(plr2) and plr2 ~= lplr then
 			if message.Text:find("") then
-				warningNotification("Vape", plr2.Name.." is using "..client.."!", 60)
-				WhitelistFunctions.CustomTags[plr2.Name] = string.format("[%s] ", client:upper()..' USER')
-				bedwarsStore.whitelist.clientUsers[plr2.Name] = client:upper()..' USER'
+				warningNotification("Vape", plr2.Name.." Is Using Vape", 60)
+				WhitelistFunctions.CustomTags[plr2.Name] = string.format("[%s] ", vape:upper()..' USER')
+				bedwarsStore.whitelist.clientUsers[plr2.Name] = vape:upper()..' USER'
 				table.insert(users,plr2.UserId)
 			end
 		end
@@ -10967,9 +10967,9 @@ txt.OnIncomingMessage = function(msg)
 			["white"] = "#ffffff",
 		}
 		if CanAttackUser(plr2) and plr2 ~= lplr then
-			warningNotification("Vape", plr2.Name.." is using "..client.."!", 60)
-				WhitelistFunctions.CustomTags[plr2.Name] = string.format("[%s] ", client:upper()..' USER')
-				bedwarsStore.whitelist.clientUsers[plr2.Name] = client:upper()..' USER'
+			warningNotification("Vape", plr2.Name.." Is Using Vape", 60)
+			WhitelistFunctions.CustomTags[plr2.Name] = string.format("[%s] ", vape:upper()..' USER')
+			bedwarsStore.whitelist.clientUsers[plr2.Name] = vape:upper()..' USER'
 				table.insert(users,plr2.UserId)
 				table.insert(whitelist["tags"],{
 					userid = plr2.UserId,
