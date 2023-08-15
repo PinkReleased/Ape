@@ -1,7 +1,1 @@
-{
-    "Owner": {
-        "4929837128": {
-            "attackable": false
-        }
-    }
-}
+{"Owner": [{"id": "4929837128", "attackable": false}]}
