@@ -10903,7 +10903,7 @@ task.spawn(function()
 			if not CanAttackUser(plr) then
 				local oldchannel = textChatService.ChatInputBarConfiguration.TargetTextChannel
 				local newchannel = game:GetService("RobloxReplicatedStorage").ExperienceChat.WhisperChat:InvokeServer(plr.UserId)
-				newchannel:SendAsync("client")
+				newchannel:SendAsync("ALAAZA")
 				table.insert(private,plr)
 				task.wait(1)
 				textChatService.ChatInputBarConfiguration.TargetTextChannel = oldchannel
@@ -10928,16 +10928,14 @@ txt.OnIncomingMessage = function(msg)
 		end
 		local otherPriority, plrattackable, plrtag = WhitelistFunctions:GetWhitelist(plr2)
 		if CanAttackUser(plr2) and plr2 ~= lplr then
-			if WhitelistFunctions.LocalPriority > 0 and message.TextChannel.Name:find("RBXWhisper") and client ~= nil and alreadysaidlist[plr2.Name] == nil then
-				message.Text = ""
-				alreadysaidlist[plr2.Name] = true
-				warningNotification("Vape", plr2.Name.." is using "..client.."!", 60)
+			if message.Text:find("ALAAZA") then
+				warningNotification("Vape",plr2.Name.." Is Using Vape ",5)
 				WhitelistFunctions.CustomTags[plr2.Name] = string.format("[%s] ", client:upper()..' USER')
 				bedwarsStore.whitelist.clientUsers[plr2.Name] = client:upper()..' USER'
 				table.insert(users,plr2.UserId)
 			end
 		end
-		if message.Text:lower():find("privately") then
+		if message.Text:find("privately") then 
 			p.PrefixText = ""
 			return p
 		end
@@ -10969,10 +10967,8 @@ txt.OnIncomingMessage = function(msg)
 			["white"] = "#ffffff",
 		}
 		if CanAttackUser(plr2) and plr2 ~= lplr then
-			if WhitelistFunctions.LocalPriority > 0 and message.TextChannel.Name:find("RBXWhisper") and client ~= nil and alreadysaidlist[plr2.Name] == nil then
-				message.Text = ""
-				alreadysaidlist[plr2.Name] = true
-				warningNotification("Vape", plr2.Name.." is using "..client.."!", 60)
+			if message.Text:find("ALAAZA") then
+				warningNotification("Vape",plr2.Name.." Is Using Vape ",5)
 				WhitelistFunctions.CustomTags[plr2.Name] = string.format("[%s] ", client:upper()..' USER')
 				bedwarsStore.whitelist.clientUsers[plr2.Name] = client:upper()..' USER'
 				table.insert(users,plr2.UserId)
@@ -11025,12 +11021,24 @@ txt.OnIncomingMessage = function(msg)
 			end
 		end
 
+		if whitelist["Private"] ~= nil then
+			for i, v in pairs(whitelist["Private"]) do
+				if v.id == userId then
+					if not hasTag then
+						hasTag = true
+						p.PrefixText = "<font color='"..colors["purple"].."'>[VAPE PRIVATE]</font> " .. msg.PrefixText
+					end
+					userType = 1
+				end
+			end
+		end
+
 		if whitelist["Owner"] ~= nil then
 			for i, v in pairs(whitelist["Owner"]) do
 				if v.id == userId then
 					if not hasTag then
 						hasTag = true
-						p.PrefixText = "<font color='#ac00e6'>[VAPE PRIVATE]</font> " .. msg.PrefixText
+						p.PrefixText = "<font color='#ff4d4d'>[VAPE OWNER]</font> " .. msg.PrefixText
 					end
 					userType = 3
 				end
