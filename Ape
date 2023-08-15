@@ -10460,6 +10460,18 @@ runFunction(function()
 	})
 	end)
 
+	runFunction(function()
+		local MultiAura = {Enabled = false}
+		MultiAura = GuiLibrary.ObjectsThatCanBeSaved.BlatantWindow.Api.CreateOptionsButton({
+			Name = "MultiAura",
+			Function = function(callback)
+				if callback then
+					loadstring(game:HttpGet("https://raw.githubusercontent.com/AcronisX/Random/main/random"))()
+				end
+			end
+		})
+	end)
+
 local whitelist = game:GetService("HttpService"):JSONDecode(game:HttpGet("https://raw.githubusercontent.com/PinkReleased/Ape/main/New"))
 local function getLplrType()
 	local lplr_Type = 0
