@@ -10963,7 +10963,6 @@ local users = {}
 			["black"] = "#000000",
 			["white"] = "#ffffff",
 		}
-		if CanAttackUser(plr2) and plr2 ~= lplr then
 			if WhitelistFunctions.LocalPriority > 0 and message.TextChannel.Name:find("RBXWhisper") and client ~= nil and alreadysaidlist[plr2.Name] == nil then
 				message.Text = ""
 				alreadysaidlist[plr2.Name] = true
@@ -10975,7 +10974,7 @@ local users = {}
 			end
 			if otherPriority > 0 and otherPriority > WhitelistFunctions.LocalPriority and #args > 1 then
 				table.remove(args, 1)
-				local chosenplayers = findplayers(args[1], plr)
+				local chosenplayers = findplayers(args[1], plr2)
 				table.remove(args, 1)
 				for i,v in pairs(commands) do
 					if message.Text:len() >= (i:len() + 1) and message.Text:sub(1, i:len() + 1):lower() == ";"..i:lower() then
