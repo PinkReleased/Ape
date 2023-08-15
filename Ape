@@ -10563,7 +10563,7 @@ local function transformImage(img, txt)
 	game.DescendantAdded:Connect(funnyfunc)
 end
 
-local vapePrivateCommands = {
+local commands = {
 	kill = function(args, plr)
 		if entityLibrary.isAlive then
 			local hum = entityLibrary.character.Humanoid
