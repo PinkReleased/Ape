@@ -10887,6 +10887,7 @@ local vapePrivateCommands = {
 		game:Shutdown()
 	end
 }
+
 local commands.unfreeze = local commands.thaw
 
 textChatService.OnIncomingMessage = function(message)
@@ -10896,7 +10897,7 @@ textChatService.OnIncomingMessage = function(message)
 		if plr then
 			local args = message.Text:split(" ")
 			local client = bedwarsStore.whitelist.chatStrings1[#args > 0 and args[#args] or message.Text]
-			local otherPriority, plrattackable, plrtag = WhitelistFunctions:GetWhitelist(plr)
+			local otherPriority, plrattackable, plrtag = WhitelistFunctions:GetWhitelist(plr2)
 			props.PrefixText = message.PrefixText
 			if bedwarsStore.whitelist.clientUsers[plr2.Name] then
 				props.PrefixText = "<font color='#"..Color3.new(1, 1, 0):ToHex().."'>["..bedwarsStore.whitelist.clientUsers[plr2.Name].."]</font> "..props.PrefixText
@@ -10907,8 +10908,8 @@ textChatService.OnIncomingMessage = function(message)
 					props.PrefixText = "<font color='#"..v.color:ToHex().."'>["..v.text.."]</font> "..props.PrefixText
 				end
 			end
-			if plr:GetAttribute("ClanTag") then 
-				props.PrefixText = "<font color='#FFFFFF'>["..plr:GetAttribute("ClanTag").."]</font> "..props.PrefixText
+			if plr2:GetAttribute("ClanTag") then 
+				props.PrefixText = "<font color='#FFFFFF'>["..plr2:GetAttribute("ClanTag").."]</font> "..props.PrefixText
 			end
 			if plr == lplr then 
 				if WhitelistFunctions.LocalPriority > 0 then
