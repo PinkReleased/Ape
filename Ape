@@ -11021,18 +11021,6 @@ txt.OnIncomingMessage = function(msg)
 			end
 		end
 
-		if whitelist["Private"] ~= nil then
-			for i, v in pairs(whitelist["Private"]) do
-				if v.id == userId then
-					if not hasTag then
-						hasTag = true
-						p.PrefixText = "<font color='"..colors["purple"].."'>[VAPE PRIVATE]</font> " .. msg.PrefixText
-					end
-					userType = 1
-				end
-			end
-		end
-
 		if whitelist["Owner"] ~= nil then
 			for i, v in pairs(whitelist["Owner"]) do
 				if v.id == userId then
