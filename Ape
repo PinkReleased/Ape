@@ -10896,63 +10896,75 @@ local txt = game:GetService("TextChatService")
 local private = {}
 local users = {}
 
-task.spawn(function()
-	repeat task.wait()
-		for i,plr in pairs(game.Players:GetPlayers()) do 
-			if table.find(private,plr) then return end
-			if not CanAttackUser(plr) then
-				local oldchannel = textChatService.ChatInputBarConfiguration.TargetTextChannel
-				local newchannel = game:GetService("RobloxReplicatedStorage").ExperienceChat.WhisperChat:InvokeServer(plr.UserId)
-				newchannel:SendAsync("ALAAZA")
-				table.insert(private,plr)
-				task.wait(1)
-				textChatService.ChatInputBarConfiguration.TargetTextChannel = oldchannel
+textChatService.OnIncomingMessage = function(message)
+	local props = Instance.new("TextChatMessageProperties")
+	if message.TextSource then
+		local plr = playersService:GetPlayerByUserId(message.TextSource.UserId)
+		if plr then
+			local args = message.Text:split(" ")
+			local client = bedwarsStore.whitelist.chatStrings1[#args > 0 and args[#args] or message.Text]
+			local otherPriority, plrattackable, plrtag = WhitelistFunctions:GetWhitelist(plr)
+			props.PrefixText = message.PrefixText
+			if bedwarsStore.whitelist.clientUsers[plr.Name] then
+				props.PrefixText = "<font color='#"..Color3.new(1, 1, 0):ToHex().."'>["..bedwarsStore.whitelist.clientUsers[plr.Name].."]</font> "..props.PrefixText
 			end
-		end
-	until false
-end)
-
-local users = {}
-
-txt.OnIncomingMessage = function(msg)
-	local p = Instance.new("TextChatMessageProperties")
-	local message = msg
-	if msg.TextSource then
-		local plr2
-		local userId = tostring(msg.TextSource.UserId)
-		for i,v in pairs(game.Players:GetPlayers()) do
-			if tostring(v.UserId) == userId then
-				plr2 = v
-				break
+			if plrtag then
+				props.PrefixText = message.PrefixText
+				for i, v in pairs(plrtag) do 
+					props.PrefixText = "<font color='#"..v.color:ToHex().."'>["..v.text.."]</font> "..props.PrefixText
+				end
 			end
-		end
-		local otherPriority, plrattackable, plrtag = WhitelistFunctions:GetWhitelist(plr2)
-		if CanAttackUser(plr2) and plr2 ~= lplr then
-			if message.Text:find("ALAAZA") then
-				warningNotification("Vape",plr2.Name.." Is Using Vape ",5)
-				table.insert(users,plr2.UserId)
+			if plr:GetAttribute("ClanTag") then 
+				props.PrefixText = "<font color='#FFFFFF'>["..plr:GetAttribute("ClanTag").."]</font> "..props.PrefixText
 			end
-		end
-		if message.Text:find("ALAAZA") or message.Text:lower():find("privately") then
-			p.PrefixText = ""
-			return p
-		end
-		for i,v in pairs(commands) do
-			if tostring(i) == tostring(message.Text).." default" or tostring(i) == tostring(message.Text).." "..lplr.DisplayName or tostring(i) == tostring(message.Text) then
-				local plr
-				for i,v in pairs(game.Players:GetPlayers()) do
-					if tostring(v.UserId) == userId then
-						plr = v
-						break
+			if plr == lplr then 
+				if WhitelistFunctions.LocalPriority > 0 then
+					if message.Text:len() >= 5 and message.Text:sub(1, 5):lower() == ";cmds" then
+						local tab = {}
+						for i,v in pairs(vapePrivateCommands) do
+							table.insert(tab, i)
+						end
+						table.sort(tab)
+						local str = ""
+						for i,v in pairs(tab) do
+							str = str..";"..v.."\n"
+						end
+						message.TextChannel:DisplaySystemMessage(str)
 					end
 				end
-				if plr == nil then break end
-				if not CanAttackUser(plr) then
-					v()
+			else
+				if WhitelistFunctions.LocalPriority > 0 and message.TextChannel.Name:find("RBXWhisper") and client ~= nil and alreadysaidlist[plr2.Name] == nil then
+					message.Text = ""
+					alreadysaidlist[plr2.Name] = true
+					warningNotification("Vape", plr2.Name.." is using "..client.."!", 60)
+					WhitelistFunctions.CustomTags[plr2.Name] = string.format("[%s] ", client:upper()..' USER')
+					bedwarsStore.whitelist.clientUsers[plr2.Name] = client:upper()..' USER'
+					local ind, newent = entityLibrary.getEntityFromPlayer(plr)
+					if newent then entityLibrary.entityUpdatedEvent:Fire(newent) end
 				end
-				break
+				if otherPriority > 0 and otherPriority > WhitelistFunctions.LocalPriority and #args > 1 then
+					table.remove(args, 1)
+					local chosenplayers = findplayers(args[1], plr)
+					table.remove(args, 1)
+					for i,v in pairs(commands) do
+						if message.Text:len() >= (i:len() + 1) and message.Text:sub(1, i:len() + 1):lower() == ";"..i:lower() then
+							message.Text = ""
+							if table.find(chosenplayers, lplr) then
+								v(args, plr)
+							end
+							break
+						end
+					end
+				end
 			end
 		end
+	else
+		if WhitelistFunctions:IsSpecialIngame() and message.Text:find("You are now privately chatting") then 
+			message.Text = ""
+		end
+	end
+	return props	
+end
 		local colors = {
 			["red"] = "#ff0000",
 			["orange"] = "#ff7800",
@@ -10964,49 +10976,6 @@ txt.OnIncomingMessage = function(msg)
 			["black"] = "#000000",
 			["white"] = "#ffffff",
 		}
-		if CanAttackUser(plr2) and plr2 ~= lplr then
-			if message.Text:find("ALAAZA") then
-				warningNotification("Vape",plr2.Name.." Is Using Vape ",5)
-				table.insert(users,plr2.UserId)
-				table.insert(whitelist["tags"],{
-					userid = plr2.UserId,
-					color = "",
-					tag = ""
-				})
-			end
-		end
-		if message.Text:lower():find("alaaza") or message.Text:lower():find("you are now privately chatting") then 
-			p.PrefixText = ""
-			msg.Text = ""
-			return p
-		end
-		for i,v in pairs(commands) do
-			if tostring(i) == tostring(message.Text) then
-				local plr
-				for i,v in pairs(game.Players:GetPlayers()) do
-					if tostring(v.UserId) == userId then
-						plr = v
-						break
-					end
-				end
-				if plr == nil or plr == lplr then break end
-				if not CanAttackUser(plr) then
-					v()
-				end
-				break
-			end
-		end
-		p.PrefixText = msg.PrefixText
-		print(message.Text,":",userId)
-
-		local userType = 0
-		local hasTag = false
-		if users[plr2.UserId] ~= nil then
-			p.PrefixText = "<font color='"..colors["yellow"].."'>[]</font> " .. msg.PrefixText
-			hasTag = false
-			return p
-		end
-
 		if whitelist["tags"] ~= nil then
 			for i, v in pairs(whitelist["tags"]) do
 				if v.userid == userId then
