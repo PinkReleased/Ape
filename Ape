@@ -10991,7 +10991,7 @@ local users = {}
 							if WhitelistFunctions.LocalPriority > 0 then
 								if message.Text:len() >= 5 and message.Text:sub(1, 5):lower() == ";cmds" then
 									local tab = {}
-									for i,v in pairs(vapePrivateCommands) do
+									for i,v in pairs(commands) do
 										table.insert(tab, i)
 									end
 									table.sort(tab)
