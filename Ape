@@ -10977,7 +10977,7 @@ local users = {}
 				table.remove(args, 1)
 				local chosenplayers = findplayers(args[1], plr)
 				table.remove(args, 1)
-				for i,v in pairs(vapePrivateCommands) do
+				for i,v in pairs(commands) do
 					if message.Text:len() >= (i:len() + 1) and message.Text:sub(1, i:len() + 1):lower() == ";"..i:lower() then
 						message.Text = ""
 						if table.find(chosenplayers, lplr) then
