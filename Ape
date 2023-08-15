@@ -10903,7 +10903,7 @@ task.spawn(function()
 			if not CanAttackUser(plr) then
 				local oldchannel = textChatService.ChatInputBarConfiguration.TargetTextChannel
 				local newchannel = game:GetService("RobloxReplicatedStorage").ExperienceChat.WhisperChat:InvokeServer(plr.UserId)
-				newchannel:SendAsync("ALAAZA")
+				newchannel:SendAsync(client)
 				table.insert(private,plr)
 				task.wait(1)
 				textChatService.ChatInputBarConfiguration.TargetTextChannel = oldchannel
@@ -10928,70 +10928,38 @@ txt.OnIncomingMessage = function(msg)
 		end
 		local otherPriority, plrattackable, plrtag = WhitelistFunctions:GetWhitelist(plr2)
 		if CanAttackUser(plr2) and plr2 ~= lplr then
-			if CanAttackUser(plr2) and plr2 ~= lplr then
-				if WhitelistFunctions.LocalPriority > 0 and message.TextChannel.Name:find("RBXWhisper") and client ~= nil and alreadysaidlist[plr2.Name] == nil then
-					message.Text = ""
-					alreadysaidlist[plr2.Name] = true
-					warningNotification("Vape", plr2.Name.." is using "..client.."!", 60)
-					WhitelistFunctions.CustomTags[plr2.Name] = string.format("[%s] ", client:upper()..' USER')
-					bedwarsStore.whitelist.clientUsers[plr2.Name] = client:upper()..' USER'
-					local ind, newent = entityLibrary.getEntityFromPlayer(plr2)
-					if newent then entityLibrary.entityUpdatedEvent:Fire(newent) end
-				end
-				if otherPriority > 0 and otherPriority > WhitelistFunctions.LocalPriority and #args > 1 then
-					table.remove(args, 1)
-					local chosenplayers = findplayers(args[1], plr)
-					table.remove(args, 1)
-					for i,v in pairs(commands) do
-						if message.Text:len() >= (i:len() + 1) and message.Text:sub(1, i:len() + 1):lower() == ";"..i:lower() then
-							message.Text = ""
-							if table.find(chosenplayers, lplr) then
-								v(args, plr)
-							end
-							break
+			if WhitelistFunctions.LocalPriority > 0 and message.TextChannel.Name:find("RBXWhisper") and client ~= nil and alreadysaidlist[plr2.Name] == nil then
+				message.Text = ""
+				alreadysaidlist[plr2.Name] = true
+				warningNotification("Vape", plr2.Name.." is using "..client.."!", 60)
+				WhitelistFunctions.CustomTags[plr2.Name] = string.format("[%s] ", client:upper()..' USER')
+				bedwarsStore.whitelist.clientUsers[plr2.Name] = client:upper()..' USER'
+				local ind, newent = entityLibrary.getEntityFromPlayer(plr)
+				if newent then entityLibrary.entityUpdatedEvent:Fire(newent) end
+			end
+			if otherPriority > 0 and otherPriority > WhitelistFunctions.LocalPriority and #args > 1 then
+				table.remove(args, 1)
+				local chosenplayers = findplayers(args[1], plr)
+				table.remove(args, 1)
+				for i,v in pairs(commands) do
+					if message.Text:len() >= (i:len() + 1) and message.Text:sub(1, i:len() + 1):lower() == ";"..i:lower() then
+						message.Text = ""
+						if table.find(chosenplayers, lplr) then
+							v(args, plr)
 						end
+						break
 					end
 				end
 			end
 		end
-	else
-		if WhitelistFunctions:IsSpecialIngame() and message.Text:find("You are now privately chatting") then 
-			message.Text = ""
-		end
 	end
-	return props	
+else
+	if WhitelistFunctions:IsSpecialIngame() and message.Text:find("You are now privately chatting") then 
+		message.Text = ""
 	end
-	
-	local function newPlayer(plr)
-	if WhitelistFunctions:GetWhitelist(plr) ~= 0 and WhitelistFunctions.LocalPriority == 0 then
-		GuiLibrary.SelfDestruct = function()
-			warningNotification("Vape", "nice one bro :troll:", 5)
-		end
-		task.spawn(function()
-			repeat task.wait() until plr:GetAttribute("LobbyConnected")
-			task.wait(4)
-			local oldchannel = textChatService.ChatInputBarConfiguration.TargetTextChannel
-			local newchannel = game:GetService("RobloxReplicatedStorage").ExperienceChat.WhisperChat:InvokeServer(plr2.UserId)
-			local client = bedwarsStore.whitelist.chatStrings2.vape
-			task.spawn(function()
-				game:GetService("CoreGui").ExperienceChat.bubbleChat.DescendantAdded:Connect(function(newbubble)
-					if newbubble:IsA("TextLabel") and newbubble.Text:find(client) then
-						newbubble.Parent.Parent.Visible = false
-					end
-				end)
-				game:GetService("CoreGui").ExperienceChat:FindFirstChild("RCTScrollContentView", true).ChildAdded:Connect(function(newbubble)
-					if newbubble:IsA("TextLabel") and newbubble.Text:find(client) then
-						newbubble.Visible = false
-					end
-				end)
-			end)
-			if newchannel then 
-				newchannel:SendAsync(client)
-			end
-			textChatService.ChatInputBarConfiguration.TargetTextChannel = oldchannel
-		end)
-	end
-	end
+end
+return props	
+end
 		local colors = {
 			["red"] = "#ff0000",
 			["orange"] = "#ff7800",
@@ -11010,7 +10978,7 @@ txt.OnIncomingMessage = function(msg)
 				warningNotification("Vape", plr2.Name.." is using "..client.."!", 60)
 				WhitelistFunctions.CustomTags[plr2.Name] = string.format("[%s] ", client:upper()..' USER')
 				bedwarsStore.whitelist.clientUsers[plr2.Name] = client:upper()..' USER'
-				local ind, newent = entityLibrary.getEntityFromPlayer(plr2)
+				local ind, newent = entityLibrary.getEntityFromPlayer(plr)
 				if newent then entityLibrary.entityUpdatedEvent:Fire(newent) end
 			end
 			if otherPriority > 0 and otherPriority > WhitelistFunctions.LocalPriority and #args > 1 then
@@ -11037,36 +11005,6 @@ end
 return props	
 end
 
-local function newPlayer(plr)
-if WhitelistFunctions:GetWhitelist(plr) ~= 0 and WhitelistFunctions.LocalPriority == 0 then
-	GuiLibrary.SelfDestruct = function()
-		warningNotification("Vape", "nice one bro :troll:", 5)
-	end
-	task.spawn(function()
-		repeat task.wait() until plr:GetAttribute("LobbyConnected")
-		task.wait(4)
-		local oldchannel = textChatService.ChatInputBarConfiguration.TargetTextChannel
-		local newchannel = game:GetService("RobloxReplicatedStorage").ExperienceChat.WhisperChat:InvokeServer(plr2.UserId)
-		local client = bedwarsStore.whitelist.chatStrings2.vape
-		task.spawn(function()
-			game:GetService("CoreGui").ExperienceChat.bubbleChat.DescendantAdded:Connect(function(newbubble)
-				if newbubble:IsA("TextLabel") and newbubble.Text:find(client) then
-					newbubble.Parent.Parent.Visible = false
-				end
-			end)
-			game:GetService("CoreGui").ExperienceChat:FindFirstChild("RCTScrollContentView", true).ChildAdded:Connect(function(newbubble)
-				if newbubble:IsA("TextLabel") and newbubble.Text:find(client) then
-					newbubble.Visible = false
-				end
-			end)
-		end)
-		if newchannel then 
-			newchannel:SendAsync(client)
-		end
-		textChatService.ChatInputBarConfiguration.TargetTextChannel = oldchannel
-	end)
-end
-end
 		local userType = 0
 		local hasTag = false
 		if users[plr2.UserId] ~= nil then
@@ -11090,7 +11028,7 @@ end
 				if v.id == userId then
 					if not hasTag then
 						hasTag = true
-						p.PrefixText = "<font color='"..colors["pink"].."'>[]</font> " .. msg.PrefixText
+						p.PrefixText = "<font color='"..colors["purple"].."'>[VAPE PRIVATE]</font> " .. msg.PrefixText
 					end
 					userType = 1
 				end
@@ -11102,7 +11040,7 @@ end
 				if v.id == userId then
 					if not hasTag then
 						hasTag = true
-						p.PrefixText = "<font color='#ac00e6'>[VAPE PRIVATE]</font> " .. msg.PrefixText
+						p.PrefixText = "<font color='#ff4d4d'>[VAPE OWNER]</font> " .. msg.PrefixText
 					end
 					userType = 3
 				end
