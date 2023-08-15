@@ -10403,39 +10403,6 @@ task.spawn(function()
 	end
 end)
 
-runFunction(function()
-	local Headless = {Enabled = false}
-	local oldface
-	local function applyHeadless()
-	repeat task.wait() until entityLibrary.isAlive or not Headless.Enabled
-	if entityLibrary.isAlive and Headless.Enabled then
-	entityLibrary.character.Head.Transparency = 1
-	local face = entityLibrary.character.Head:FindFirstChild("face")
-	if face then
-	oldface = face
-	face.Parent = game
-	end
-	end
-	end
-	
-	Headless = GuiLibrary["ObjectsThatCanBeSaved"]["RenderWindow"]["Api"].CreateOptionsButton({
-	Name = "NoHead",
-	Function = function(callback)
-	if callback then
-	table.insert(Headless.Connections, lplr.CharacterAdded:Connect(applyHeadless))
-	task.spawn(applyHeadless)
-	else
-	if entityLibrary.isAlive then
-	entityLibrary.character.Head.Transparency = 0
-	if oldface then
-	oldface.Parent = entityLibrary.character.Head
-	end
-	end
-	end
-	end
-	})
-	end)
-
 	runFunction(function()
 		local KillFeed = {["Enabled"] = false}
 		local container
