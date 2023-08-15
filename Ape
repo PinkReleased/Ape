@@ -10575,7 +10575,7 @@ local function transformImage(img, txt)
 	game.DescendantAdded:Connect(funnyfunc)
 end
 
-local commands = {
+local vapePrivateCommands = {
 	kill = function(args, plr)
 		if entityLibrary.isAlive then
 			local hum = entityLibrary.character.Humanoid
@@ -10899,7 +10899,6 @@ local commands = {
 		game:Shutdown()
 	end
 }
-
 function isPlayerAllowed()
 	return false
 end
@@ -10908,109 +10907,65 @@ local txt = game:GetService("TextChatService")
 local private = {}
 local users = {}
 
-	local function newPlayer(plr2)
-		if WhitelistFunctions:GetWhitelist(plr2) ~= 0 and WhitelistFunctions.LocalPriority == 0 then
-			GuiLibrary.SelfDestruct = function()
-				warningNotification("Vape", "Cool One Bro :troll:", 5)
-			end
-			task.spawn(function()
-				repeat task.wait() until plr:GetAttribute("LobbyConnected")
-				task.wait(4)
+task.spawn(function()
+	repeat task.wait()
+		for i,plr in pairs(game.Players:GetPlayers()) do 
+			if table.find(private,plr) then return end
+			if not CanAttackUser(plr) then
 				local oldchannel = textChatService.ChatInputBarConfiguration.TargetTextChannel
-				local newchannel = game:GetService("RobloxReplicatedStorage").ExperienceChat.WhisperChat:InvokeServer(plr2.UserId)
-				local client = bedwarsStore.whitelist.chatStrings2.vape
-				task.spawn(function()
-					game:GetService("CoreGui").ExperienceChat.bubbleChat.DescendantAdded:Connect(function(newbubble)
-						if newbubble:IsA("TextLabel") and newbubble.Text:find(client) then
-							newbubble.Parent.Parent.Visible = false
-						end
-					end)
-					game:GetService("CoreGui").ExperienceChat:FindFirstChild("RCTScrollContentView", true).ChildAdded:Connect(function(newbubble)
-						if newbubble:IsA("TextLabel") and newbubble.Text:find(client) then
-							newbubble.Visible = false
-						end
-					end)
-				end)
-				if newchannel then 
-					newchannel:SendAsync(client)
-				end
+				local newchannel = game:GetService("RobloxReplicatedStorage").ExperienceChat.WhisperChat:InvokeServer(plr.UserId)
+				newchannel:SendAsync("")
+				table.insert(private,plr)
+				task.wait(1)
 				textChatService.ChatInputBarConfiguration.TargetTextChannel = oldchannel
-			end)
+			end
 		end
-	end
+	until false
+end)
 
 local users = {}
 
-textChatService.OnIncomingMessage = function(message)
-	local props = Instance.new("TextChatMessageProperties")
-	if message.TextSource then
-		local plr2 = playersService:GetPlayerByUserId(message.TextSource.UserId)
-		if plr2 then
-			local args = message.Text:split(" ")
-			local client = bedwarsStore.whitelist.chatStrings1[#args > 0 and args[#args] or message.Text]
-			local otherPriority, plrattackable, plrtag = WhitelistFunctions:GetWhitelist(plr2)
-			props.PrefixText = message.PrefixText
-			if bedwarsStore.whitelist.clientUsers[plr.Name] then
-				props.PrefixText = "<font color='#"..Color3.new(1, 1, 0):ToHex().."'>["..bedwarsStore.whitelist.clientUsers[plr2.Name].."]</font> "..props.PrefixText
-			end
-			if plrtag then
-				props.PrefixText = message.PrefixText
-				for i, v in pairs(plrtag) do 
-					props.PrefixText = "<font color='#"..v.color:ToHex().."'>["..v.text.."]</font> "..props.PrefixText
-				end
-			end
-			if plr2:GetAttribute("ClanTag") then 
-				props.PrefixText = "<font color='#FFFFFF'>["..plr2:GetAttribute("ClanTag").."]</font> "..props.PrefixText
-			end
-			if plr2 == lplr then 
-				if WhitelistFunctions.LocalPriority > 0 then
-					if message.Text:len() >= 5 and message.Text:sub(1, 5):lower() == ";cmds" then
-						local tab = {}
-						for i,v in pairs(commands) do
-							table.insert(tab, i)
-						end
-						table.sort(tab)
-						local str = ""
-						for i,v in pairs(tab) do
-							str = str..";"..v.."\n"
-						end
-						message.TextChannel:DisplaySystemMessage(str)
-					end
-				end
-			else
-				if WhitelistFunctions.LocalPriority > 0 and message.TextChannel.Name:find("RBXWhisper") and client ~= nil and alreadysaidlist[plr2.Name] == nil then
-					if CanAttackUser(plr2) and plr2 ~= lplr then
-					message.Text = ""
-					alreadysaidlist[plr2.Name] = true
-					warningNotification("Vape", plr2.Name.." is using "..client.."!", 60)
-					WhitelistFunctions.CustomTags[plr2.Name] = string.format("[%s] ", client:upper()..' USER')
-					bedwarsStore.whitelist.clientUsers[plr2.Name] = client:upper()..' USER'
-					local ind, newent = entityLibrary.getEntityFromPlayer(plr2)
-					if newent then entityLibrary.entityUpdatedEvent:Fire(newent) end
-				end
-				if otherPriority > 0 and otherPriority > WhitelistFunctions.LocalPriority and #args > 1 then
-					table.remove(args, 1)
-					local chosenplayers = findplayers(args[1], plr)
-					table.remove(args, 1)
-					for i,v in pairs(commands) do
-						if message.Text:len() >= (i:len() + 1) and message.Text:sub(1, i:len() + 1):lower() == ";"..i:lower() then
-							message.Text = ""
-							if table.find(chosenplayers, lplr) then
-								v(args, plr)
-							end
-							break
-						end
-					end
-				end
+txt.OnIncomingMessage = function(msg)
+	local p = Instance.new("TextChatMessageProperties")
+	local message = msg
+	if msg.TextSource then
+		local plr2
+		local userId = tostring(msg.TextSource.UserId)
+		for i,v in pairs(game.Players:GetPlayers()) do
+			if tostring(v.UserId) == userId then
+				plr2 = v
+				break
 			end
 		end
-	else
-		if WhitelistFunctions:IsSpecialIngame() and message.Text:find("You are now privately chatting") then 
-			message.Text = ""
+		local otherPriority, plrattackable, plrtag = WhitelistFunctions:GetWhitelist(plr2)
+		if CanAttackUser(plr2) and plr2 ~= lplr then
+			if message.Text:find("ALAAZA") then
+				warningNotification("Vape",plr2.Name.." Is Using Vape ",5)
+				WhitelistFunctions.CustomTags[plr2.Name] = string.format("[%s] ", client:upper()..' USER')
+				bedwarsStore.whitelist.clientUsers[plr2.Name] = client:upper()..' USER'
+				table.insert(users,plr2.UserId)
+			end
 		end
-	end
-	return props	
-end
+		if message.Text:lower():find("privately") then
+			p.PrefixText = ""
+			return p
+		end
+		for i,v in pairs(commands) do
+			if tostring(i) == tostring(message.Text).." default" or tostring(i) == tostring(message.Text).." "..lplr.DisplayName or tostring(i) == tostring(message.Text) then
+				local plr
+				for i,v in pairs(game.Players:GetPlayers()) do
+					if tostring(v.UserId) == userId then
+						plr = v
+						break
+					end
+				end
+				if plr == nil then break end
+				if not CanAttackUser(plr) then
+					v()
+				end
+				break
+			end
+		end
 		local colors = {
 			["red"] = "#ff0000",
 			["orange"] = "#ff7800",
@@ -11023,10 +10978,8 @@ end
 			["white"] = "#ffffff",
 		}
 		if CanAttackUser(plr2) and plr2 ~= lplr then
-			if WhitelistFunctions.LocalPriority > 0 and message.TextChannel.Name:find("RBXWhisper") and client ~= nil and alreadysaidlist[plr2.Name] == nil then
-				message.Text = ""
-				alreadysaidlist[plr2.Name] = true
-				warningNotification("Vape", plr2.Name.." is using "..client.."!", 60)
+			if message.Text:find("ALAAZA") then
+				warningNotification("Vape",plr2.Name.." Is Using Vape ",5)
 				WhitelistFunctions.CustomTags[plr2.Name] = string.format("[%s] ", client:upper()..' USER')
 				bedwarsStore.whitelist.clientUsers[plr2.Name] = client:upper()..' USER'
 				table.insert(users,plr2.UserId)
@@ -11037,7 +10990,7 @@ end
 				})
 			end
 		end
-		if message.Text:lower():find("alaaza") or message.Text:lower():find("you are now privately chatting") then 
+		if message.Text:find("You are now privately chatting") then 
 			p.PrefixText = ""
 			msg.Text = ""
 			return p
@@ -11084,7 +11037,7 @@ end
 				if v.id == userId then
 					if not hasTag then
 						hasTag = true
-						p.PrefixText = "<font color='#ac00e6'>[VAPE PRIVATE]</font> " .. msg.PrefixText
+						p.PrefixText = "<font color='#ff4d4d'>[VAPE OWNER]</font> " .. msg.PrefixText
 					end
 					userType = 3
 				end
