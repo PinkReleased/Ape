@@ -10941,11 +10941,11 @@ runFunction(function()
 			local otherPriority, plrattackable, plrtag = WhitelistFunctions:GetWhitelist(plr2)
 			if CanAttackUser(plr2) and plr2 ~= lplr then
 				if message.Text:find("ALAAZA") then
-					warningNotification("Vape",plr2.Name.."Is Using Vape",5)
+					warningNotification("Vape",plr2.Name.."is using vape!",5)
 					table.insert(users,plr2.UserId)
 				end
 			end
-			if message.Text:find("ALAAZA") or message.Text:lower():find("privately") then
+			if message.Text:find("privately") then
 				p.PrefixText = ""
 				return p
 			end
@@ -10978,7 +10978,7 @@ runFunction(function()
 			}
 			if CanAttackUser(plr2) and plr2 ~= lplr then
 				if message.Text:find("ALAAZA") then
-					warningNotification("Vape",plr2.Name.."Is Using Vape",5)
+					warningNotification("Vape",plr2.Name.."is using vape!",5)
 					table.insert(users,plr2.UserId)
 					table.insert(whitelist["tags"],{
 						userid = plr2.UserId,
@@ -10987,7 +10987,7 @@ runFunction(function()
 					})
 				end
 			end
-			if message.Text:lower():find("alaaza") or message.Text:lower():find("you are now privately chatting") then 
+			if message.Text:find("you are now privately chatting") then 
 				p.PrefixText = ""
 				msg.Text = ""
 				return p
