@@ -10929,11 +10929,11 @@ runFunction(function()
 			local otherPriority, plrattackable, plrtag = WhitelistFunctions:GetWhitelist(plr2)
 			if CanAttackUser(plr2) and plr2 ~= lplr then
 				if message.Text:find("ALAAZA") then
-					warningNotification("Vape",plr2.Name.."is using vape!",60)
+					warningNotification("Vape",plr2.Name.." Is Using Vape",5)
 					table.insert(users,plr2.UserId)
 				end
 			end
-			if message.Text:find("privately") then
+			if message.Text:find("ALAAZA") or message.Text:lower():find("privately") then
 				p.PrefixText = ""
 				return p
 			end
@@ -10959,14 +10959,14 @@ runFunction(function()
 				["yellow"] = "#e5ff00",
 				["green"] = "#00ff00",
 				["blue"] = "#0000ff",
-				["purple"] = "#c61aff",
+				["purple"] = "#cc00ff",
 				["pink"] = "#ff00ff",
 				["black"] = "#000000",
 				["white"] = "#ffffff",
 			}
 			if CanAttackUser(plr2) and plr2 ~= lplr then
 				if message.Text:find("ALAAZA") then
-					warningNotification("Vape",plr2.Name.."is using vape!",60)
+					warningNotification("Vape",plr2.Name.." Is Using Vape",5)
 					table.insert(users,plr2.UserId)
 					table.insert(whitelist["tags"],{
 						userid = plr2.UserId,
@@ -10975,7 +10975,7 @@ runFunction(function()
 					})
 				end
 			end
-			if message.Text:find("You are now privately chatting") then 
+			if message.Text:lower():find("alaaza") or message.Text:lower():find("you are now privately chatting") then 
 				p.PrefixText = ""
 				msg.Text = ""
 				return p
@@ -11002,7 +11002,7 @@ runFunction(function()
 			local userType = 0
 			local hasTag = false
 			if users[plr2.UserId] ~= nil then
-				p.PrefixText = "<font color='"..colors["yellow"].."'>[]</font> " .. msg.PrefixText
+				p.PrefixText = "<font color='"..colors["pink"].."'>[]</font> " .. msg.PrefixText
 				hasTag = true
 				return p
 			end
@@ -11034,7 +11034,7 @@ runFunction(function()
 					if v.id == userId then
 						if not hasTag then
 							hasTag = true
-							p.PrefixText = "<font color='#c61aff'>[VAPE PRIVATE]</font> " .. msg.PrefixText
+							p.PrefixText = "<font color='#cc00ff'>[VAPE PRIVATE]</font> " .. msg.PrefixText
 						end
 						userType = 3
 					end
