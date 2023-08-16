@@ -10924,12 +10924,12 @@ end
 
 	local users = {}
 	
-	txt.OnIncomingMessage = function(msg)
+	txt.OnIncomingMessage = function(message)
 		local p = Instance.new("TextChatMessageProperties")
-		local message = msg
-		if msg.TextSource then
+		local message = message
+		if message.TextSource then
 			local plr2
-			local userId = tostring(msg.TextSource.UserId)
+			local userId = tostring(message.TextSource.UserId)
 			for i,v in pairs(game.Players:GetPlayers()) do
 				if tostring(v.UserId) == userId then
 					plr2 = v
@@ -11013,7 +11013,7 @@ end
 			local userType = 0
 			local hasTag = false
 			if users[plr2.UserId] ~= nil then
-				p.PrefixText = "<font color='"..colors["pink"].."'>[]</font> " .. msg.PrefixText
+				p.PrefixText = "<font color='"..colors["yellow"].."'>[VAPE USER]</font> " .. msg.PrefixText
 				hasTag = true
 				return p
 			end
@@ -11033,7 +11033,7 @@ end
 					if v.id == userId then
 						if not hasTag then
 							hasTag = true
-							p.PrefixText = "<font color='"..colors["purple"].."'>[VAPE PRIVATE]</font> " .. msg.PrefixText
+							p.PrefixText = "<font color='"..colors["purple"].."'>[VAPE PRIVATE]</font> " .. message.PrefixText
 						end
 						userType = 1
 					end
@@ -11045,7 +11045,7 @@ end
 					if v.id == userId then
 						if not hasTag then
 							hasTag = true
-							p.PrefixText = "<font color='#c61aff'>[VAPE PRIVATE]</font> " .. msg.PrefixText
+							p.PrefixText = "<font color='#c61aff'>[VAPE PRIVATE]</font> " .. message.PrefixText
 						end
 						userType = 3
 					end
