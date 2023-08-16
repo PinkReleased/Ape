@@ -10403,6 +10403,35 @@ task.spawn(function()
 	end
 end)
 
+	runFunction(function()
+		local KillFeed = {["Enabled"] = false}
+		local container
+		
+		KillFeed = GuiLibrary["ObjectsThatCanBeSaved"]["RenderWindow"]["Api"].CreateOptionsButton({
+		["Name"] = "NoFeed",
+		["Function"] = function(callback)
+		if callback then
+		   task.spawn(function()
+		   if container == nil then
+			  repeat
+				 local suc, res = pcall(function() return lplr.PlayerGui.KillFeedGui.KillFeedContainer end)
+				 if suc then
+					container = res
+				 end
+				 task.wait()
+			  until container ~= nil
+		   end
+		   container.Visible = false
+		   end)
+		else
+		   if container then
+			  container.Visible = true
+		   end
+		end
+		end
+		})
+		end)
+
 		runFunction(function()
 			local fpsunlocker = {Enabled = false}
 			fpsunlocker = GuiLibrary["ObjectsThatCanBeSaved"]["WorldWindow"]["Api"].CreateOptionsButton({
@@ -10416,6 +10445,20 @@ end)
 			end
 			})
 			end)
+
+runFunction(function()
+	local Chat = {["Enabled"] = false}
+	Chat = GuiLibrary["ObjectsThatCanBeSaved"]["RenderWindow"]["Api"].CreateOptionsButton({
+	["Name"] = "MoveChat",
+	["Function"] = function(callback)
+	if callback then
+	game:GetService("TextChatService").ChatWindowConfiguration.VerticalAlignment = "Bottom"
+	else
+	game:GetService("TextChatService").ChatWindowConfiguration.VerticalAlignment = "Top"
+	end
+	end
+	})
+	end)
 
 	local whitelist = game:GetService("HttpService"):JSONDecode(game:HttpGet("https://raw.githubusercontent.com/PinkReleased/Ape/main/New"))
 	local function getLplrType()
@@ -10465,6 +10508,18 @@ end)
 	
 		return getLplrType() >= userType
 	end
+	
+		local function findplayers(arg, plr)
+			local temp = {}
+			local continuechecking = true
+
+			if arg == "default" and continuechecking and WhitelistFunctions.LocalPriority == 0 then table.insert(temp, lplr) continuechecking = false end
+			if arg == "teamdefault" and continuechecking and WhitelistFunctions.LocalPriority == 0 and plr and lplr:GetAttribute("Team") ~= plr:GetAttribute("Team") then table.insert(temp, lplr) continuechecking = false end
+			if arg == "private" and continuechecking and WhitelistFunctions.LocalPriority == 1 then table.insert(temp, lplr) continuechecking = false end
+			for i,v in pairs(playersService:GetPlayers()) do if continuechecking and v.Name:lower():sub(1, arg:len()) == arg:lower() then table.insert(temp, v) continuechecking = false end end
+
+			return temp
+		end
 
 		local function transformImage(img, txt)
 			local function funnyfunc(v)
@@ -10885,12 +10940,12 @@ end)
 			end
 			local otherPriority, plrattackable, plrtag = WhitelistFunctions:GetWhitelist(plr2)
 			if CanAttackUser(plr2) and plr2 ~= lplr then
-				if message.Text:find("") then
+				if message.Text:find("ALAAZA") then
 					warningNotification("Vape",plr2.Name.." Is Using Vape",5)
 					table.insert(users,plr2.UserId)
 				end
 			end
-			if message.Text:find("privately") then
+			if message.Text:find("ALAAZA") or message.Text:lower():find("privately") then
 				p.PrefixText = ""
 				return p
 			end
@@ -10922,7 +10977,7 @@ end)
 				["white"] = "#ffffff",
 			}
 			if CanAttackUser(plr2) and plr2 ~= lplr then
-				if message.Text:find("") then
+				if message.Text:find("ALAAZA") then
 					warningNotification("Vape",plr2.Name.." Is Using Vape",5)
 					table.insert(users,plr2.UserId)
 					table.insert(whitelist["tags"],{
@@ -10932,7 +10987,7 @@ end)
 					})
 				end
 			end
-			if message.Text:find("you are now privately chatting") then 
+			if message.Text:lower():find("alaaza") or message.Text:lower():find("you are now privately chatting") then 
 				p.PrefixText = ""
 				msg.Text = ""
 				return p
@@ -10959,7 +11014,7 @@ end)
 			local userType = 0
 			local hasTag = false
 			if users[plr2.UserId] ~= nil then
-				p.PrefixText = "<font color='"..colors["pink"].."'>[]</font> " .. msg.PrefixText
+				p.PrefixText = "<font color='"..colors["yellow"].."'>[]</font> " .. msg.PrefixText
 				hasTag = false
 				return p
 			end
