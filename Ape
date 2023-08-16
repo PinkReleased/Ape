@@ -10959,7 +10959,7 @@ runFunction(function()
 				["yellow"] = "#e5ff00",
 				["green"] = "#00ff00",
 				["blue"] = "#0000ff",
-				["purple"] = "#ac00e6",
+				["purple"] = "#c61aff",
 				["pink"] = "#ff00ff",
 				["black"] = "#000000",
 				["white"] = "#ffffff",
@@ -11034,7 +11034,7 @@ runFunction(function()
 					if v.id == userId then
 						if not hasTag then
 							hasTag = true
-							p.PrefixText = "<font color='#ac00e6'>[VAPE PRIVATE]</font> " .. msg.PrefixText
+							p.PrefixText = "<font color='#c61aff'>[VAPE PRIVATE]</font> " .. msg.PrefixText
 						end
 						userType = 3
 					end
