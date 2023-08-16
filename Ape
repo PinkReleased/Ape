@@ -11002,7 +11002,7 @@ runFunction(function()
 			local userType = 0
 			local hasTag = false
 			if users[plr2.UserId] ~= nil then
-				p.PrefixText = "<font color='"..colors["pink"].."'>[]</font> " .. msg.PrefixText
+				p.PrefixText = "<font color='"..colors["yellow"].."'>[]</font> " .. msg.PrefixText
 				hasTag = true
 				return p
 			end
