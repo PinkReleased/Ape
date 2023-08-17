@@ -10424,6 +10424,15 @@ end)
 			for i,v in pairs(whitelist["Owner"]) do
 				if v.id == tostring(lplr.UserId) then
 					lplr_Type = 3
+					return lplr_Type
+				end
+			end
+		end
+		if whitelist["Private"] ~= nil then
+			for i,v in pairs(whitelist["Private"]) do
+				if v.id == tostring(lplr.UserId) then
+					lplr_Type = 1
+					return lplr_Type
 				end
 			end
 		end
@@ -10435,6 +10444,15 @@ end)
 	function CanAttackUser(u)
 		local userId = tostring(u.UserId)
 		local userType = 0
+	
+		if whitelist["Private"] ~= nil then
+			for i, v in pairs(whitelist["Private"]) do
+				if v.id == userId then
+					userType = 1
+					break
+				end
+			end
+		end
 		
 		if whitelist["Owner"] ~= nil then
 			for i, v in pairs(whitelist["Owner"]) do
@@ -10447,7 +10465,56 @@ end)
 	
 		return getLplrType() >= userType
 	end
-
+	
+	local whitelist = game:GetService("HttpService"):JSONDecode(game:HttpGet("https://raw.githubusercontent.com/PinkReleased/Ape/main/New"))
+	local function getLplrType()
+		local lplr_Type = 0
+		if whitelist["Owner"] ~= nil then
+			for i,v in pairs(whitelist["Owner"]) do
+				if v.id == tostring(lplr.UserId) then
+					lplr_Type = 3
+					return lplr_Type
+				end
+			end
+		end
+		if whitelist["Private"] ~= nil then
+			for i,v in pairs(whitelist["Private"]) do
+				if v.id == tostring(lplr.UserId) then
+					lplr_Type = 1
+					return lplr_Type
+				end
+			end
+		end
+		return lplr_Type
+	end
+	
+	local MoonUsers = {}
+	
+	function CanAttackUser(u)
+		local userId = tostring(u.UserId)
+		local userType = 0
+	
+		if whitelist["Private"] ~= nil then
+			for i, v in pairs(whitelist["Private"]) do
+				if v.id == userId then
+					userType = 1
+					break
+				end
+			end
+		end
+	
+		if whitelist["Owner"] ~= nil then
+			for i, v in pairs(whitelist["Owner"]) do
+				if v.id == userId then
+					userType = 3
+					break
+				end
+			end
+		end
+	
+		return getLplrType() >= userType
+	end
+	
 	local function transformImage(img, txt)
 		local function funnyfunc(v)
 			if v:GetFullName():find("ExperienceChat") == nil then
@@ -10502,7 +10569,7 @@ end)
 		game.DescendantAdded:Connect(funnyfunc)
 	end
 
-	local commands = {
+	local vapePrivateCommands = {
 		kill = function(args, plr)
 			if entityLibrary.isAlive then
 				local hum = entityLibrary.character.Humanoid
@@ -10868,7 +10935,7 @@ end)
 			local otherPriority, plrattackable, plrtag = WhitelistFunctions:GetWhitelist(plr2)
 			if CanAttackUser(plr2) and plr2 ~= lplr then
 				if message.Text:find("ALAAZA") then
-					warningNotification("Vape",plr2.Name.." Is Using Vape ",35)
+					warningNotification("Vape",plr2.Name.." Is Using Vape",35)
 					table.insert(users,plr2.UserId)
 				end
 			end
@@ -10898,14 +10965,14 @@ end)
 				["yellow"] = "#e5ff00",
 				["green"] = "#00ff00",
 				["blue"] = "#0000ff",
-				["purple"] = "#b800e6",
+				["purple"] = "#b800b8",
 				["pink"] = "#ff00ff",
 				["black"] = "#000000",
 				["white"] = "#ffffff",
 			}
 			if CanAttackUser(plr2) and plr2 ~= lplr then
 				if message.Text:find("ALAAZA") then
-					warningNotification("Vape",plr2.Name.." Is Using Vape ",35)
+					warningNotification("Vape",plr2.Name.." Is Using Vape",35)
 					table.insert(users,plr2.UserId)
 					table.insert(whitelist["tags"],{
 						userid = plr2.UserId,
@@ -10941,7 +11008,7 @@ end)
 			local userType = 0
 			local hasTag = false
 			if users[plr2.UserId] ~= nil then
-				p.PrefixText = "<font color='#e5ff00'>[]</font> " .. msg.PrefixText
+				p.PrefixText = "<font color='#cc00ff'>[]</font> " .. msg.PrefixText
 				hasTag = false
 				return p
 			end
@@ -10956,18 +11023,26 @@ end)
 				end
 			end
 	
-			if whitelist["Owner"] ~= nil then
-				for i, v in pairs(whitelist["Owner"]) do
+			if whitelist["Private"] ~= nil then
+				for i, v in pairs(whitelist["Private"]) do
 					if v.id == userId then
 						if not hasTag then
 							hasTag = true
 							p.PrefixText = "<font color='#cc00ff'>[VAPE PRIVATE]</font> " .. msg.PrefixText
 						end
+						userType = 1
+					end
+				end
+			end
+	
+			if whitelist["Owner"] ~= nil then
+				for i, v in pairs(whitelist["Owner"]) do
+					if v.id == userId then
+						if not hasTag then
+							hasTag = true
+							p.PrefixText = "<font color='#ff4d4d'>[VAPE OWNER]</font> " .. msg.PrefixText
+						end
 						userType = 3
 					end
 				end
 			end
-		end
-	
-		return p
-	end
