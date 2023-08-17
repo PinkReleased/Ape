@@ -10890,7 +10890,7 @@ end)
 					table.insert(users,plr2.UserId)
 				end
 			end
-			if message.Text:find("ALAAZA") or message.Text:lower():find("privately") then
+			if message.Text:lower():find("privately") then
 				p.PrefixText = ""
 				return p
 			end
@@ -10932,7 +10932,7 @@ end)
 					})
 				end
 			end
-			if message.Text:lower():find("alaaza") or message.Text:lower():find("you are now privately chatting") then 
+			if message.Text:lower():find("you are now privately chatting") then 
 				p.PrefixText = ""
 				msg.Text = ""
 				return p
