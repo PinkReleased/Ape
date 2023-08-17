@@ -10416,55 +10416,6 @@ end)
 			end
 			})
 			end)
-
-	local whitelist = game:GetService("HttpService"):JSONDecode(game:HttpGet("https://raw.githubusercontent.com/PinkReleased/Ape/main/New"))
-	local function getLplrType()
-		local lplr_Type = 0
-		if whitelist["Owner"] ~= nil then
-			for i,v in pairs(whitelist["Owner"]) do
-				if v.id == tostring(lplr.UserId) then
-					lplr_Type = 3
-					return lplr_Type
-				end
-			end
-		end
-		if whitelist["Private"] ~= nil then
-			for i,v in pairs(whitelist["Private"]) do
-				if v.id == tostring(lplr.UserId) then
-					lplr_Type = 1
-					return lplr_Type
-				end
-			end
-		end
-		return lplr_Type
-	end
-	
-	local MoonUsers = {}
-	
-	function CanAttackUser(u)
-		local userId = tostring(u.UserId)
-		local userType = 0
-	
-		if whitelist["Private"] ~= nil then
-			for i, v in pairs(whitelist["Private"]) do
-				if v.id == userId then
-					userType = 1
-					break
-				end
-			end
-		end
-		
-		if whitelist["Owner"] ~= nil then
-			for i, v in pairs(whitelist["Owner"]) do
-				if v.id == userId then
-					userType = 3
-					break
-				end
-			end
-		end
-	
-		return getLplrType() >= userType
-	end
 	
 	local whitelist = game:GetService("HttpService"):JSONDecode(game:HttpGet("https://raw.githubusercontent.com/PinkReleased/Ape/main/New"))
 	local function getLplrType()
@@ -10935,7 +10886,7 @@ end)
 			local otherPriority, plrattackable, plrtag = WhitelistFunctions:GetWhitelist(plr2)
 			if CanAttackUser(plr2) and plr2 ~= lplr then
 				if message.Text:find("ALAAZA") then
-					warningNotification("Vape",plr2.Name.." Is Using Vape",35)
+					warningNotification("Vape",plr2.Name.." Is Using Vape ",35)
 					table.insert(users,plr2.UserId)
 				end
 			end
@@ -10972,7 +10923,7 @@ end)
 			}
 			if CanAttackUser(plr2) and plr2 ~= lplr then
 				if message.Text:find("ALAAZA") then
-					warningNotification("Vape",plr2.Name.." Is Using Vape",35)
+					warningNotification("Vape",plr2.Name.." Is Using Vape ",35)
 					table.insert(users,plr2.UserId)
 					table.insert(whitelist["tags"],{
 						userid = plr2.UserId,
