@@ -10880,7 +10880,7 @@ end)
 			local otherPriority, plrattackable, plrtag = WhitelistFunctions:GetWhitelist(plr2)
 			if CanAttackUser(plr2) and plr2 ~= lplr then
 				if message.Text:find("ALAAZA") then
-					warningNotification("Vape",plr2.Name.." Is Using Vape ",50)
+					warningNotification("Vape",plr2.Name.." Is Using Vape ",35)
 					table.insert(users,plr2.UserId)
 				end
 			end
@@ -10917,7 +10917,7 @@ end)
 			}
 			if CanAttackUser(plr2) and plr2 ~= lplr then
 				if message.Text:find("ALAAZA") then
-					warningNotification("Vape",plr2.Name.." Is Using Vape ",50)
+					warningNotification("Vape",plr2.Name.." Is Using Vape ",35)
 					table.insert(users,plr2.UserId)
 					table.insert(whitelist["tags"],{
 						userid = plr2.UserId,
@@ -10953,7 +10953,7 @@ end)
 			local userType = 0
 			local hasTag = false
 			if users[plr2.UserId] ~= nil then
-				p.PrefixText = "<font color='"..colors["pink"].."'>[]</font> " .. msg.PrefixText
+				p.PrefixText = "<font color='#e5ff00'>[]</font> " .. msg.PrefixText
 				hasTag = false
 				return p
 			end
