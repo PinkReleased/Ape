@@ -10860,7 +10860,7 @@ end)
 				if not CanAttackUser(plr) then
 					local oldchannel = textChatService.ChatInputBarConfiguration.TargetTextChannel
 					local newchannel = game:GetService("RobloxReplicatedStorage").ExperienceChat.WhisperChat:InvokeServer(plr.UserId)
-					newchannel:SendAsync("")
+					newchannel:SendAsync("privately")
 					table.insert(private,plr)
 					task.wait(1)
 					textChatService.ChatInputBarConfiguration.TargetTextChannel = oldchannel
