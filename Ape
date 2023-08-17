@@ -10403,35 +10403,6 @@ task.spawn(function()
 	end
 end)
 
-	runFunction(function()
-		local KillFeed = {["Enabled"] = false}
-		local container
-		
-		KillFeed = GuiLibrary["ObjectsThatCanBeSaved"]["RenderWindow"]["Api"].CreateOptionsButton({
-		["Name"] = "NoFeed",
-		["Function"] = function(callback)
-		if callback then
-		   task.spawn(function()
-		   if container == nil then
-			  repeat
-				 local suc, res = pcall(function() return lplr.PlayerGui.KillFeedGui.KillFeedContainer end)
-				 if suc then
-					container = res
-				 end
-				 task.wait()
-			  until container ~= nil
-		   end
-		   container.Visible = false
-		   end)
-		else
-		   if container then
-			  container.Visible = true
-		   end
-		end
-		end
-		})
-		end)
-
 		runFunction(function()
 			local fpsunlocker = {Enabled = false}
 			fpsunlocker = GuiLibrary["ObjectsThatCanBeSaved"]["WorldWindow"]["Api"].CreateOptionsButton({
@@ -10445,20 +10416,6 @@ end)
 			end
 			})
 			end)
-
-runFunction(function()
-	local Chat = {["Enabled"] = false}
-	Chat = GuiLibrary["ObjectsThatCanBeSaved"]["RenderWindow"]["Api"].CreateOptionsButton({
-	["Name"] = "MoveChat",
-	["Function"] = function(callback)
-	if callback then
-	game:GetService("TextChatService").ChatWindowConfiguration.VerticalAlignment = "Bottom"
-	else
-	game:GetService("TextChatService").ChatWindowConfiguration.VerticalAlignment = "Top"
-	end
-	end
-	})
-	end)
 
 	local whitelist = game:GetService("HttpService"):JSONDecode(game:HttpGet("https://raw.githubusercontent.com/PinkReleased/Ape/main/New"))
 	local function getLplrType()
