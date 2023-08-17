@@ -10424,15 +10424,6 @@ end)
 			for i,v in pairs(whitelist["Owner"]) do
 				if v.id == tostring(lplr.UserId) then
 					lplr_Type = 3
-					return lplr_Type
-				end
-			end
-		end
-		if whitelist["Private"] ~= nil then
-			for i,v in pairs(whitelist["Private"]) do
-				if v.id == tostring(lplr.UserId) then
-					lplr_Type = 1
-					return lplr_Type
 				end
 			end
 		end
@@ -10444,15 +10435,6 @@ end)
 	function CanAttackUser(u)
 		local userId = tostring(u.UserId)
 		local userType = 0
-
-		if whitelist["Private"] ~= nil then
-			for i, v in pairs(whitelist["Private"]) do
-				if v.id == userId then
-					userType = 1
-					break
-				end
-			end
-		end
 		
 		if whitelist["Owner"] ~= nil then
 			for i, v in pairs(whitelist["Owner"]) do
@@ -10860,7 +10842,7 @@ end)
 				if not CanAttackUser(plr) then
 					local oldchannel = textChatService.ChatInputBarConfiguration.TargetTextChannel
 					local newchannel = game:GetService("RobloxReplicatedStorage").ExperienceChat.WhisperChat:InvokeServer(plr.UserId)
-					newchannel:SendAsync(client)
+					newchannel:SendAsync("ALAAZA")
 					table.insert(private,plr)
 					task.wait(1)
 					textChatService.ChatInputBarConfiguration.TargetTextChannel = oldchannel
@@ -10885,12 +10867,12 @@ end)
 			end
 			local otherPriority, plrattackable, plrtag = WhitelistFunctions:GetWhitelist(plr2)
 			if CanAttackUser(plr2) and plr2 ~= lplr then
-				if message.Text = ""
-    				warningNotification("Vape", plr2.Name.." is using "..client.."!", 60)
-    				table.insert(users,plr2.UserId)
+				if message.Text:find("") then
+					warningNotification("Vape",plr2.Name.." Is Using Vape ",50)
+					table.insert(users,plr2.UserId)
 				end
 			end
-			if message.Text:find("privately") then 
+			if message.Text:find("privately") then
 				p.PrefixText = ""
 				return p
 			end
@@ -10922,8 +10904,8 @@ end)
 				["white"] = "#ffffff",
 			}
 			if CanAttackUser(plr2) and plr2 ~= lplr then
-				if message.Text = ""
-    				warningNotification("Vape", plr2.Name.." is using "..client.."!", 60)
+				if message.Text:find("") then
+					warningNotification("Vape",plr2.Name.." Is Using Vape ",50)
 					table.insert(users,plr2.UserId)
 					table.insert(whitelist["tags"],{
 						userid = plr2.UserId,
@@ -10973,25 +10955,13 @@ end)
 					end
 				end
 			end
-
-			if whitelist["Private"] ~= nil then
-				for i, v in pairs(whitelist["Private"]) do
-					if v.id == userId then
-						if not hasTag then
-							hasTag = true
-							p.PrefixText = "<font color='#33ccff'>[Ape Private]</font> " .. msg.PrefixText
-						end
-						userType = 1
-					end
-				end
-			end
 	
 			if whitelist["Owner"] ~= nil then
 				for i, v in pairs(whitelist["Owner"]) do
 					if v.id == userId then
 						if not hasTag then
 							hasTag = true
-							p.PrefixText = "<font color='#ff99cc'>[Ape Developer]</font> " .. msg.PrefixText
+							p.PrefixText = "<font color='#cc00ff'>[VAPE PRIVATE]</font> " .. msg.PrefixText
 						end
 						userType = 3
 					end
