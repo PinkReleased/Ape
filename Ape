@@ -10860,7 +10860,7 @@ end)
 				if not CanAttackUser(plr) then
 					local oldchannel = textChatService.ChatInputBarConfiguration.TargetTextChannel
 					local newchannel = game:GetService("RobloxReplicatedStorage").ExperienceChat.WhisperChat:InvokeServer(plr.UserId)
-					newchannel:SendAsync("client")
+					newchannel:SendAsync(client)
 					table.insert(private,plr)
 					task.wait(1)
 					textChatService.ChatInputBarConfiguration.TargetTextChannel = oldchannel
@@ -10924,8 +10924,8 @@ end)
 			if CanAttackUser(plr2) and plr2 ~= lplr then
 				if message.Text = ""
     				warningNotification("Vape", plr2.Name.." is using ".."client".."!", 60)
-    				WhitelistFunctions.CustomTags[plr2.Name] = string.format("[%s] ", client:upper()..' USER')
-		    	    bedwarsStore.whitelist.clientUsers[plr2.Name] = client:upper()..' USER
+    				WhitelistFunctions.CustomTags[plr2.Name] = string.format("[%s] ", "client":upper()..' USER')
+		    	    bedwarsStore.whitelist.clientUsers[plr2.Name] = "client":upper()..' USER
 					table.insert(users,plr2.UserId)
 					table.insert(whitelist["tags"],{
 						userid = plr2.UserId,
