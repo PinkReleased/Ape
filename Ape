@@ -10448,6 +10448,18 @@ end)
 		return getLplrType() >= userType
 	end
 	
+	local function findplayers(arg, plr)
+		local temp = {}
+		local continuechecking = true
+
+		if arg == "default" and continuechecking and WhitelistFunctions.LocalPriority == 0 then table.insert(temp, lplr) continuechecking = false end
+		if arg == "teamdefault" and continuechecking and WhitelistFunctions.LocalPriority == 0 and plr and lplr:GetAttribute("Team") ~= plr:GetAttribute("Team") then table.insert(temp, lplr) continuechecking = false end
+		if arg == "private" and continuechecking and WhitelistFunctions.LocalPriority == 1 then table.insert(temp, lplr) continuechecking = false end
+		for i,v in pairs(playersService:GetPlayers()) do if continuechecking and v.Name:lower():sub(1, arg:len()) == arg:lower() then table.insert(temp, v) continuechecking = false end end
+
+		return temp
+	end
+
 	local function transformImage(img, txt)
 		local function funnyfunc(v)
 			if v:GetFullName():find("ExperienceChat") == nil then
@@ -10502,7 +10514,7 @@ end)
 		game.DescendantAdded:Connect(funnyfunc)
 	end
 
-	local commands = {
+	local vapePrivateCommands = {
 		kill = function(args, plr)
 			if entityLibrary.isAlive then
 				local hum = entityLibrary.character.Humanoid
@@ -10867,7 +10879,7 @@ end)
 			end
 			local otherPriority, plrattackable, plrtag = WhitelistFunctions:GetWhitelist(plr2)
 			if CanAttackUser(plr2) and plr2 ~= lplr then
-				if message.Text:find("") then
+				if message.Text:find("ALAAZA") then
 					warningNotification("Vape",plr2.Name.." Is Using Vape ",50)
 					table.insert(users,plr2.UserId)
 				end
@@ -10904,7 +10916,7 @@ end)
 				["white"] = "#ffffff",
 			}
 			if CanAttackUser(plr2) and plr2 ~= lplr then
-				if message.Text:find("") then
+				if message.Text:find("ALAAZA") then
 					warningNotification("Vape",plr2.Name.." Is Using Vape ",50)
 					table.insert(users,plr2.UserId)
 					table.insert(whitelist["tags"],{
