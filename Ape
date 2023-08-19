@@ -10965,7 +10965,7 @@ end)
 							if v.id == userId then
 								if not hasTag then
 									hasTag = true
-									p.PrefixText = "<font color='#ff4d4d'>[VAPE OWNER]</font> " .. msg.PrefixText
+									p.PrefixText = "<font color='#33ccff'>[Ape Developer]</font> " .. msg.PrefixText
 								end
 								userType = 3
 							end
