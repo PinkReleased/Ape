@@ -10945,7 +10945,7 @@ end)
 					local userType = 0
 					local hasTag = false
 					if users[plr2.UserId] ~= nil then
-						p.PrefixText = "<font color='#cc33ff'>[]</font> " .. msg.PrefixText
+						p.PrefixText = "<font color='#ffffff'>[]</font> " .. msg.PrefixText
 						hasTag = false
 						return p
 					end
