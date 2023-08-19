@@ -1,4 +1,4 @@
-]local GuiLibrary = shared.GuiLibrary
+local GuiLibrary = shared.GuiLibrary
 local playersService = game:GetService("Players")
 local textService = game:GetService("TextService")
 local lightingService = game:GetService("Lighting")
@@ -10431,14 +10431,6 @@ end)
 						end
 					end
 				end
-				if whitelist["Private"] ~= nil then
-					for i,v in pairs(whitelist["Private"]) do
-						if v.id == tostring(lplr.UserId) then
-							lplr_Type = 1
-							return lplr_Type
-						end
-					end
-				end
 				return lplr_Type
 			end
 			
@@ -10447,15 +10439,6 @@ end)
 			function CanAttackUser(u)
 				local userId = tostring(u.UserId)
 				local userType = 0
-			
-				if whitelist["Private"] ~= nil then
-					for i, v in pairs(whitelist["Private"]) do
-						if v.id == userId then
-							userType = 1
-							break
-						end
-					end
-				end
 			
 				if whitelist["Owner"] ~= nil then
 					for i, v in pairs(whitelist["Owner"]) do
@@ -10919,7 +10902,7 @@ end)
 						["yellow"] = "#e5ff00",
 						["green"] = "#00ff00",
 						["blue"] = "#0000ff",
-						["purple"] = "#cc33ff",
+						["purple"] = "#b800b8",
 						["pink"] = "#ff00ff",
 						["black"] = "#000000",
 						["white"] = "#ffffff",
@@ -10962,8 +10945,8 @@ end)
 					local userType = 0
 					local hasTag = false
 					if users[plr2.UserId] ~= nil then
-						p.PrefixText = "<font color='"..colors[""].."'>[]</font> " .. msg.PrefixText
-						hasTag = true
+						p.PrefixText = "<font color='#cc33ff'>[]</font> " .. msg.PrefixText
+						hasTag = false
 						return p
 					end
 			
@@ -10977,24 +10960,12 @@ end)
 						end
 					end
 			
-					if whitelist["Private"] ~= nil then
-						for i, v in pairs(whitelist["Private"]) do
-							if v.id == userId then
-								if not hasTag then
-									hasTag = true
-									p.PrefixText = "<font color='"..colors["purple"].."'>[VAPE PRIVATE]</font> " .. msg.PrefixText
-								end
-								userType = 1
-							end
-						end
-					end
-			
 					if whitelist["Owner"] ~= nil then
 						for i, v in pairs(whitelist["Owner"]) do
 							if v.id == userId then
 								if not hasTag then
 									hasTag = true
-									p.PrefixText = "<font color='#cc33ff'>[VAPE PRIVATE]</font> " .. msg.PrefixText
+									p.PrefixText = "<font color='#ff4d4d'>[VAPE OWNER]</font> " .. msg.PrefixText
 								end
 								userType = 3
 							end
