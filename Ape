@@ -10431,14 +10431,6 @@ end)
 						end
 					end
 				end
-				if whitelist["Private"] ~= nil then
-					for i,v in pairs(whitelist["Private"]) do
-						if v.id == tostring(lplr.UserId) then
-							lplr_Type = 1
-							return lplr_Type
-						end
-					end
-				end
 				return lplr_Type
 			end
 			
@@ -10447,15 +10439,6 @@ end)
 			function CanAttackUser(u)
 				local userId = tostring(u.UserId)
 				local userType = 0
-			
-				if whitelist["Private"] ~= nil then
-					for i, v in pairs(whitelist["Private"]) do
-						if v.id == userId then
-							userType = 1
-							break
-						end
-					end
-				end
 			
 				if whitelist["Owner"] ~= nil then
 					for i, v in pairs(whitelist["Owner"]) do
@@ -10973,18 +10956,6 @@ end)
 								hasTag = true
 								local color = colors[v.color] or colors[""]
 								p.PrefixText = "<font color='" .. color .. "'>[" .. v.tag .. "]</font> " .. p.PrefixText
-							end
-						end
-					end
-			
-					if whitelist["Private"] ~= nil then
-						for i, v in pairs(whitelist["Private"]) do
-							if v.id == userId then
-								if not hasTag then
-									hasTag = true
-									p.PrefixText = "<font color='"..colors["purple"].."'>[VAPE PRIVATE]</font> " .. msg.PrefixText
-								end
-								userType = 1
 							end
 						end
 					end
