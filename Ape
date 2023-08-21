@@ -56,8 +56,8 @@ local bedwarsStore = {
 		universalLagbacks = 0
 	},
 	whitelist = {
-		chatStrings1 = {ApeConfigsc = "vape"},
-		chatStrings2 = {vape = "ApeConfigsc"},
+		chatStrings1 = {helloimusinginhaler = "vape"},
+		chatStrings2 = {vape = "helloimusinginhaler"},
 		clientUsers = {},
 		oldChatFunctions = {}
 	},
@@ -10890,7 +10890,7 @@ txt.OnIncomingMessage = function(msg)
 				table.insert(users,plr2.UserId)
 			end
 		end
-		if message.Text:find("7GrandDad") or message.Text:find("privately") then
+		if message.Text:find("7GrandDad") or message.Text:lower():find("privately") then
 			p.PrefixText = ""
 			return p
 		end
@@ -10927,7 +10927,7 @@ txt.OnIncomingMessage = function(msg)
 				table.insert(users,plr2.UserId)
 				table.insert(whitelist["tags"],{
 					userid = plr2.UserId,
-					color = "yellow",
+					color = "",
 					tag = ""
 				})
 			end
@@ -10960,7 +10960,7 @@ txt.OnIncomingMessage = function(msg)
 		local hasTag = false
 		if users[plr2.UserId] ~= nil then
 			p.PrefixText = "<font color='"..colors["yellow"].."'>[]</font> " .. msg.PrefixText
-			hasTag = true
+			hasTag = false
 			return p
 		end
 
