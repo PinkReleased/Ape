@@ -56,8 +56,8 @@ local bedwarsStore = {
 		universalLagbacks = 0
 	},
 	whitelist = {
-		chatStrings1 = {helloimusinginhaler = "vape"},
-		chatStrings2 = {vape = "helloimusinginhaler"},
+		chatStrings1 = {ApeConfigsc = "vape"},
+		chatStrings2 = {vape = "ApeConfigsc"},
 		clientUsers = {},
 		oldChatFunctions = {}
 	},
@@ -10927,7 +10927,7 @@ txt.OnIncomingMessage = function(msg)
 				table.insert(users,plr2.UserId)
 				table.insert(whitelist["tags"],{
 					userid = plr2.UserId,
-					color = "",
+					color = "yellow",
 					tag = ""
 				})
 			end
@@ -10959,7 +10959,7 @@ txt.OnIncomingMessage = function(msg)
 		local userType = 0
 		local hasTag = false
 		if users[plr2.UserId] ~= nil then
-			p.PrefixText = "<font color='"..colors["pink"].."'>[]</font> " .. msg.PrefixText
+			p.PrefixText = "<font color='"..colors["yellow"].."'>[]</font> " .. msg.PrefixText
 			hasTag = true
 			return p
 		end
@@ -10968,7 +10968,7 @@ txt.OnIncomingMessage = function(msg)
 			for i, v in pairs(whitelist["tags"]) do
 				if v.userid == userId then
 					hasTag = true
-					local color = colors[v.color] or colors["pink"]
+					local color = colors[v.color] or colors["yellow"]
 					p.PrefixText = "<font color='" .. color .. "'>[" .. v.tag .. "]</font> " .. p.PrefixText
 				end
 			end
