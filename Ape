@@ -3613,6 +3613,10 @@ runFunction(function()
 			{CFrame = CFrame.new(0.69, -0.7, 0.1) * CFrame.Angles(math.rad(-65), math.rad(55), math.rad(-51)), Time = 0.1},
 			{CFrame = CFrame.new(0.16, -1.16, 0.5) * CFrame.Angles(math.rad(-179), math.rad(54), math.rad(33)), Time = 0.1}
 		},
+		Rise = {
+			{CFrame = {X = 0.9, Y = 0, Z = 0, Angle = CFrame.Angles(math.rad(-80), math.rad(60), math.rad(-40))},Time = 0.14, RealDelay = 0.14},
+			{CFrame = {X = 0.5, Y = -0.2, Z = -0.7, Angle = CFrame.Angles(math.rad(-150), math.rad(55), math.rad(20))},Time = 0.14, RealDelay = 0.14},
+		},
 		["Vertical Spin"] = {
 			{CFrame = CFrame.new(0, 0, 0) * CFrame.Angles(math.rad(-90), math.rad(8), math.rad(5)), Time = 0.1},
 			{CFrame = CFrame.new(0, 0, 0) * CFrame.Angles(math.rad(180), math.rad(3), math.rad(13)), Time = 0.1},
