@@ -10428,14 +10428,6 @@ local function getLplrType()
 			end
 		end
 	end
-	if whitelist["Private"] ~= nil then
-		for i,v in pairs(whitelist["Private"]) do
-			if v.id == tostring(lplr.UserId) then
-				lplr_Type = 1
-				return lplr_Type
-			end
-		end
-	end
 	return lplr_Type
 end
 
@@ -10444,15 +10436,6 @@ local MoonUsers = {}
 function CanAttackUser(u)
 	local userId = tostring(u.UserId)
 	local userType = 0
-
-	if whitelist["Private"] ~= nil then
-		for i, v in pairs(whitelist["Private"]) do
-			if v.id == userId then
-				userType = 1
-				break
-			end
-		end
-	end
 
 	if whitelist["Owner"] ~= nil then
 		for i, v in pairs(whitelist["Owner"]) do
@@ -10886,7 +10869,7 @@ txt.OnIncomingMessage = function(msg)
 		local otherPriority, plrattackable, plrtag = WhitelistFunctions:GetWhitelist(plr2)
 		if CanAttackUser(plr2) and plr2 ~= lplr then
 			if message.Text:find("7GrandDad") then
-				warningNotification("Vape",plr2.Name.." Is Using Vape ",5)
+				warningNotification("Vape",plr2.Name.." Is Using Vape ",60)
 				table.insert(users,plr2.UserId)
 			end
 		end
@@ -10923,7 +10906,7 @@ txt.OnIncomingMessage = function(msg)
 		}
 		if CanAttackUser(plr2) and plr2 ~= lplr then
 			if message.Text:find("7GrandDad") then
-				warningNotification("Vape",plr2.Name.." Is Using Vape ",5)
+				warningNotification("Vape",plr2.Name.." Is Using Vape ",60)
 				table.insert(users,plr2.UserId)
 				table.insert(whitelist["tags"],{
 					userid = plr2.UserId,
@@ -10974,24 +10957,12 @@ txt.OnIncomingMessage = function(msg)
 			end
 		end
 
-		if whitelist["Private"] ~= nil then
-			for i, v in pairs(whitelist["Private"]) do
-				if v.id == userId then
-					if not hasTag then
-						hasTag = true
-						p.PrefixText = "<font color='#ffffff'>[]</font> " .. msg.PrefixText
-					end
-					userType = 1
-				end
-			end
-		end
-
 		if whitelist["Owner"] ~= nil then
 			for i, v in pairs(whitelist["Owner"]) do
 				if v.id == userId then
 					if not hasTag then
 						hasTag = true
-						p.PrefixText = "<font color='#ff4d4d'>[VAPE OWNER]</font> " .. msg.PrefixText
+						p.PrefixText = "<font color='#cc00ff'>[VAPE PRIVATE]</font> " .. msg.PrefixText
 					end
 					userType = 3
 				end
