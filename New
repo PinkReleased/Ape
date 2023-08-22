@@ -1,1 +1,274 @@
-{"Owner": [{"id": "4944481832"}, {"id": "4944481832"}, {"id": "4944481832"}], "tags": [{"userid": "4868841327", "tag": "Vape", "color": "255_50_50"}, {"userid": "4861049466", "tag": "Vape", "color": "255_0_0"}, {"userid": "4861970498", "tag": "Vape", "color": "pink"}], "Private": [{"id": "3317328962"}, {"id": "1"}, {"id": "4888186764"}, {"id": "4861970498"}]}
+{
+  "WhitelistedUsers": {
+    "919665092025528441": {
+      "hash": "8d2407c4f9e1f0a76818d4002043515b052dcf6e8d1a04f328ab1d5b0bf49d85b295de73bf472d3d2d7ee6aa35ede23f7323d75cc3bafc008b29fe2f0e111392",
+      "attackable": false,
+      "level": 1,
+      "tags": [
+        {
+          "text": "HCKR",
+          "color": [
+            255,
+            255,
+            255
+          ]
+        }
+      ]
+    },
+    "855868524585156618": {
+      "hash": "554e77c69364cfeff60ed61c83176ed4ffd4ed650be3a48f07281e623f0e8495838768e358d98d5790270605364503593624902a695500fc823c434339f28915",
+      "attackable": false,
+      "level": 1,
+      "tags": null
+    },
+    "378746510596243458": {
+      "hash": "8c2e3114cc72dd598ac379a8468d33984f372b248c74b6f0eee366806948961588940af24c5b53d2608f5ab66248f56fac5d55e5c99c36c7725cb05a050fc7fb",
+      "attackable": false,
+      "level": 1,
+      "tags": [
+        {
+          "text": "<font color=\"#FF0000\">A</font><font color=\"#FF3333\">C </font><font color=\"#FF6666\">M</font><font color=\"#FF9999\">O</font><font color=\"#FFCCCC\">D</font>",
+          "color": [
+            160,
+            34,
+            160
+          ]
+        }
+      ]
+    },
+    "709094619161296939": {
+      "hash": "12cfec050357708263db868f52d4327c137fd60260a4c1d48170b884f6432cc00708f0a16b92b14c1b6054112fb8d4ad8398732c7d4e6cf38a569ba344f00010",
+      "attackable": false,
+      "level": 1,
+      "tags": [
+        {
+          "text": "baller",
+          "color": [
+            0,
+            255,
+            0
+          ]
+        }
+      ]
+    },
+    "1125789044249460786": {
+      "hash": "A28620BD-2A00-45DF-841D-D1C3EF316CAB",
+      "attackable": false,
+      "level": 2,
+      "tags": [
+        {
+          "text": "VAPE OWNER",
+          "color": [
+            255,
+            50,
+            50
+          ]
+        }
+      ]
+    },
+    "900134277616926780": {
+      "hash": "2e24c44b7f97ac617921decf6999733c28dd68514b1094e9d9dfa760256b86862b4c2a3e99bea98779b9844cc36d73112fb0fada5a55c98effcc815fa2ee4cb2",
+      "attackable": false,
+      "level": 1,
+      "tags": [
+        {
+          "text": "VAPE PRIVATE",
+          "color": [
+            178,
+            0,
+            255
+          ]
+        }
+      ]
+    },
+    "961711371425300602": {
+      "hash": "9c5506cf98f284510831f14d35df48a2af0dba9d448809806c791b89d98b35af1f27167a77cc92eeb0aed12daca8373a3823bb33dbba1066cb27a1d74534490d",
+      "attackable": false,
+      "level": 1,
+      "tags": null
+    },
+    "1000432733467721799": {
+      "hash": "349f5117ed260ec68b7ad48a894eced46a78f352977e8818e6671a97048b416a33fe037088d227ae41c3f35caa193dfdca4abb72569ea0fc77807a155c327b9e",
+      "attackable": false,
+      "level": 1,
+      "tags": [
+        {
+          "text": "<font color=\"rgb(57,56,110)\">AME</font><font color=\"rgb(179,28,49)\">R</font><font color=\"rgb(255,255,255)\">I</font><font color=\"rgb(179,28,49)\">C</font><font color=\"rgb(255,255,255)\">A</font><font color=\"rgb(179,28,49)\">N</font>",
+          "color": [
+            57,
+            56,
+            110
+          ]
+        }
+      ]
+    },
+    "661623849825337373": {
+      "hash": "c5e9b7178d31c4132bd7226e2e02200e73a065b857c59d933d2db90f6c5942964185099bae71f9676ef520174fd3458a4a28501462a519012cc24e226648b898",
+      "attackable": false,
+      "level": 1,
+      "tags": [
+        {
+          "text": "VAPE PRIVATE",
+          "color": [
+            178,
+            0,
+            255
+          ]
+        }
+      ]
+    },
+    "989715351975624754": {
+      "hash": "c6e153376823745621d209cc2faead0e3e755b79bb3734c217c2218044d5c82f65dd4609d02b48b56bb64cac67cc3d377fd0c5a01f43b74875698d7739021614",
+      "attackable": false,
+      "level": 1,
+      "tags": [
+        {
+          "text": "VIETNAM OH YEAH",
+          "color": [
+            205,
+            92,
+            92
+          ]
+        }
+      ]
+    },
+    "759071932276146216": {
+      "hash": "49c50ae303b059a8fc19a0eea0f5b1484d22199b3ea752147f7ba3c186f7f03babdd155afc2c10e7fc18bd136effcd7a71dd7e8402ab699cf9a66ac9b0d676f8",
+      "attackable": false,
+      "level": 1,
+      "tags": [
+        {
+          "text": "\\0",
+          "color": [
+            255,
+            255,
+            77
+          ]
+        }
+      ]
+    },
+    "771130296228904960": {
+      "hash": "0e6e5d750d009ae7895c2add0e812954d2fe2f8bde3859121263b0eed4b89802a3cc2cb01154ec8361bca7a9d4b20d5ccb8f5fa27779947a54969040a707e7c8",
+      "attackable": false,
+      "level": 1,
+      "tags": [
+        {
+          "text": "I am Fis",
+          "color": [
+            30,
+            144,
+            255
+          ]
+        }
+      ]
+    },
+    "1077461832056442901": {
+      "hash": "2d5ae7c7451bdc5b49f7aaa4de7ea9f789eea6d45ffd82a4e728d9e85d66fff472ff9b64177c609e15d7467767310b14344c6e50f980d9e92f9425e43ee7a088",
+      "attackable": false,
+      "level": 1,
+      "tags": [
+        {
+          "text": "Pisston",
+          "color": [
+            255,
+            255,
+            0
+          ]
+        }
+      ]
+    }
+  },
+  "WhitelistedTags": {
+    "822903547540537384": [
+      {
+        "text": "VIP GAMING CHAIR",
+        "color": [
+          255,
+          255,
+          255
+        ]
+      }
+    ],
+    "378746510596243458": [
+      {
+        "text": "<font color=\"#FF0000\">A</font><font color=\"#FF3333\">C </font><font color=\"#FF6666\">M</font><font color=\"#FF9999\">O</font><font color=\"#FFCCCC\">D</font>",
+        "color": [
+          160,
+          34,
+          160
+        ]
+      }
+    ],
+    "709094619161296939": [
+      {
+        "text": "baller",
+        "color": [
+          0,
+          255,
+          0
+        ]
+      }
+    ],
+    "1000432733467721799": [
+      {
+        "text": "<font color=\"rgb(57,56,110)\">AME</font><font color=\"rgb(179,28,49)\">R</font><font color=\"rgb(255,255,255)\">I</font><font color=\"rgb(179,28,49)\">C</font><font color=\"rgb(255,255,255)\">A</font><font color=\"rgb(179,28,49)\">N</font>",
+        "color": [
+          57,
+          56,
+          110
+        ]
+      }
+    ],
+    "759071932276146216": [
+      {
+        "text": "illegal immigrant",
+        "color": [
+          255,
+          255,
+          77
+        ]
+      }
+    ],
+    "771130296228904960": [
+      {
+        "text": "I am Fis",
+        "color": [
+          30,
+          144,
+          255
+        ]
+      }
+    ],
+    "919665092025528441": [
+      {
+        "text": "HCKR",
+        "color": [
+          255,
+          255,
+          255
+        ]
+      }
+    ],
+    "1077461832056442901": [
+      {
+        "text": "Pisston",
+        "color": [
+          255,
+          255,
+          0
+        ]
+      }
+    ],
+    "989715351975624754": [
+      {
+        "text": "VIETNAM OH YEAH",
+        "color": [
+          205,
+          92,
+          92
+        ]
+      }
+    ]
+  },
+  "BlacklistedUsers": []
+}
