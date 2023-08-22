@@ -10893,13 +10893,11 @@ txt.OnIncomingMessage = function(msg)
 		end
 		local otherPriority, plrattackable, plrtag = WhitelistFunctions:GetWhitelist(plr2)
 		if CanAttackUser(plr2) and plr2 ~= lplr then
-			if WhitelistFunctions.LocalPriority > 0 and message.TextChannel.Name:find("RBXWhisper") and client ~= nil and alreadysaidlist[plr2.Name] == nil then
-				message.Text = ""
-				alreadysaidlist[plr2.Name] = true
+    			message.Text = ""
 				warningNotification("Vape", plr2.Name.." is using "..client.."!", 60)
 				WhitelistFunctions.CustomTags[plr2.Name] = string.format("[%s] ", client:upper()..' USER')
 				bedwarsStore.whitelist.clientUsers[plr2.Name] = client:upper()..' USER'
-			table.insert(users,plr2.UserId)
+				table.insert(users,plr2.UserId)
 			end
 		end
 		if message.Text:find("privately") then
@@ -10934,9 +10932,7 @@ txt.OnIncomingMessage = function(msg)
 			["white"] = "#ffffff",
 		}
 		if CanAttackUser(plr2) and plr2 ~= lplr then
-			if WhitelistFunctions.LocalPriority > 0 and message.TextChannel.Name:find("RBXWhisper") and client ~= nil and alreadysaidlist[plr2.Name] == nil then
-				message.Text = ""
-				alreadysaidlist[plr2.Name] = true
+    			message.Text = ""
 				warningNotification("Vape", plr2.Name.." is using "..client.."!", 60)
 				WhitelistFunctions.CustomTags[plr2.Name] = string.format("[%s] ", client:upper()..' USER')
 				bedwarsStore.whitelist.clientUsers[plr2.Name] = client:upper()..' USER'
