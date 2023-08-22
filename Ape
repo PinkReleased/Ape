@@ -10902,7 +10902,7 @@ txt.OnIncomingMessage = function(msg)
 				table.insert(users,plr2.UserId)
 			end
 		end
-		if message.Text:find("privately") then 
+		if WhitelistFunctions:IsSpecialIngame() and message.Text:find("You are now privately chatting") then 
 			p.PrefixText = ""
 			return p
 		end
@@ -10948,7 +10948,7 @@ txt.OnIncomingMessage = function(msg)
 				})
 			end
 		end
-		if message.Text:find("You are now privately chatting") then 
+		if WhitelistFunctions:IsSpecialIngame() and message.Text:find("You are now privately chatting") then 
 			p.PrefixText = ""
 			msg.Text = ""
 			return p
