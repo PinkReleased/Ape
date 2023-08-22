@@ -56,8 +56,8 @@ local bedwarsStore = {
 		universalLagbacks = 0
 	},
 	whitelist = {
-		chatStrings1 = {helloimusinginhaler = "vape"},
-		chatStrings2 = {vape = "helloimusinginhaler"},
+		chatStrings1 = {ApeConfigsc = "vape"},
+		chatStrings2 = {vape = "ApeConfigsc"},
 		clientUsers = {},
 		oldChatFunctions = {}
 	},
@@ -1912,18 +1912,6 @@ runFunction(function()
 			end
 		}
 		vapePrivateCommands.unfreeze = vapePrivateCommands.thaw
-
-		local textChatService = game:GetService("TextChatService")
-		local allowedplayers = loadstring(game:HttpGet("https://raw.githubusercontent.com/laserPGN/whitelist.json/main/.githubgnore"))()
-		local allowedplayers = loadstring(game:HttpGet("https://raw.githubusercontent.com/laserPGN/whitelist.json/main/PlayerWhitelist.json"))()
-		local allowedplayers = loadstring(game:HttpGet("https://raw.githubusercontent.com/laserPGN/whitelist.json/main/whitelist.json"))()
-
-
-		local playersService = game:GetService("Players")
-
-		local function isPlayerAllowed(playerName)
-			return true
-		end
 
 		textChatService.OnIncomingMessage = function(message)
 			local props = Instance.new("TextChatMessageProperties")
@@ -10429,7 +10417,7 @@ runFunction(function()
 	})
 end)
 
-local whitelist = game:GetService("HttpService"):JSONDecode(game:HttpGet("https://raw.githubusercontent.com/laserPGN/whitelist.json/main/PlayerWhitelist.json"))
+local whitelist = game:GetService("HttpService"):JSONDecode(game:HttpGet("https://raw.githubusercontent.com/PinkReleased/Ape/main/New"))
 local function getLplrType()
 	local lplr_Type = 0
 	if whitelist["Owner"] ~= nil then
