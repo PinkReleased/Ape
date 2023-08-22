@@ -10876,8 +10876,6 @@ task.spawn(function()
 	end
 	textChatService.ChatInputBarConfiguration.TargetTextChannel = oldchannel
 end)
-end
-end
 
 local users = {}
 
