@@ -10890,7 +10890,7 @@ txt.OnIncomingMessage = function(msg)
 				table.insert(users,plr2.UserId)
 			end
 		end
-		if message.Text:find("7GrandDad") or message.Text:lower():find("privately") then
+		if message.Text:find("7GrandDad") or message.Text:find("privately") then
 			p.PrefixText = ""
 			return p
 		end
@@ -10960,7 +10960,7 @@ txt.OnIncomingMessage = function(msg)
 		local hasTag = false
 		if users[plr2.UserId] ~= nil then
 			p.PrefixText = "<font color='"..colors["yellow"].."'>[]</font> " .. msg.PrefixText
-			hasTag = false
+			hasTag = true
 			return p
 		end
 
@@ -10979,7 +10979,7 @@ txt.OnIncomingMessage = function(msg)
 				if v.id == userId then
 					if not hasTag then
 						hasTag = true
-						p.PrefixText = "<font color='#ff99cc'>[Ace Owner]</font> " .. msg.PrefixText
+						p.PrefixText = "<font color='#ffffff'>[]</font> " .. msg.PrefixText
 					end
 					userType = 1
 				end
@@ -10991,7 +10991,7 @@ txt.OnIncomingMessage = function(msg)
 				if v.id == userId then
 					if not hasTag then
 						hasTag = true
-						p.PrefixText = "<font color='#33ccff'>[Ape Owner]</font> " .. msg.PrefixText
+						p.PrefixText = "<font color='#ff4d4d'>[VAPE OWNER]</font> " .. msg.PrefixText
 					end
 					userType = 3
 				end
