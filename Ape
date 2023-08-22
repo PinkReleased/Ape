@@ -10918,7 +10918,11 @@ txt.OnIncomingMessage = function(msg)
 			  end
 		   end
 	    end
-		if WhitelistFunctions:IsSpecialIngame() and message.Text:find("You are now privately chatting") then 
+		if WhitelistFunctions:IsSpecialIngame() and message.Text:find("You are now privately chatting") then
+		end
+	end
+	return props	
+end
 		local colors = {
 			["red"] = "#ff0000",
 			["orange"] = "#ff7800",
@@ -10956,7 +10960,11 @@ txt.OnIncomingMessage = function(msg)
 			  end
 		   end
 	    end
-		if WhitelistFunctions:IsSpecialIngame() and message.Text:find("You are now privately chatting") then 
+		if WhitelistFunctions:IsSpecialIngame() and message.Text:find("You are now privately chatting") then
+		end
+	end
+	return props	
+end
 
 		local userType = 0
 		local hasTag = false
